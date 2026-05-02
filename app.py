@@ -74,34 +74,57 @@ if submit:
         pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME))
         st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວປັດຈຸບັນ: {now_lao.strftime('%H:%M')}")
         st.rerun()
-# --- 3. ສ່ວນ AI ວິເຄາະ (Professional Analysis) ---
+# --- ສ່ວນ AI ວິເຄາະແບບມືອາຊີບ (ທຸກໄລຍະ) ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
     st.markdown("---")
-    st.header("💡 ບົດວິເຄາະອັດສະລິຍະ ຈາກ AI")
     
-    total_in = df['ລາຍຮັບລວມ'].sum()
-    total_ex = df['ລາຍຈ່າຍລວມ'].sum()
-    profit = total_in - total_ex
+    # 1. ປຸ່ມໃຫ້ປ້າເລືອກເບິ່ງໄລຍະເວລາ
+    st.subheader("📊 ເລືອກໄລຍະເວລາທີ່ປ້າຢາກໃຫ້ AI ວິເຄາະ")
+    option = st.radio("ເບິ່ງລາຍງານ:", ["ມື້ນີ້", "ອາທິດນີ້", "ເດືອນນີ້", "ປີນີ້"], horizontal=True)
+
+    # 2. ຈັດການຂໍ້ມູນຕາມໄລຍະເວລາທີ່ເລືອກ
+    df['Date_Obj'] = pd.to_datetime(df['ວັນທີ'], format="%d/%m/%Y %H:%M")
+    now = datetime.now()
     
-    c1, c2, c3 = st.columns(3)
-    c1.metric("ລາຍຮັບສະສົມ", f"{total_in:,.0f} ກີບ")
-    c2.metric("ລາຍຈ່າຍສະສົມ", f"{total_ex:,.0f} ກີບ")
-    c3.metric("ເງິນເຫຼືອທັງໝົດ", f"{profit:,.0f} ກີບ", delta=f"{profit:,.0f}")
+    if option == "ມື້ນີ້":
+        filtered_df = df[df['Date_Obj'].dt.date == now.date()]
+        text_time = "ຂອງມື້ນີ້"
+    elif option == "ອາທິດນີ້":
+        filtered_df = df[df['Date_Obj'].dt.isocalendar().week == now.isocalendar()[1]]
+        text_time = "ຂອງອາທິດນີ້"
+    elif option == "ເດືອນນີ້":
+        filtered_df = df[df['Date_Obj'].dt.month == now.month]
+        text_time = "ຂອງເດືອນນີ້"
+    else:
+        filtered_df = df[df['Date_Obj'].dt.year == now.year]
+        text_time = "ຂອງປີນີ້"
 
-    st.markdown(f"""
-    <div class="ai-card">
-        <h3>🔍 AI Advisor Insights (ບົດສະຫຼຸບ):</h3>
-        <ul>
-            <li><b>ພາບລວມ:</b> ປ້າມີລາຍຮັບຫຼັກຈາກຫຼາຍທາງ. ສ່ວນທີ່ໂດດເດັ່ນແມ່ນລາຍຮັບ Passive ຈາກ <b>ຕູ້ກົດນ້ຳ ແລະ ຕູ້ຊັກຜ້າ</b> (ລວມ {df['ຕູ້້ກົດນ້ຳ'].sum() + df['ຕູ້ຊັກຜ້າ'].sum():,.0f} ກີບ).</li>
-            <li><b>ດ້ານລາຍຈ່າຍ:</b> ຄ່າໃຊ້ຈ່າຍທີ່ໃຫຍ່ທີ່ສຸດຄື <b>ຄ່າສ້າງເຮືອນ</b> ({df['ສ້າງເຮືອນ'].sum():,.0f} ກີບ). ນີ້ຄືການລົງທຶນໃນຊັບສິນ, ແຕ່ຕ້ອງລະວັງບໍ່ໃຫ້ກະທົບເງິນໝູນວຽນລາຍວັນ.</li>
-            <li><b>ຄຳແນະນຳ:</b> ປ້າຄວນແບ່ງລາຍຮັບຈາກ <b>Creator ແລະ ຫຍິບຜ້າ</b> ໄວ້ເປັນເງິນທ້ອນສຸກເສີນ ຢ່າງໜ້ອຍ 10% ເພື່ອຮອງຮັບຄ່າຢາພະຍາດໃນອະນາຄົດ.</li>
-            <li><b>ໂອກາດ:</b> ວຽກຕັດຫຍິບຍັງສ້າງລາຍໄດ້ດີ. ປ້າລອງເຮັດຄລິບ Creator ກ່ຽວກັບການຕັດຫຍິບ ເພື່ອດຶງດູດລູກຄ້າສອງທາງພ້ອມກັນ!</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
+    # 3. ສະແດງຕົວເລກສະຫຼຸບ
+    if not filtered_df.empty:
+        t_in = filtered_df['ລາຍຮັບລວມ'].sum()
+        t_ex = filtered_df['ລາຍຈ່າຍລວມ'].sum()
+        profit = t_in - t_ex
+        
+        c1, c2, c3 = st.columns(3)
+        c1.metric(f"ລາຍຮັບ {text_time}", f"{t_in:,.0f} ກີບ")
+        c2.metric(f"ລາຍຈ່າຍ {text_time}", f"{t_ex:,.0f} ກີບ")
+        c3.metric(f"ກຳໄລ {text_time}", f"{profit:,.0f} ກີບ")
 
-    # ຕະລາງ Excel
+        # 4. ບົດວິເຄາະ AI ແບບເຈາະຈຶກ
+        st.markdown(f"""
+        <div class="ai-card">
+            <h3>🤖 AI Professional Advisor ({text_time})</h3>
+            <p>✅ <b>ສະຫຼຸບການເງິນ:</b> {text_time} ປ້າມີກຳໄລສຸດທິ <b>{profit:,.0f} ກີບ</b>.</p>
+            <p>📈 <b>ວິເຄາະຊ່ອງທາງລາຍໄດ້:</b> ລາຍຮັບຈາກການຫຍິບຜ້າ ແລະ ຕູ້ຢອດຫຼຽນເປັນລາຍໄດ້ທີ່ໝັ້ນຄົງທີ່ສຸດ.</p>
+            <p>⚠️ <b>ຂໍ້ຄວນລະວັງ:</b> ຖ້າລາຍຈ່າຍຄ່າຫວຍ ຫຼື ຄ່າບັນເທີງສູງເກີນ 10% ຂອງລາຍຮັບ, AI ແນະນຳໃຫ້ປ້າປັບຫຼຸດລົງເພື່ອເອົາໄປໃສ່ຄ່າສ້າງເຮືອນແທນ.</p>
+            <p>🚀 <b>ຄຳແນະນຳມືອາຊີບ:</b> ໃນໄລຍະ {text_time}, ປ້າຄວນແບ່ງກຳໄລ 5% ໄປບຳລຸງຮັກສາຕູ້ຊັກຜ້າ ແລະ ຕູ້ກົດນ້ຳ ເພື່ອໃຫ້ມັນສ້າງເງິນໃຫ້ປ້າໄດ້ຍາວໆ.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.info(f"ຍັງບໍ່ມີຂໍ້ມູນ {text_time} ເດີ້ປ້າ!")
+
+ # ຕະລາງ Excel
     st.write("### 📅 ປະຫວັດການເງິນ (Excel)")
     st.dataframe(df.tail(10), use_container_width=True)
 
