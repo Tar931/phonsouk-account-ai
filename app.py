@@ -55,7 +55,7 @@ with st.form("super_form", clear_on_submit=True):
 
     submit = st.form_submit_button("💾 ບັນທຶກ ແລະ ລ້າງຄ່າທັງໝົດ", use_container_width=True)
 
-  if submit:
+    if submit:
         # --- ສ່ວນແກ້ໄຂເວລາໃຫ້ເປັນເວລາລາວ (+7 ຊົ່ວໂມງ) ---
         from datetime import timedelta
         now = datetime.now() + timedelta(hours=7) 
@@ -73,15 +73,6 @@ with st.form("super_form", clear_on_submit=True):
         }
         pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME))
         st.success(f"✅ ບັນທຶກສຳເລັດ! ເວລາປັດຈຸບັນ: {now.strftime('%H:%M')}")
-        st.rerun()
-        new_data = {
-            'ວັນທີ': now.strftime("%d/%m/%Y %H:%M"),
-            'ລາຍຮັບລວມ': t_in, 'ລາຍຈ່າຍລວມ': t_ex, 'ເຫຼືອເກັບ': t_in - t_ex,
-            'ເງິນເດືອນ': i1, 'Creator': i2, 'ຂາຍຂອງ': i3, 'ຫຍິບຜ້າ': i4, 'ຕູ້້ກົດນ້ຳ': i5, 'ຕູ້ຊັກຜ້າ': i6,
-            'ອາຫານ': e1, 'ຄ່າເຊົ່າ': e2, 'ນ້ຳໄຟ': e3, 'ເດີນທາງ': e4, 'ການສຶກສາ': e5, 'ຢາ': e6, 'ເສື້ອຜ້າ': e7, 'ບັນເທີງ': e8, 'ຫວຍ': e9, 'ສ້າງເຮືອນ': e10
-        }
-        pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME))
-        st.success("✅ ບັນທຶກສຳເລັດແລ້ວ ປ້າພອນສຸກ!")
         st.rerun()
 # --- ສ່ວນ AI ວິເຄາະແບບມືອາຊີບ (ທຸກໄລຍະ) ---
 if os.path.exists(FILE_NAME):
