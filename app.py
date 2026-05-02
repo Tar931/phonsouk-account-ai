@@ -4,10 +4,10 @@ import os
 from datetime import datetime
 
 # --- ຕັ້ງຄ່າໜ້າຈໍ ---
-st.set_page_config(page_title="Phonsouk Super Smart AI", page_icon="💰", layout="wide")
+st.set_page_config(page_title="ບັນຊີຂອງປ້າ", page_icon="💰", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
 
-# Style ຕົບແຕ່ງ
+# Style ຕົບແຕ່ງ (ປັບໃຫ້ເບິ່ງງ່າຍ)
 st.markdown("""
     <style>
     .money-box { 
@@ -18,22 +18,24 @@ st.markdown("""
         background-color: #ffffff; padding: 25px; border-radius: 20px; border-left: 15px solid #268BD2; 
         box-shadow: 0 4px 15px rgba(0,0,0,0.1); color: #1B4F72; margin-top: 20px; font-size: 18px;
     }
+    /* ລົບ padding ສ່ວນເກີນອອກ */
+    .block-container { padding-top: 2rem; }
     </style>
     """, unsafe_allow_html=True)
 
-# ຟັງຊັນຈັດຮູບແບບຕົວເລກ
+# ຟັງຊັນຈັດຮູບແບບຕົວເລກ (ໃສ່ຈຸດ)
 def format_num(v):
-    if v == "" or v is None:
-        return ""
+    if v == "" or v is None: return ""
     nums = "".join(filter(str.isdigit, str(v)))
     return "{:,}".format(int(nums)) if nums else ""
 
+# ຟັງຊັນແປງເປັນຕົວເລກ (ເພື່ອຄິດໄລ່)
 def parse_num(v):
-    if v == "" or v is None:
-        return 0
+    if v == "" or v is None: return 0
     nums = "".join(filter(str.isdigit, str(v)))
     return int(nums) if nums else 0
 
+# ຊ່ອງປ້ອນຂໍ້ມູນແບບມີຈຸດ Real-time
 def input_box(label, key):
     if key not in st.session_state:
         st.session_state[key] = ""
@@ -54,11 +56,11 @@ def save_data(data_dict):
     df_combined.to_csv(FILE_NAME, index=False, encoding='utf-8-sig')
     return True
 
-# --- ສ່ວນແບ່ງການປ້ອນຂໍ້ມູນ ---
+# --- ສ່ວນການປ້ອນຂໍ້ມູນ ---
 col1, col2 = st.columns(2)
 
 with col1:
-    st.success("### 🟢 ສ່ວນລາຍຮັບ")
+    st.success("### 🟢 ລາຍຮັບ")
     i1 = input_box("1. ເງິນເດືອນ", "i1")
     i2 = input_box("2. ລາຍຮັບ Creator (FB/YouTube)", "i2")
     i3 = input_box("3. ຂາຍຂອງຍ່ອຍ", "i3")
@@ -67,7 +69,7 @@ with col1:
     i6 = input_box("6. ຕູ້ຊັກຜ້າ", "i6")
 
 with col2:
-    st.error("### 🔴 ສ່ວນລາຍຈ່າຍ")
+    st.error("### 🔴 ລາຍຈ່າຍ")
     e1 = input_box("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", "e1")
     e2 = input_box("2. ຄ່າເຊົ່າທີ່ຢູ່", "e2")
     e3 = input_box("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", "e3")
@@ -79,6 +81,8 @@ with col2:
     e9 = input_box("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
     e10 = input_box("10. ຄ່າສ້າງເຮືອນ", "e10")
 
+# --- ປຸ່ມບັນທຶກ ---
+st.write("")
 if st.button("💾 ບັນທຶກ", use_container_width=True):
     data = {
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -102,47 +106,6 @@ if st.button("💾 ບັນທຶກ", use_container_width=True):
     if save_data(data):
         st.success("✅ ບັນທຶກສຳເລັດ!")
         st.balloons()
-    else:
-        st.error("❌ ບັນທຶກບໍ່ສຳເລັດ")
-
-# --- ສ່ວນສະແດງຜົນລວມ ---
-st.markdown("---")
-total_income = parse_num(i1) + parse_num(i2) + parse_num(i3) + parse_num(i4) + parse_num(i5) + parse_num(i6)
-total_expense = parse_num(e1) + parse_num(e2) + parse_num(e3) + parse_num(e4) + parse_num(e5) + parse_num(e6) + parse_num(e7) + parse_num(e8) + parse_num(e9) + parse_num(e10)
-balance = total_income - total_expense
-
-col_a, col_b, col_c = st.columns(3)
-with col_a:
-    st.markdown(f'<div class="money-box">💰 ລາຍຮັບລວມ<br>{format_num(total_income)} ກີບ</div>', unsafe_allow_html=True)
-with col_b:
-    st.markdown(f'<div class="money-box">💸 ລາຍຈ່າຍລວມ<br>{format_num(total_expense)} ກີບ</div>', unsafe_allow_html=True)
-with col_c:
-    color = "#00FFAA" if balance >= 0 else "#FF5555"
-    st.markdown(f'<div class="money-box" style="color:{color}">📊 ສົມດຸນ<br>{format_num(balance)} ກີບ</div>', unsafe_allow_html=True)
-
-# AI ຄຳແນະນຳ
-if balance < 0:
-    advice = "⚠️ ທ່ານມີລາຍຈ່າຍຫຼາຍກວ່າລາຍຮັບ! ຄວນຫຼຸດຄ່າໃຊ້ຈ່າຍທີ່ບໍ່ຈຳເປັນ."
-elif balance < 2000000:
-    advice = "✅ ທ່ານມີສົມດຸນທີ່ດີ ແຕ່ຍັງບໍ່ຫຼາຍ ຄວນພະຍາຍາມອົມຫຼຽນເພີ່ມ."
-else:
-    advice = "🎉 ທ່ານມີສຸຂະພາບການເງິນທີ່ແຂງແຮງ! ຄວນແບ່ງເງິນໄປລົງທຶນ."
-
-st.markdown(f'<div class="ai-card">🤖 <strong>AI ໃຫ້ຄຳແນະນຳ:</strong><br>{advice}</div>', unsafe_allow_html=True)
-
-# --- ສະແດງປະຫວັດ ---
-st.markdown("---")
-st.subheader("📜 ປະຫວັດການບັນທຶກ")
-
-if os.path.exists(FILE_NAME):
-    df_history = pd.read_csv(FILE_NAME)
-    st.dataframe(df_history.tail(10), use_container_width=True)
-    if st.button("🗑️ ລຶບຂໍ້ມູນທັງໝົດ", use_container_width=True):
-        os.remove(FILE_NAME)
-        st.success("ລຶບສຳເລັດ!")
-        st.rerun()
-else:
-    st.info("ຍັງບໍ່ມີຂໍ້ມູນ, ກະລຸນາບັນທຶກກ່ອນ.")
 
 if submit:
         # ບວກ 7 ຊົ່ວໂມງເຂົ້າໄປຕົງໆເລີຍ ເພື່ອໃຫ້ເປັນເວລາລາວ
