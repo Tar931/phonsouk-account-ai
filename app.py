@@ -27,65 +27,54 @@ st.markdown("""
 
 import streamlit as st
 
-# --- 1. ສູດລັບການຈັດການຕົວເລກ (ໃສ່ຈຸດຫຼັກພັນ) ---
-def format_with_commas(value):
-    # ລຶບທຸກຢ່າງທີ່ບໍ່ແມ່ນຕົວເລກອອກ
-    clean_num = "".join(filter(str.isdigit, str(value)))
-    if not clean_num: 
-        return ""
-    # ໃສ່ຈຸດຂັ້ນຫຼັກພັນໃຫ້ສວຍງາມ
-    return "{:,}".format(int(clean_num))
+# Function ແປງເລກໃຫ້ມີຈຸດ
+def comma_format(number_str):
+    clean = "".join(filter(str.isdigit, str(number_str)))
+    if not clean: return ""
+    return "{:,}".format(int(clean))
 
-st.set_page_config(page_title="App ບັນຊີປ້າ - ມີຈຸດແລ້ວ", layout="wide")
+st.set_page_config(layout="wide")
 
-st.markdown("## 💰 ລະບົບບັນທຶກລາຍຮັບ-ລາຍຈ່າຍ (ແບບມີຈຸດ)")
-st.info("💡 ວິທີໃຊ້: ພິມຕົວເລກລົງໄປ > ກົດ Enter > ຕົວເລກຈະມີຈຸດຂຶ້ນມາທັນທີ!")
-
-# --- 2. ຟັງຊັນສ້າງຊ່ອງປ້ອນຂໍ້ມູນແບບ Real-time Format ---
-def money_box(label, key):
-    # ດຶງຄ່າຈາກຄວາມຈຳ (ຖ້າມີ)
+# ສ້າງຊ່ອງປ້ອນຂໍ້ມູນທີ່ມີຈຸດອັດຕະໂນມັດ
+def auto_comma_input(label, key):
     if key not in st.session_state:
         st.session_state[key] = ""
     
-    # ສ້າງຊ່ອງພິມ
-    val = st.text_input(label, value=st.session_state[key], key=f"input_{key}")
+    val = st.text_input(label, value=st.session_state[key], key=f"in_{key}")
     
-    # ຖ້າປ້າພິມ ແລ້ວຄ່າຍັງບໍ່ມີຈຸດ ໃຫ້ມັນໃສ່ຈຸດແລ້ວ Refresh ໜ້າຈໍ
-    formatted = format_with_commas(val)
+    formatted = comma_format(val)
     if formatted != st.session_state[key]:
         st.session_state[key] = formatted
         st.rerun()
-    
     return formatted
 
-# --- 3. ສ່ວນການປ້ອນຂໍ້ມູນ (6 ລາຍຮັບ + 10 ລາຍຈ່າຍ) ---
-with st.form("main_account_form"):
+with st.form("account_form"):
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("### 🟢 ລາຍຮັບ")
-        i1 = money_box("1. ເງິນເດືອນ", "i1")
-        i2 = money_box("2. ລາຍຮັບ Creator (FB/YouTube)", "i2")
-        i3 = money_box("3. ຂາຍຂອງຍ່ອຍ", "i3")
-        i4 = money_box("4. ຮັບຕັດຫຍິບ", "i4")
-        i5 = money_box("5. ຕູ້ກົດນ້ຳ", "i5")
-        i6 = money_box("6. ຕູ້ຊັກຜ້າ", "i6")
+        st.write("### 🟢 ສ່ວນລາຍຮັບ")
+        i1 = auto_comma_input("1. ເງິນເດືອນ", "i1")
+        i2 = auto_comma_input("2. ລາຍຮັບ Creator (FB/YouTube)", "i2")
+        i3 = auto_comma_input("3. ຂາຍຂອງຍ່ອຍ", "i3")
+        i4 = auto_comma_input("4. ຮັບຕັດຫຍິບ", "i4")
+        i5 = auto_comma_input("5. ຕູ້ກົດນ້ຳ", "i5")
+        i6 = auto_comma_input("6. ຕູ້ຊັກຜ້າ", "i6")
 
     with col2:
-        st.markdown("### 🔴 ລາຍຈ່າຍ")
-        e1 = money_box("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", "e1")
-        e2 = money_box("2. ຄ່າເຊົ່າທີ່ຢູ່", "e2")
-        e3 = money_box("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", "e3")
-        e4 = money_box("4. ຄ່າເດີນທາງ", "e4")
-        e5 = money_box("5. ຄ່າການສຶກສາ", "e5")
-        e6 = money_box("6. ຄ່າປິ່ນປົວ/ຢາ", "e6")
-        e7 = money_box("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", "e7")
-        e8 = money_box("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
-        e9 = money_box("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
-        e10 = money_box("10. ຄ່າສ້າງເຮືອນ/ສິນເຊື່ອ", "e10")
+        st.write("### 🔴 ສ່ວນລາຍຈ່າຍ")
+        e1 = auto_comma_input("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", "e1")
+        e2 = auto_comma_input("2. ຄ່າເຊົ່າທີ່ຢູ່", "e2")
+        e3 = auto_comma_input("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", "e3")
+        e4 = auto_comma_input("4. ຄ່າເດີນທາງ", "e4")
+        e5 = auto_comma_input("5. ຄ່າການສຶກສາ", "e5")
+        e6 = auto_comma_input("6. ຄ່າປິ່ນປົວ", "e6")
+        e7 = auto_comma_input("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", "e7")
+        e8 = auto_comma_input("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
+        e9 = auto_comma_input("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
+        e10 = auto_comma_input("10. ຄ່າສ້າງເຮືອນ", "e10")
 
-    st.write("")
-    submit = st.form_submit_button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True)
+    st.write("---")
+    submitted = st.form_submit_button("💾 ບັນທຶກ", use_container_width=True)
 
 if submit:
         # ບວກ 7 ຊົ່ວໂມງເຂົ້າໄປຕົງໆເລີຍ ເພື່ອໃຫ້ເປັນເວລາລາວ
