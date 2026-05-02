@@ -27,31 +27,37 @@ st.markdown("""
 
 import streamlit as st
 
-# --- 1. ສູດລັບໃສ່ຈຸດອັດຕະໂນມັດ (Real-time Format) ---
-def format_with_commas(value):
-    # ລຶບທຸກຢ່າງທີ່ບໍ່ແມ່ນເລກ
-    clean_num = "".join(filter(str.isdigit, str(value)))
-    if not clean_num: return ""
-    # ໃສ່ຈຸດຄືນ
-    return "{:,}".format(int(clean_num))
+# --- 1. ສູດແປງເລກໃຫ້ມີຈຸດອັດຕະໂນມັດ ---
+def format_num(val):
+    # ລຶບຈຸດອອກກ່ອນເພື່ອເອົາແຕ່ຕົວເລກ
+    clean = "".join(filter(str.isdigit, str(val)))
+    if not clean: return ""
+    # ໃສ່ຈຸດຂັ້ນຫຼັກພັນ
+    return "{:,}".format(int(clean))
 
 st.set_page_config(page_title="App ປ້າ - ໃສ່ຈຸດໃຫ້ເລີຍ", layout="wide")
 
-# --- 2. ຟັງຊັນສ້າງຊ່ອງປ້ອນຂໍ້ມູນແບບມີຈຸດ ---
-def money_input(label, key):
-    # ດຶງຄ່າເກົ່າອອກມາ (ຖ້າມີ)
-    current_val = st.session_state.get(key, "0")
+st.title("💰 ລະບົບປ້ອນເລກແບບມີຈຸດ (Real-time)")
+st.write("### ປ້າພິມເລກລົງໄປ ແລ້ວກົດ Enter ຫຼື ກົດບ່ອນວ່າງ ມັນຈະໃສ່ຈຸດໃຫ້ທັນທີ!")
+
+# --- 2. ສ້າງຟັງຊັນສຳລັບຊ່ອງປ້ອນຂໍ້ມູນ ---
+def create_input(label, key):
+    # ຖ້າຍັງບໍ່ມີຄ່າໃຫ້ຕັ້ງເປັນ "0"
+    if key not in st.session_state:
+        st.session_state[key] = "0"
     
     # ສ້າງຊ່ອງພິມ
-    val = st.text_input(label, value=current_val, key=f"input_{key}")
+    u_input = st.text_input(label, value=st.session_state[key], key=f"raw_{key}")
     
-    # ຖ້າປ້າພິມ ແລ້ວມັນຍັງບໍ່ມີຈຸດ ໃຫ້ມັນໃສ່ຈຸດໃຫ້ທັນທີ
-    formatted = format_with_commas(val)
-    if formatted != val:
+    # ຖ້າປ້າພິມໃໝ່ ໃຫ້ແປງເປັນຈຸດທັນທີ
+    formatted = format_num(u_input)
+    if formatted != st.session_state[key]:
         st.session_state[key] = formatted
-        st.rerun() # ສັ່ງໃຫ້ໜ້າຈໍ Refresh ຕົວເອງເພື່ອໂຊຈຸດ
+        st.rerun() # Refresh ໜ້າຈໍເພື່ອໂຊຈຸດ
+    
+    return formatted
 
- # --- 3. ສະແດງຜົນ 6 ລາຍຮັບ ແລະ 10 ລາຍຈ່າຍ ---
+# --- 3. ສະແດງຜົນ 6 ລາຍຮັບ ແລະ 10 ລາຍຈ່າຍ ---
 with st.form("main_form"):
     col1, col2 = st.columns(2)
     
