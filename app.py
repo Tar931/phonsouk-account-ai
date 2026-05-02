@@ -50,53 +50,39 @@ def money_input(label, key):
     if formatted != val:
         st.session_state[key] = formatted
         st.rerun() # ສັ່ງໃຫ້ໜ້າຈໍ Refresh ຕົວເອງເພື່ອໂຊຈຸດ
-    
-    return formatted
 
-st.title("💰 ລະບົບປ້ອນເລກແບບມີຈຸດ (ປ່ຽນໃຫ້ທັນທີ)")
-st.info("ປ້າພິມເລກລົງໄປເລີຍ ພໍປ້າກົດ Enter ຫຼື ກົດບ່ອນອື່ນ ມັນຈະໃສ່ຈຸດໃຫ້ທັນທີ!")
-
-# --- 3. ສ່ວນການຈັດວາງ (6 ລາຍຮັບ + 10 ລາຍຈ່າຍ) ---
-with st.container():
+ # --- 3. ສະແດງຜົນ 6 ລາຍຮັບ ແລະ 10 ລາຍຈ່າຍ ---
+with st.form("main_form"):
     col1, col2 = st.columns(2)
     
     with col1:
         st.success("### 🟢 ສ່ວນລາຍຮັບ")
-        i1 = money_input("1. ເງິນເດືອນ", "i1")
-        i2 = money_input("2. ລາຍຮັບ Creator (FB/YouTube)", "i2")
-        i3 = money_input("3. ຂາຍຂອງຍ່ອຍ", "i3")
-        i4 = money_input("4. ຮັບຕັດຫຍິບ", "i4")
-        i5 = money_input("5. ຕູ້ກົດນ້ຳ", "i5")
-        i6 = money_input("6. ຕູ້ຊັກຜ້າ", "i6")
+        i1 = create_input("1. ເງິນເດືອນ", "i1")
+        i2 = create_input("2. ລາຍຮັບ Creator (FB/YouTube)", "i2")
+        i3 = create_input("3. ຂາຍຂອງຍ່ອຍ", "i3")
+        i4 = create_input("4. ຮັບຕັດຫຍິບ", "i4")
+        i5 = create_input("5. ຕູ້ກົດນ້ຳ", "i5")
+        i6 = create_input("6. ຕູ້ຊັກຜ້າ", "i6")
 
     with col2:
         st.error("### 🔴 ສ່ວນລາຍຈ່າຍ")
-        e1 = money_input("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", "e1")
-        e2 = money_input("2. ຄ່າເຊົ່າທີ່ຢູ່", "e2")
-        e3 = money_input("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", "e3")
-        e4 = money_input("4. ຄ່າເດີນທາງ", "e4")
-        e5 = money_input("5. ຄ່າການສຶກສາ", "e5")
-        e6 = money_input("6. ຄ່າປິ່ນປົວ", "e6")
-        e7 = money_input("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", "e7")
-        e8 = money_input("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
-        e9 = money_input("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
-        e10 = money_input("10. ຄ່າສ້າງເຮືອນ", "e10")
+        e1 = create_input("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", "e1")
+        e2 = create_input("2. ຄ່າເຊົ່າທີ່ຢູ່", "e2")
+        e3 = create_input("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", "e3")
+        e4 = create_input("4. ຄ່າເດີນທາງ", "e4")
+        e5 = create_input("5. ຄ່າການສຶກສາ", "e5")
+        e6 = create_input("6. ຄ່າປິ່ນປົວ", "e6")
+        e7 = create_input("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", "e7")
+        e8 = create_input("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
+        e9 = create_input("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
+        e10 = create_input("10. ຄ່າສ້າງເຮືອນ", "e10")
 
-st.divider()
-if st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True):
-    st.balloons()
-    st.success("✅ ບັນທຶກຮຽບຮ້ອຍແລ້ວປ້າ!")
+    st.markdown("---")
+    submit = st.form_submit_button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True)
 
-# 3. ສ່ວນການຈັດການຂໍ້ມູນຫຼັງກົດປຸ່ມ
 if submit:
-    total_income = i1 + i2 + i3 + i4 + i5 + i6
-    total_expense = e1 + e2 + e3 + e4 + e5 + e6 + e7 + e8 + e9 + e10
-    balance = total_income - total_expense
-    
-    st.success("✅ ບັນທຶກສຳເລັດແລ້ວ!")
-    st.metric("ລາຍຮັບທັງໝົດ", f"{total_income:,.0f} ກີບ")
-    st.metric("ລາຍຈ່າຍທັງໝົດ", f"{total_expense:,.0f} ກີບ")
-    st.metric("ເງິນຄົງເຫຼືອ", f"{balance:,.0f} ກີບ")
+    st.balloons()
+    st.success("✅ ບັນທຶກສຳເລັດແລ້ວ! ຕົວເລກທັງໝົດມີຈຸດຮຽບຮ້ອຍ.")
 
 if submit:
         # ບວກ 7 ຊົ່ວໂມງເຂົ້າໄປຕົງໆເລີຍ ເພື່ອໃຫ້ເປັນເວລາລາວ
