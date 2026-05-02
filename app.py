@@ -4,18 +4,19 @@ import os
 from datetime import datetime
 
 # --- ຕັ້ງຄ່າໜ້າຈໍ ---
-st.set_page_config(page_title="App ປ້າ", layout="wide")
+st.set_page_config(page_title="App", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
 
-# Style ຕົບແຕ່ງ (ລົບຫົວຂໍ້ ແລະ ຂໍ້ຄວາມເກົ່າອອກໝົດແລ້ວ)
+# CSS ຕົບແຕ່ງ (ລຶບທຸກຢ່າງທີ່ເປັນຂໍ້ຄວາມຫົວຂໍ້ອອກ)
 st.markdown("""
     <style>
     .money-box { 
         background-color: #002B36; color: #00FFAA; padding: 15px; border-radius: 12px; 
         font-size: 28px; font-weight: bold; text-align: right; border: 2px solid #268BD2; margin-bottom: 20px;
     }
-    /* ໃຫ້ໜ້າຈໍເລີ່ມຈາກຊ່ອງປ້ອນເລກເລີຍ */
-    .block-container { padding-top: 1rem; }
+    /* ເຮັດໃຫ້ໜ້າຈໍເລີ່ມແຕ່ສ່ວນປ້ອນເລກເລີຍ */
+    .block-container { padding-top: 0rem; }
+    header {visibility: hidden;}
     </style>
     """, unsafe_allow_html=True)
 
@@ -31,7 +32,7 @@ def parse_num(v):
     nums = "".join(filter(str.isdigit, str(v)))
     return int(nums) if nums else 0
 
-# ຊ່ອງປ້ອນຂໍ້ມູນແບບມີຈຸດອັດຕະໂນມັດ
+# ຊ່ອງປ້ອນຂໍ້ມູນແບບມີຈຸດ (Real-time)
 def input_box(label, key):
     if key not in st.session_state:
         st.session_state[key] = ""
@@ -53,6 +54,7 @@ def save_data(data_dict):
     return True
 
 # --- ສະແດງແຕ່ສ່ວນປ້ອນຂໍ້ມູນ ---
+# ບໍ່ມີຫົວຂໍ້ (Header) ອີກແລ້ວ
 col1, col2 = st.columns(2)
 
 with col1:
@@ -78,7 +80,7 @@ with col2:
     e10 = input_box("10. ຄ່າສ້າງເຮືອນ", "e10")
 
 # ປຸ່ມບັນທຶກ
-if st.button("💾 ບັນທຶກ", use_container_width=True):
+if st.button("💾 ບັນທຶກຂໍ້ມູນ", use_container_width=True):
     data = {
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "ເງິນເດືອນ": parse_num(i1), "ລາຍຮັບ Creator": parse_num(i2),
@@ -93,20 +95,20 @@ if st.button("💾 ບັນທຶກ", use_container_width=True):
     if save_data(data):
         st.success("✅ ບັນທຶກແລ້ວ!")
 
-# --- ສະແດງຜົນລວມລຸ່ມສຸດ ---
+# --- ສະແດງຜົນລວມ ---
 st.markdown("---")
-total_i = parse_num(i1)+parse_num(i2)+parse_num(i3)+parse_num(i4)+parse_num(i5)+parse_num(i6)
-total_e = parse_num(e1)+parse_num(e2)+parse_num(e3)+parse_num(e4)+parse_num(e5)+parse_num(e6)+parse_num(e7)+parse_num(e8)+parse_num(e9)+parse_num(e10)
-balance = total_i - total_e
+ti = parse_num(i1)+parse_num(i2)+parse_num(i3)+parse_num(i4)+parse_num(i5)+parse_num(i6)
+te = parse_num(e1)+parse_num(e2)+parse_num(e3)+parse_num(e4)+parse_num(e5)+parse_num(e6)+parse_num(e7)+parse_num(e8)+parse_num(e9)+parse_num(e10)
+bal = ti - te
 
 ca, cb, cc = st.columns(3)
-with ca: st.markdown(f'<div class="money-box">💰 ລາຍຮັບ<br>{format_num(total_i)}</div>', unsafe_allow_html=True)
-with cb: st.markdown(f'<div class="money-box">💸 ລາຍຈ່າຍ<br>{format_num(total_e)}</div>', unsafe_allow_html=True)
+with ca: st.markdown(f'<div class="money-box">💰 ລາຍຮັບ<br>{format_num(ti)}</div>', unsafe_allow_html=True)
+with cb: st.markdown(f'<div class="money-box">💸 ລາຍຈ່າຍ<br>{format_num(te)}</div>', unsafe_allow_html=True)
 with cc: 
-    col_bal = "#00FFAA" if balance >= 0 else "#FF5555"
-    st.markdown(f'<div class="money-box" style="color:{col_bal}">📊 ສົມດຸນ<br>{format_num(balance)}</div>', unsafe_allow_html=True)
+    c_bal = "#00FFAA" if bal >= 0 else "#FF5555"
+    st.markdown(f'<div class="money-box" style="color:{c_bal}">📊 ສົມດຸນ<br>{format_num(bal)}</div>', unsafe_allow_html=True)
 
-# ປະຫວັດ (ຊ້ອນໄວ້ໃນ Expander)
+# ປະຫວັດ (ຊ້ອນໄວ້)
 if os.path.exists(FILE_NAME):
     with st.expander("📜 ປະຫວັດ"):
         df = pd.read_csv(FILE_NAME)
