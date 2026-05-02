@@ -3,117 +3,109 @@ import pandas as pd
 import os
 from datetime import datetime
 
-# --- 1. ຕັ້ງຄ່າເວັບໄຊ ---
-st.set_page_config(page_title="Phonsouk Smart AI", page_icon="🏦", layout="wide")
-FILE_NAME = 'phonsouk_final_database_v2.csv'
+# --- 1. ຕັ້ງຄ່າໜ້າຈໍ ---
+st.set_page_config(page_title="Phonsouk Super Smart AI", page_icon="💰", layout="wide")
+FILE_NAME = 'phonsouk_final_database_v3.csv'
 
+# Style ຕົບແຕ່ງ (ປັບໃຫ້ກ່ອງຕົວເລກເຫັນແຈ້ງຂຶ້ນ)
 st.markdown("""
     <style>
     .money-box { 
         background-color: #002B36; color: #00FFAA; padding: 15px; border-radius: 12px; 
-        font-size: 30px; font-weight: bold; text-align: right; border: 2px solid #268BD2; margin-bottom: 20px;
+        font-size: 28px; font-weight: bold; text-align: right; border: 2px solid #268BD2; margin-bottom: 20px;
     }
     .ai-card { 
-        background-color: #f8f9fa; padding: 25px; border-radius: 15px; border-left: 10px solid #268BD2; 
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05); color: #1B4F72; line-height: 1.6;
+        background-color: #ffffff; padding: 25px; border-radius: 20px; border-left: 15px solid #268BD2; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1); color: #1B4F72; margin-top: 20px; font-size: 18px;
     }
-    .stNumberInput input { font-size: 22px !important; font-weight: bold; }
+    .stNumberInput input { font-size: 20px !important; }
     </style>
     <div style="background-color:#1B4F72; padding:20px; border-radius:15px; text-align:center; color:white; margin-bottom:25px;">
-        <h1 style="margin:0;">🏦 ລະບົບ AI ທີ່ປຶກສາການເງິນ ປ້າພອນສຸກ</h1>
-        <p style="margin:5px 0 0 0; opacity:0.9;">Professional Financial & Business Advisor</p>
+        <h1 style="margin:0;">🏦 ລະບົບ AI ທີ່ປຶກສາການເງິນສະຫຼາດສຸດ (ປ້າພອນສຸກ)</h1>
     </div>
     """, unsafe_allow_html=True)
 
-# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ເນັ້ນຄວາມງ່າຍ ແລະ ຈຸດຕົວເລກ) ---
-st.write("### 📝 ບັນທຶກລາຍຮັບ - ລາຍຈ່າຍ")
+# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ເພີ່ມລາຍການຕາມສັ່ງ) ---
+st.write("### 📝 ບັນທຶກລາຍຮັບ ແລະ ລາຍຈ່າຍ")
 
-# ໃຊ້ Form ເພື່ອໃຫ້ລ້າງຂໍ້ມູນໄດ້ 100% ຫຼັງກົດ Save
-with st.form("smart_form", clear_on_submit=True):
-    c1, c2 = st.columns(2)
+with st.form("super_form", clear_on_submit=True):
+    col1, col2 = st.columns(2)
     
-    with c1:
-        st.markdown("### 🟢 ລາຍຮັບ (Income)")
-        i1 = st.number_input("ເງິນເດືອນ", min_value=0, step=100000); st.markdown(f'<div class="money-box">{i1:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        i2 = st.number_input("ລາຍຮັບ Creator (FB/YouTube)", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i2:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        i3 = st.number_input("ວຽກຕັດຫຍິບ & ສ້ອມແປງ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i3:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    with col1:
+        st.markdown("### 🟢 ສ່ວນລາຍຮັບ (6 ລາຍການ)")
+        i1 = st.number_input("1. ເງິນເດືອນ", min_value=0, step=100000); st.markdown(f'<div class="money-box">{i1:,.0f}</div>', unsafe_allow_html=True)
+        i2 = st.number_input("2. ລາຍຮັບ Creator (FB/YouTube)", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i2:,.0f}</div>', unsafe_allow_html=True)
+        i3 = st.number_input("3. ຂາຍຂອງຍ່ອຍ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i3:,.0f}</div>', unsafe_allow_html=True)
+        i4 = st.number_input("4. ຮັບຕັດຫຍິບ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i4:,.0f}</div>', unsafe_allow_html=True)
+        i5 = st.number_input("5. ຕູ້ກົດນ້ຳ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i5:,.0f}</div>', unsafe_allow_html=True)
+        i6 = st.number_input("6. ຕູ້ຊັກຜ້າ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i6:,.0f}</div>', unsafe_allow_html=True)
 
-    with c2:
-        st.markdown("### 🔴 ລາຍຈ່າຍ (Expense)")
-        e1 = st.number_input("ຄ່າອາຫານ & ຂອງໃຊ້", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e1:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        e2 = st.number_input("ຜ່ອນໜີ້ / ຄ່າງວດ", min_value=0, step=50000); st.markdown(f'<div class="money-box">{e2:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        e3 = st.number_input("ຕົ້ນທຶນຊື້ເຄື່ອງເຂົ້າຮ້ານ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e3:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    with col2:
+        st.markdown("### 🔴 ສ່ວນລາຍຈ່າຍ (10 ລາຍການ)")
+        e1 = st.number_input("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e1:,.0f}</div>', unsafe_allow_html=True)
+        e2 = st.number_input("2. ຄ່າເຊົ່າທີ່ຢູ່ (ຖ້າບໍ່ມີເຮືອນ)", min_value=0, step=50000); st.markdown(f'<div class="money-box">{e2:,.0f}</div>', unsafe_allow_html=True)
+        e3 = st.number_input("3. ຄ່າໄຟຟ້າ-ນໍ້າ-ເນັດ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e3:,.0f}</div>', unsafe_allow_html=True)
+        e4 = st.number_input("4. ຄ່າເດີນທາງ (ນໍ້າມັນ/ລົດຈ້າງ)", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e4:,.0f}</div>', unsafe_allow_html=True)
+        e5 = st.number_input("5. ຄ່າການສຶກສາລູກ", min_value=0, step=50000); st.markdown(f'<div class="money-box">{e5:,.0f}</div>', unsafe_allow_html=True)
+        e6 = st.number_input("6. ຄ່າປິ່ນປົວ/ຢາພະຍາດ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e6:,.0f}</div>', unsafe_allow_html=True)
+        e7 = st.number_input("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້ສ່ວນຕົວ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e7:,.0f}</div>', unsafe_allow_html=True)
+        e8 = st.number_input("8. ຄ່າໂທລະສັບ & ບັນເທີງ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e8:,.0f}</div>', unsafe_allow_html=True)
+        e9 = st.number_input("9. ຄ່າຫວຍລາຍມື", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e9:,.0f}</div>', unsafe_allow_html=True)
+        e10 = st.number_input("10. ຄ່າສີນຄ້າສ້າງເຮືອນ", min_value=0, step=100000); st.markdown(f'<div class="money-box">{e10:,.0f}</div>', unsafe_allow_html=True)
 
-    submit = st.form_submit_button("💾 ບັນທຶກຂໍ້ມູນ ແລະ ວິເຄາະທັນທີ", use_container_width=True)
+    submit = st.form_submit_button("💾 ບັນທຶກ ແລະ ລ້າງຄ່າທັງໝົດ", use_container_width=True)
 
     if submit:
         now = datetime.now()
-        total_in = i1 + i2 + i3
-        total_ex = e1 + e2 + e3
+        t_in = i1+i2+i3+i4+i5+i6
+        t_ex = e1+e2+e3+e4+e5+e6+e7+e8+e9+e10
         new_data = {
-            'ວັນທີ_ເວລາ': now.strftime("%d/%m/%Y %H:%M"),
-            'Date': now.strftime("%Y-%m-%d"), 'Month': now.strftime("%m-%Y"),
-            'Income': total_in, 'Expense': total_ex, 'Profit': total_in - total_ex,
-            'Sewing': i3, 'Debt': e2, 'Creator': i2, 'Food': e1
+            'ວັນທີ': now.strftime("%d/%m/%Y %H:%M"),
+            'ລາຍຮັບລວມ': t_in, 'ລາຍຈ່າຍລວມ': t_ex, 'ເຫຼືອເກັບ': t_in - t_ex,
+            'ເງິນເດືອນ': i1, 'Creator': i2, 'ຂາຍຂອງ': i3, 'ຫຍິບຜ້າ': i4, 'ຕູ້້ກົດນ້ຳ': i5, 'ຕູ້ຊັກຜ້າ': i6,
+            'ອາຫານ': e1, 'ຄ່າເຊົ່າ': e2, 'ນ້ຳໄຟ': e3, 'ເດີນທາງ': e4, 'ການສຶກສາ': e5, 'ຢາ': e6, 'ເສື້ອຜ້າ': e7, 'ບັນເທີງ': e8, 'ຫວຍ': e9, 'ສ້າງເຮືອນ': e10
         }
         pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME))
-        st.balloons()
+        st.success("✅ ບັນທຶກສຳເລັດແລ້ວ ປ້າພອນສຸກ!")
         st.rerun()
 
-# --- 3. ສ່ວນສະແດງຜົນ ແລະ AI Advisor ມືອາຊີບ ---
+# --- 3. ສ່ວນ AI ວິເຄາະ (Professional Analysis) ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
     st.markdown("---")
+    st.header("💡 ບົດວິເຄາະອັດສະລິຍະ ຈາກ AI")
     
-    # ບົດສະຫຼຸບຕົວເລກ
-    t_in, t_ex = df['Income'].sum(), df['Expense'].sum()
-    profit = t_in - t_ex
+    total_in = df['ລາຍຮັບລວມ'].sum()
+    total_ex = df['ລາຍຈ່າຍລວມ'].sum()
+    profit = total_in - total_ex
     
-    col_a, col_b, col_c = st.columns(3)
-    col_a.metric("ລາຍຮັບທັງໝົດ", f"{t_in:,.0f} ກີບ")
-    col_b.metric("ລາຍຈ່າຍທັງໝົດ", f"{t_ex:,.0f} ກີບ")
-    col_c.metric("ກຳໄລສຸດທິ", f"{profit:,.0f} ກີບ", delta=f"{profit:,.0f}")
+    c1, c2, c3 = st.columns(3)
+    c1.metric("ລາຍຮັບສະສົມ", f"{total_in:,.0f} ກີບ")
+    c2.metric("ລາຍຈ່າຍສະສົມ", f"{total_ex:,.0f} ກີບ")
+    c3.metric("ເງິນເຫຼືອທັງໝົດ", f"{profit:,.0f} ກີບ", delta=f"{profit:,.0f}")
 
-    # AI Professional Insight (ແກ້ໄຂໃຫ້ອ່ານງ່າຍ ບໍ່ມີ Code ປົນ)
-    st.markdown('<div class="ai-card">', unsafe_allow_html=True)
-    st.subheader("💡 AI Professional Advisor Insights")
-    
-    # ວິເຄາະ 1: ກະແສເງິນ
-    if profit > 0:
-        st.write(f"✅ **ການເງິນດີ:** ປ້າມີເງິນເຫຼືອເກັບ **{profit:,.0f} ກີບ**. ຫຼານແນະນຳໃຫ້ແບ່ງ 20% ໄປທ້ອນເພື່ອໄວ້ໃຊ້ຍາມສຸກເສີນ ແລະ ອີກ 10% ແມ່ນເອົາໄວ້ພັດທະນາຮ້ານຫຍິບຜ້າ.")
-    else:
-        st.write("⚠️ **ຄຳເຕືອນ:** ລາຍຈ່າຍຕອນນີ້ສູງກວ່າລາຍຮັບ. ປ້າຄວນກວດສອບຄ່າອາຫານ ຫຼື ຄ່າໃຊ້ຈ່າຍຟຸມເຟືອຍອື່ນໆ.")
+    st.markdown(f"""
+    <div class="ai-card">
+        <h3>🔍 AI Advisor Insights (ບົດສະຫຼຸບ):</h3>
+        <ul>
+            <li><b>ພາບລວມ:</b> ປ້າມີລາຍຮັບຫຼັກຈາກຫຼາຍທາງ. ສ່ວນທີ່ໂດດເດັ່ນແມ່ນລາຍຮັບ Passive ຈາກ <b>ຕູ້ກົດນ້ຳ ແລະ ຕູ້ຊັກຜ້າ</b> (ລວມ {df['ຕູ້້ກົດນ້ຳ'].sum() + df['ຕູ້ຊັກຜ້າ'].sum():,.0f} ກີບ).</li>
+            <li><b>ດ້ານລາຍຈ່າຍ:</b> ຄ່າໃຊ້ຈ່າຍທີ່ໃຫຍ່ທີ່ສຸດຄື <b>ຄ່າສ້າງເຮືອນ</b> ({df['ສ້າງເຮືອນ'].sum():,.0f} ກີບ). ນີ້ຄືການລົງທຶນໃນຊັບສິນ, ແຕ່ຕ້ອງລະວັງບໍ່ໃຫ້ກະທົບເງິນໝູນວຽນລາຍວັນ.</li>
+            <li><b>ຄຳແນະນຳ:</b> ປ້າຄວນແບ່ງລາຍຮັບຈາກ <b>Creator ແລະ ຫຍິບຜ້າ</b> ໄວ້ເປັນເງິນທ້ອນສຸກເສີນ ຢ່າງໜ້ອຍ 10% ເພື່ອຮອງຮັບຄ່າຢາພະຍາດໃນອະນາຄົດ.</li>
+            <li><b>ໂອກາດ:</b> ວຽກຕັດຫຍິບຍັງສ້າງລາຍໄດ້ດີ. ປ້າລອງເຮັດຄລິບ Creator ກ່ຽວກັບການຕັດຫຍິບ ເພື່ອດຶງດູດລູກຄ້າສອງທາງພ້ອມກັນ!</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
-    # ວິເຄາະ 2: ທຸລະກິດ
-    sewing_total = df['Sewing'].sum()
-    st.write(f"🧵 **ດ້ານທຸລະກິດ:** ວຽກຕັດຫຍິບສ້າງລາຍໄດ້ໃຫ້ປ້າແລ້ວ **{sewing_total:,.0f} ກີບ**. ນີ້ຄືອາຊີບທີ່ໝັ້ນຄົງ ຄວນຮັກສາຄຸນນະພາບເພື່ອໃຫ້ລູກຄ້າບອກຕໍ່.")
+    # ຕະລາງ Excel
+    st.write("### 📅 ປະຫວັດການເງິນ (Excel)")
+    st.dataframe(df.tail(10), use_container_width=True)
 
-    # ວິເຄາະ 3: ໜີ້ສິນ
-    debt_total = df['Debt'].sum()
-    debt_ratio = (debt_total / t_in * 100) if t_in > 0 else 0
-    st.write(f"💳 **ພາລະໜີ້ສິນ:** ປ້າຈ່າຍຄ່າງວດໄປແລ້ວ **{debt_total:,.0f} ກີບ** (ຄິດເປັນ {debt_ratio:.1f}% ຂອງລາຍຮັບ). ພະຍາຍາມຄຸມບໍ່ໃຫ້ເກີນ 40% ຈະເຮັດໃຫ້ປ້າບໍ່ເຄັ່ງຄຽດ.")
-
-    # ວິເຄາະ 4: ຊ່ອງທາງເພີ່ມລາຍໄດ້
-    st.write(f"🚀 **ຊ່ອງທາງລວຍ:** ລາຍໄດ້ຈາກ Creator (**{df['Creator'].sum():,.0f} ກີບ**) ມີໂອກາດເຕີບໂຕ. ປ້າລອງເຮັດຄລິບ 'ເຄັດລັບການເລືອກຜ້າ' ຫຼື 'ວິທີແປງໂສ້ງແບບງ່າຍໆ' ຈະຊ່ວຍດຶງຄົນເຂົ້າເບິ່ງຫຼາຍຂຶ້ນ!")
-    
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # ຕະລາງປະຫວັດ
-    st.write("### 📅 ປະຫວັດການບັນທຶກ (Excel)")
-    display_df = df.copy()
-    for col in ['Income', 'Expense', 'Profit']:
-        display_df[col] = display_df[col].apply(lambda x: f"{x:,.0f}")
-    st.dataframe(display_df[['ວັນທີ_ເວລາ', 'Income', 'Expense', 'Profit']].tail(10), use_container_width=True)
-
-    # --- 4. ປຸ່ມລົບຂໍ້ມູນ (ໃສ່ລະຫັດຜ່ານ 9999) ---
-    st.markdown("---")
-    with st.expander("🛠️ ຕັ້ງຄ່າຂັ້ນສູງ (ລົບຂໍ້ມູນ)"):
-        st.warning("⚠️ ຄຳເຕືອນ: ການລົບຂໍ້ມູນຈະບໍ່ສາມາດກູ້ຄືນໄດ້.")
-        pwd = st.text_input("ໃສ່ລະຫັດຜ່ານ 9999 ເພື່ອຢືນຢັນການລົບ:", type="password")
-        if st.button("🗑️ ຢືນຢັນລ້າງຂໍ້ມູນທັງໝົດ"):
+    # --- ປຸ່ມລົບ (Password Lock) ---
+    with st.expander("🛠️ ລ້າງຂໍ້ມູນທັງໝົດ"):
+        pwd = st.text_input("ໃສ່ລະຫັດ 9999 ເພື່ອລົບ:", type="password")
+        if st.button("🗑️ ຢືນຢັນລົບ"):
             if pwd == "9999":
-                if os.path.exists(FILE_NAME): os.remove(FILE_NAME)
-                st.success("ລົບຂໍ້ມູນແລ້ວ!")
+                os.remove(FILE_NAME)
                 st.rerun()
             else:
-                st.error("ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ!")
+                st.error("ລະຫັດບໍ່ຖືກ!")
