@@ -25,10 +25,10 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ຈັດລະບຽບໃໝ່ໃຫ້ມີຈຸດ ແລະ ຕົວເລກປ່ຽນຕາມມື) ---
-st.write("### 📝 ບັນທຶກລາຍຮັບ ແລະ ລາຍຈ່າຍ")
+# 2. ສ່ວນຟອມປ້ອນຂໍ້ມູນ (ແຍກບັນທັດເປະໆ ເພື່ອໃຫ້ຕົວເລກປ່ຽນທັນທີ)
+st.write("### 📝 ກະລຸນາປ້ອນຂໍ້ມູນລຸ່ມນີ້")
 
-with st.form("super_form", clear_on_submit=True):
+with st.form("main_form", clear_on_submit=True):
     col1, col2 = st.columns(2)
     
     with col1:
@@ -58,13 +58,13 @@ with st.form("super_form", clear_on_submit=True):
         e1 = st.number_input("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{e1:,.0f}</div>', unsafe_allow_html=True)
         
-        e2 = st.number_input("2. ຄ່າເຊົ່າທີ່ຢູ່ (ຖ້າມີ)", min_value=0, step=50000)
+        e2 = st.number_input("2. ຄ່າເຊົ່າທີ່ຢູ່", min_value=0, step=50000)
         st.markdown(f'<div class="money-box">{e2:,.0f}</div>', unsafe_allow_html=True)
         
         e3 = st.number_input("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{e3:,.0f}</div>', unsafe_allow_html=True)
         
-        e4 = st.number_input("4. ຄ່າເດີນທາງ (ນ້ຳມັນ/ລົດຈ້າງ)", min_value=0, step=10000)
+        e4 = st.number_input("4. ຄ່າເດີນທາງ", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{e4:,.0f}</div>', unsafe_allow_html=True)
         
         e5 = st.number_input("5. ຄ່າການສຶກສາ", min_value=0, step=50000)
@@ -85,7 +85,18 @@ with st.form("super_form", clear_on_submit=True):
         e10 = st.number_input("10. ຄ່າສິນເຊື່ອ/ສ້າງເຮືອນ", min_value=0, step=100000)
         st.markdown(f'<div class="money-box">{e10:,.0f}</div>', unsafe_allow_html=True)
 
-    submit = st.form_submit_button("💾 ບັນທຶກ ແລະ ລ້າງຄ່າທັງໝົດ", use_container_width=True)
+    submit = st.form_submit_button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True)
+
+# 3. ສ່ວນການຈັດການຂໍ້ມູນຫຼັງກົດປຸ່ມ
+if submit:
+    total_income = i1 + i2 + i3 + i4 + i5 + i6
+    total_expense = e1 + e2 + e3 + e4 + e5 + e6 + e7 + e8 + e9 + e10
+    balance = total_income - total_expense
+    
+    st.success("✅ ບັນທຶກສຳເລັດແລ້ວ!")
+    st.metric("ລາຍຮັບທັງໝົດ", f"{total_income:,.0f} ກີບ")
+    st.metric("ລາຍຈ່າຍທັງໝົດ", f"{total_expense:,.0f} ກີບ")
+    st.metric("ເງິນຄົງເຫຼືອ", f"{balance:,.0f} ກີບ")
 
 if submit:
         # ບວກ 7 ຊົ່ວໂມງເຂົ້າໄປຕົງໆເລີຍ ເພື່ອໃຫ້ເປັນເວລາລາວ
