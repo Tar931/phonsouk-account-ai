@@ -42,30 +42,31 @@ def input_box(label, key):
         st.rerun()
     return new_val
 
-with st.form("f"):
-    col1, col2 = st.columns(2)
-    with col1:
-        st.write("### 🟢 ລາຍຮັບ")
-        i1 = input_box("1. ເງິນເດືອນ", "i1")
-        i2 = input_box("2. ລາຍຮັບ Creator (FB/YouTube)", "i2")
-        i3 = input_box("3. ຂາຍຂອງຍ່ອຍ", "i3")
-        i4 = input_box("4. ຮັບຕັດຫຍິບ", "i4")
-        i5 = input_box("5. ຕູ້ກົດນ້ຳ", "i5")
-        i6 = input_box("6. ຕູ້ຊັກຜ້າ", "i6")
-    with col2:
-        st.write("### 🔴 ລາຍຈ່າຍ")
-        e1 = input_box("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", "e1")
-        e2 = input_box("2. ຄ່າເຊົ່າທີ່ຢູ່", "e2")
-        e3 = input_box("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", "e3")
-        e4 = input_box("4. ຄ່າເດີນທາງ", "e4")
-        e5 = input_box("5. ຄ່າການສຶກສາ", "e5")
-        e6 = input_box("6. ຄ່າປິ່ນປົວ", "e6")
-        e7 = input_box("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", "e7")
-        e8 = input_box("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
-        e9 = input_box("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
-        e10 = input_box("10. ຄ່າສ້າງເຮືອນ", "e10")
-    if st.form_submit_button("💾 ບັນທຶກ", use_container_width=True):
-        st.success("ບັນທຶກແລ້ວ")
+col1, col2 = st.columns(2)
+with col1:
+    st.success("### 🟢 ສ່ວນລາຍຮັບ")
+    i1 = input_box("1. ເງິນເດືອນ", "i1")
+    i2 = input_box("2. ລາຍຮັບ Creator (FB/YouTube)", "i2")
+    i3 = input_box("3. ຂາຍຂອງຍ່ອຍ", "i3")
+    i4 = input_box("4. ຮັບຕັດຫຍິບ", "i4")
+    i5 = input_box("5. ຕູ້ກົດນ້ຳ", "i5")
+    i6 = input_box("6. ຕູ້ຊັກຜ້າ", "i6")
+
+with col2:
+    st.error("### 🔴 ສ່ວນລາຍຈ່າຍ")
+    e1 = input_box("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", "e1")
+    e2 = input_box("2. ຄ່າເຊົ່າທີ່ຢູ່", "e2")
+    e3 = input_box("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", "e3")
+    e4 = input_box("4. ຄ່າເດີນທາງ", "e4")
+    e5 = input_box("5. ຄ່າການສຶກສາ", "e5")
+    e6 = input_box("6. ຄ່າປິ່ນປົວ", "e6")
+    e7 = input_box("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", "e7")
+    e8 = input_box("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
+    e9 = input_box("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
+    e10 = input_box("10. ຄ່າສ້າງເຮືອນ", "e10")
+
+if st.button("💾 ບັນທຶກ", use_container_width=True):
+    st.success("ບັນທຶກແລ້ວ")
 
 if submit:
         # ບວກ 7 ຊົ່ວໂມງເຂົ້າໄປຕົງໆເລີຍ ເພື່ອໃຫ້ເປັນເວລາລາວ
