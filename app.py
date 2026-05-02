@@ -27,9 +27,8 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ແກ້ໄຂໃຫ້ໂຊຈຸດຕົວເລກທັນທີທີ່ພິມ) ---
+# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ຄືເກົ່າ ໂຊຈຸດທັນທີ) ---
 st.write("### 📝 ປ້ອນຂໍ້ມູນລາຍວັນ")
-
 c1, c2 = st.columns(2)
 
 with c1:
@@ -54,27 +53,28 @@ with c2:
     e9 = st.number_input("ຜ່ອນໜີ້/ລົດ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e9:,.0f} ກີບ</div>', unsafe_allow_html=True)
     e10 = st.number_input("ຊື້ເຄື່ອງເຂົ້າຮ້ານ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e10:,.0f} ກີບ</div>', unsafe_allow_html=True)
 
-# ປຸ່ມບັນທຶກແຍກຕ່າງຫາກ
 if st.button("🚀 ບັນທຶກຂໍ້ມູນ ແລະ ໃຫ້ AI ວິເຄາະ", use_container_width=True):
     now = datetime.now()
     total_in = i1+i2+i3+i4+i5+i6
     total_ex = e1+e2+e3+e4+e5+e6+e7+e8+e9+e10
     new_entry = {
+        'Timestamp': now.strftime("%Y-%m-%d %H:%M:%S"), # ເພີ່ມເວລາ ຊົ່ວໂມງ:ນາທີ:ວິນາທີ
         'Date': now.strftime("%Y-%m-%d"), 'Week': now.isocalendar()[1], 'Month': now.strftime("%m-%Y"), 'Year': str(now.year),
         'Income': total_in, 'Expense': total_ex, 'Profit': total_in - total_ex,
         'Food': e1, 'Bills': e3, 'Debt': e9, 'Sewing': i4, 'Creator': i2
     }
     pd.DataFrame([new_entry]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME))
-    st.success("ບັນທຶກສຳເລັດແລ້ວ!")
+    st.success(f"ບັນທຶກສຳເລັດເມື່ອເວລາ: {now.strftime('%H:%M:%S')}")
     st.balloons()
     st.rerun()
 
-# --- 3. ສ່ວນ AI ວິເຄາະ (ຮັກສາໄວ້ຄືເກົ່າ 100% ຕາມຄຳສັ່ງປ້າ) ---
+# --- 3. ສ່ວນ AI ວິເຄາະ ແລະ ຕະລາງ Excel (ຄືເກົ່າ 100%) ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
     st.markdown("---")
-    period = st.radio("📊 ເລືອກໄລຍະເວລາລາຍງານ:", ["ມື້ນີ້", "ລາຍອາທິດ", "ລາຍເດືອນ", "ລາຍປີ"], horizontal=True)
     
+    # ສ່ວນ AI Advisor
+    period = st.radio("📊 ເລືອກໄລຍະເວລາລາຍງານ:", ["ມື້ນີ້", "ລາຍອາທິດ", "ລາຍເດືອນ", "ລາຍປີ"], horizontal=True)
     now = datetime.now()
     if period == "ມື້ນີ້": data = df[df['Date'] == now.strftime("%Y-%m-%d")]; t = "ມື້ນີ້"
     elif period == "ລາຍອາທິດ": data = df[df['Week'] == now.isocalendar()[1]]; t = "ອາທິດນີ້"
@@ -90,7 +90,12 @@ if os.path.exists(FILE_NAME):
 
         st.markdown(f'<div class="ai-report"><h3>💡 AI Advisor ວິເຄາະ{t}:</h3>', unsafe_allow_html=True)
         food_sum = data['Food'].sum()
-        if food_sum > 0: st.write(f"📌 **ຊ່ອງທາງປະຢັດ:** {t} ປ້າຈ່າຍຄ່າອາຫານ {food_sum:,.0f} ກີບ. AI ແນະນຳໃຫ້ຄຸມງົບສ່ວນນີ້ໃຫ້ດີ.")
+        if food_sum > 0: st.write(f"📌 **ຊ່ອງທາງປະຢັດ:** {t} ປ້າຈ່າຍຄ່າອາຫານ {food_sum:,.0f} ກີບ.")
         sewing_sum = data['Sewing'].sum()
-        if sewing_sum > 0: st.write(f"🚀 **ແຜນອາຊີບ:** ລາຍໄດ້ຫຍິບຜ້າ {sewing_sum:,.0f} ກີບ. ປ້າເຮັດ Content Creator ສອນຫຍິບຜ້າມາແຮງແນ່ນອນ!")
+        if sewing_sum > 0: st.write(f"🚀 **ແຜນອາຊີບ:** ລາຍໄດ້ຫຍິບຜ້າ {sewing_sum:,.0f} ກີບ. ສຸດຍອດເລີຍປ້າ!")
         st.markdown('</div>', unsafe_allow_html=True)
+
+    # --- ເພີ່ມຕະລາງ Excel ໂຊປະຫວັດ ---
+    st.markdown("### 📅 ຕະລາງປະຫວັດການບັນທຶກ (Excel)")
+    st.dataframe(df[['Timestamp', 'Income', 'Expense', 'Profit']].tail(10), use_container_width=True)
+    st.write("*(ໂຊ 10 ລາຍການຫຼ້າສຸດ, ມີບອກທັງວັນທີ ແລະ ຊົ່ວໂມງທີ່ປ້າກົດບັນທຶກ)*")
