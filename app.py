@@ -28,7 +28,7 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ແກ້ໄຂໃຫ້ເຊື່ອມຕໍ່ຈຸດຕົວເລກແລ້ວ) ---
+# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ໃຊ້ AI ໂຕເກົ່າ ແຕ່ແກ້ໃຫ້ໂຊຈຸດຕົວເລກ) ---
 with st.form("main_form"):
     c1, c2 = st.columns(2)
     with c1:
@@ -87,7 +87,7 @@ if os.path.exists(FILE_NAME):
 
         st.markdown(f'<div class="ai-report"><h3>💡 AI Advisor ວິເຄາະ{t}:</h3>', unsafe_allow_html=True)
         food_sum = data['Food'].sum()
-        if food_sum > 0: st.write(f"📌 **ຊ່ອງທາງປະຢັດ:** ປ້າຈ່າຍຄ່າອາຫານ {food_sum:,.0f} ກີບ. ລອງເບິ່ງວ່າຫຼຸດບ່ອນໃດໄດ້ແດ່ເດີ້.")
+        if food_sum > 0: st.write(f"📌 **ຊ່ອງທາງປະຢັດ:** {t} ປ້າຈ່າຍຄ່າອາຫານ {food_sum:,.0f} ກີບ. AI ແນະນຳໃຫ້ຄຸມງົບສ່ວນນີ້ໃຫ້ດີ.")
         sewing_sum = data['Sewing'].sum()
         if sewing_sum > 0: st.write(f"🚀 **ແຜນອາຊີບ:** ລາຍໄດ້ຫຍິບຜ້າ {sewing_sum:,.0f} ກີບ. ປ້າເຮັດ Content Creator ສອນຫຍິບຜ້າມາແຮງແນ່ນອນ!")
         st.markdown('</div>', unsafe_allow_html=True)
