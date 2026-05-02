@@ -27,41 +27,65 @@ st.markdown("""
 
 import streamlit as st
 
-# --- 1. ສູດລັບເຮັດໃຫ້ຕົວເລກມີຈຸດ (Format Function) ---
-def format_money(value):
-    if not value: return "0"
-    # ລຶບຈຸດ ແລະ ຕົວອັກສອນທີ່ບໍ່ແມ່ນເລກອອກກ່ອນ
-    clean = "".join(filter(str.isdigit, str(value)))
-    if clean == "": return "0"
-    # ແປງເປັນຕົວເລກແລ້ວໃສ່ຈຸດຄືນ
-    return "{:,}".format(int(clean))
-# --- 2. ສ່ວນຟອມ (6 ລາຍຮັບ + 10 ລາຍຈ່າຍ) ---
-with st.form("my_account_form"):
+# --- 1. ສູດລັບໃສ່ຈຸດອັດຕະໂນມັດ (Real-time Format) ---
+def format_with_commas(value):
+    # ລຶບທຸກຢ່າງທີ່ບໍ່ແມ່ນເລກ
+    clean_num = "".join(filter(str.isdigit, str(value)))
+    if not clean_num: return ""
+    # ໃສ່ຈຸດຄືນ
+    return "{:,}".format(int(clean_num))
+
+st.set_page_config(page_title="App ປ້າ - ໃສ່ຈຸດໃຫ້ເລີຍ", layout="wide")
+
+# --- 2. ຟັງຊັນສ້າງຊ່ອງປ້ອນຂໍ້ມູນແບບມີຈຸດ ---
+def money_input(label, key):
+    # ດຶງຄ່າເກົ່າອອກມາ (ຖ້າມີ)
+    current_val = st.session_state.get(key, "0")
+    
+    # ສ້າງຊ່ອງພິມ
+    val = st.text_input(label, value=current_val, key=f"input_{key}")
+    
+    # ຖ້າປ້າພິມ ແລ້ວມັນຍັງບໍ່ມີຈຸດ ໃຫ້ມັນໃສ່ຈຸດໃຫ້ທັນທີ
+    formatted = format_with_commas(val)
+    if formatted != val:
+        st.session_state[key] = formatted
+        st.rerun() # ສັ່ງໃຫ້ໜ້າຈໍ Refresh ຕົວເອງເພື່ອໂຊຈຸດ
+    
+    return formatted
+
+st.title("💰 ລະບົບປ້ອນເລກແບບມີຈຸດ (ປ່ຽນໃຫ້ທັນທີ)")
+st.info("ປ້າພິມເລກລົງໄປເລີຍ ພໍປ້າກົດ Enter ຫຼື ກົດບ່ອນອື່ນ ມັນຈະໃສ່ຈຸດໃຫ້ທັນທີ!")
+
+# --- 3. ສ່ວນການຈັດວາງ (6 ລາຍຮັບ + 10 ລາຍຈ່າຍ) ---
+with st.container():
     col1, col2 = st.columns(2)
     
     with col1:
-        st.success("### 🟢 ລາຍຮັບ")
-        i1 = st.text_input("1. ເງິນເດືອນ", value="0", key="i1")
-        i2 = st.text_input("2. ລາຍຮັບ Creator (FB/YouTube)", value="0", key="i2")
-        i3 = st.text_input("3. ຂາຍຂອງຍ່ອຍ", value="0", key="i3")
-        i4 = st.text_input("4. ຮັບຕັດຫຍິບ", value="0", key="i4")
-        i5 = st.text_input("5. ຕູ້ກົດນ້ຳ", value="0", key="i5")
-        i6 = st.text_input("6. ຕູ້ຊັກຜ້າ", value="0", key="i6")
+        st.success("### 🟢 ສ່ວນລາຍຮັບ")
+        i1 = money_input("1. ເງິນເດືອນ", "i1")
+        i2 = money_input("2. ລາຍຮັບ Creator (FB/YouTube)", "i2")
+        i3 = money_input("3. ຂາຍຂອງຍ່ອຍ", "i3")
+        i4 = money_input("4. ຮັບຕັດຫຍິບ", "i4")
+        i5 = money_input("5. ຕູ້ກົດນ້ຳ", "i5")
+        i6 = money_input("6. ຕູ້ຊັກຜ້າ", "i6")
 
     with col2:
-        st.error("### 🔴 ລາຍຈ່າຍ")
-        e1 = st.text_input("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", value="0", key="e1")
-        e2 = st.text_input("2. ຄ່າເຊົ່າທີ່ຢູ່", value="0", key="e2")
-        e3 = st.text_input("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", value="0", key="e3")
-        e4 = st.text_input("4. ຄ່າເດີນທາງ", value="0", key="e4")
-        e5 = st.text_input("5. ຄ່າການສຶກສາ", value="0", key="e5")
-        e6 = st.text_input("6. ຄ່າປິ່ນປົວ", value="0", key="e6")
-        e7 = st.text_input("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", value="0", key="e7")
-        e8 = st.text_input("8. ຄ່າໂທລະສັບ & ບັນເທີງ", value="0", key="e8")
-        e9 = st.text_input("9. ຄ່າຫວຍ/ລາງວັນ", value="0", key="e9")
-        e10 = st.text_input("10. ຄ່າສ້າງເຮືອນ", value="0", key="e10")
+        st.error("### 🔴 ສ່ວນລາຍຈ່າຍ")
+        e1 = money_input("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", "e1")
+        e2 = money_input("2. ຄ່າເຊົ່າທີ່ຢູ່", "e2")
+        e3 = money_input("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", "e3")
+        e4 = money_input("4. ຄ່າເດີນທາງ", "e4")
+        e5 = money_input("5. ຄ່າການສຶກສາ", "e5")
+        e6 = money_input("6. ຄ່າປິ່ນປົວ", "e6")
+        e7 = money_input("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", "e7")
+        e8 = money_input("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
+        e9 = money_input("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
+        e10 = money_input("10. ຄ່າສ້າງເຮືອນ", "e10")
 
-    submit = st.form_submit_button("💾 ບັນທຶກຂໍ້ມູນ", use_container_width=True)
+st.divider()
+if st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True):
+    st.balloons()
+    st.success("✅ ບັນທຶກຮຽບຮ້ອຍແລ້ວປ້າ!")
 
 # 3. ສ່ວນການຈັດການຂໍ້ມູນຫຼັງກົດປຸ່ມ
 if submit:
