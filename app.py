@@ -25,7 +25,6 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ຈັດລະບຽບໃໝ່ໃຫ້ມີຈຸດ ແລະ ບໍ່ Error) ---
 st.write("### 📝 ບັນທຶກລາຍຮັບ ແລະ ລາຍຈ່າຍ")
 
 with st.form("super_form", clear_on_submit=True):
@@ -33,56 +32,54 @@ with st.form("super_form", clear_on_submit=True):
     
     with col1:
         st.markdown("### 🟢 ສ່ວນລາຍຮັບ (6 ລາຍການ)")
-        
-        i1 = st.number_input("1. ເງິນເດືອນ", min_value=0, step=100000, key="inc1")
+        i1 = st.number_input("1. ເງິນເດືອນ", min_value=0, step=100000)
         st.markdown(f'<div class="money-box">{i1:,.0f}</div>', unsafe_allow_html=True)
         
-        i2 = st.number_input("2. ລາຍຮັບ Creator (FB/YouTube)", min_value=0, step=10000, key="inc2")
+        i2 = st.number_input("2. ລາຍຮັບ Creator (FB/YouTube)", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{i2:,.0f}</div>', unsafe_allow_html=True)
         
-        i3 = st.number_input("3. ຂາຍຂອງຍ່ອຍ", min_value=0, step=10000, key="inc3")
+        i3 = st.number_input("3. ຂາຍຂອງຍ່ອຍ", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{i3:,.0f}</div>', unsafe_allow_html=True)
         
-        i4 = st.number_input("4. ຮັບຕັດຫຍິບ", min_value=0, step=10000, key="inc4")
+        i4 = st.number_input("4. ຮັບຕັດຫຍິບ", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{i4:,.0f}</div>', unsafe_allow_html=True)
         
-        i5 = st.number_input("5. ຕູ້ກົດນ້ຳ", min_value=0, step=10000, key="inc5")
+        i5 = st.number_input("5. ຕູ້ກົດນ້ຳ", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{i5:,.0f}</div>', unsafe_allow_html=True)
         
-        i6 = st.number_input("6. ຕູ້ຊັກຜ້າ", min_value=0, step=10000, key="inc6")
+        i6 = st.number_input("6. ຕູ້ຊັກຜ້າ", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{i6:,.0f}</div>', unsafe_allow_html=True)
 
     with col2:
         st.markdown("### 🔴 ສ່ວນລາຍຈ່າຍ (10 ລາຍການ)")
-        
-        e1 = st.number_input("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", min_value=0, step=10000, key="exp1")
+        e1 = st.number_input("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{e1:,.0f}</div>', unsafe_allow_html=True)
         
-        e2 = st.number_input("2. ຄ່າເຊົ່າທີ່ຢູ່ (ຖ້າມີ)", min_value=0, step=50000, key="exp2")
+        e2 = st.number_input("2. ຄ່າເຊົ່າທີ່ຢູ່", min_value=0, step=50000)
         st.markdown(f'<div class="money-box">{e2:,.0f}</div>', unsafe_allow_html=True)
         
-        e3 = st.number_input("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", min_value=0, step=10000, key="exp3")
+        e3 = st.number_input("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{e3:,.0f}</div>', unsafe_allow_html=True)
         
-        e4 = st.number_input("4. ຄ່າເດີນທາງ (ນ້ຳມັນ/ລົດຈ້າງ)", min_value=0, step=10000, key="exp4")
+        e4 = st.number_input("4. ຄ່າເດີນທາງ", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{e4:,.0f}</div>', unsafe_allow_html=True)
         
-        e5 = st.number_input("5. ຄ່າການສຶກສາ", min_value=0, step=50000, key="exp5")
+        e5 = st.number_input("5. ຄ່າການສຶກສາ", min_value=0, step=50000)
         st.markdown(f'<div class="money-box">{e5:,.0f}</div>', unsafe_allow_html=True)
         
-        e6 = st.number_input("6. ຄ່າປິ່ນປົວ/ຢາພະຍາດ", min_value=0, step=10000, key="exp6")
+        e6 = st.number_input("6. ຄ່າປິ່ນປົວ", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{e6:,.0f}</div>', unsafe_allow_html=True)
         
-        e7 = st.number_input("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້ສ່ວນຕົວ", min_value=0, step=10000, key="exp7")
+        e7 = st.number_input("7. ຄ່າເສື້ອຜ້າ", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{e7:,.0f}</div>', unsafe_allow_html=True)
         
-        e8 = st.number_input("8. ຄ່າໂທລະສັບ & ບັນເທີງ", min_value=0, step=10000, key="exp8")
+        e8 = st.number_input("8. ຄ່າໂທລະສັບ", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{e8:,.0f}</div>', unsafe_allow_html=True)
         
-        e9 = st.number_input("9. ຄ່າຫວຍ/ລາງວັນ", min_value=0, step=10000, key="exp9")
+        e9 = st.number_input("9. ຄ່າຫວຍ", min_value=0, step=10000)
         st.markdown(f'<div class="money-box">{e9:,.0f}</div>', unsafe_allow_html=True)
         
-        e10 = st.number_input("10. ຄ່າສິນເຊື່ອ/ສ້າງເຮືອນ", min_value=0, step=100000, key="exp10")
+        e10 = st.number_input("10. ຄ່າສ້າງເຮືອນ", min_value=0, step=100000)
         st.markdown(f'<div class="money-box">{e10:,.0f}</div>', unsafe_allow_html=True)
 
     submit = st.form_submit_button("💾 ບັນທຶກ ແລະ ລ້າງຄ່າທັງໝົດ", use_container_width=True)
