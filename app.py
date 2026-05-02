@@ -35,74 +35,33 @@ def format_money(value):
     if clean == "": return "0"
     # ແປງເປັນຕົວເລກແລ້ວໃສ່ຈຸດຄືນ
     return "{:,}".format(int(clean))
-
-st.set_page_config(page_title="ບັນຊີຂອງປ້າ - ມີຈຸດ", layout="wide")
-
-st.write("# 💰 ລະບົບປ້ອນເລກແບບມີຈຸດ (Real-time)")
-st.info("💡 ເຄັດລັບ: ພິມຕົວເລກແລ້ວກົດ Enter ຫຼື ກົດບ່ອນວ່າງ ຕົວເລກຈະມີຈຸດຂຶ້ນມາທັນທີ!")
-
-with st.form("account_form"):
+# --- 2. ສ່ວນຟອມ (6 ລາຍຮັບ + 10 ລາຍຈ່າຍ) ---
+with st.form("my_account_form"):
     col1, col2 = st.columns(2)
     
     with col1:
-        st.success("### 🟢 ສ່ວນລາຍຮັບ")
-        # ໃຊ້ text_input ເພື່ອໃຫ້ພິມຈຸດໄດ້
-        i1 = st.text_input("1. ເງິນເດືອນ", value="0")
-        i1 = format_money(i1) # ສັ່ງໃຫ້ມັນໃສ່ຈຸດ
-        
-        i2 = st.text_input("2. ລາຍຮັບ Creator (FB/YouTube)", value="0")
-        i2 = format_money(i2)
-        
-        i3 = st.text_input("3. ຂາຍຂອງຍ່ອຍ", value="0")
-        i3 = format_money(i3)
-        
-        i4 = st.text_input("4. ຮັບຕັດຫຍິບ", value="0")
-        i4 = format_money(i4)
-        
-        i5 = st.text_input("5. ຕູ້ກົດນ້ຳ", value="0")
-        i5 = format_money(i5)
-        
-        i6 = st.text_input("6. ຕູ້ຊັກຜ້າ", value="0")
-        i6 = format_money(i6)
+        st.success("### 🟢 ລາຍຮັບ")
+        i1 = st.text_input("1. ເງິນເດືອນ", value="0", key="i1")
+        i2 = st.text_input("2. ລາຍຮັບ Creator (FB/YouTube)", value="0", key="i2")
+        i3 = st.text_input("3. ຂາຍຂອງຍ່ອຍ", value="0", key="i3")
+        i4 = st.text_input("4. ຮັບຕັດຫຍິບ", value="0", key="i4")
+        i5 = st.text_input("5. ຕູ້ກົດນ້ຳ", value="0", key="i5")
+        i6 = st.text_input("6. ຕູ້ຊັກຜ້າ", value="0", key="i6")
 
     with col2:
-        st.error("### 🔴 ສ່ວນລາຍຈ່າຍ")
-        e1 = st.text_input("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", value="0")
-        e1 = format_money(e1)
-        
-        e2 = st.text_input("2. ຄ່າເຊົ່າທີ່ຢູ່", value="0")
-        e2 = format_money(e2)
-        
-        e3 = st.text_input("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", value="0")
-        e3 = format_money(e3)
-        
-        e4 = st.text_input("4. ຄ່າເດີນທາງ", value="0")
-        e4 = format_money(e4)
-        
-        e5 = st.text_input("5. ຄ່າການສຶກສາ", value="0")
-        e5 = format_money(e5)
-        
-        e6 = st.text_input("6. ຄ່າປິ່ນປົວ", value="0")
-        e6 = format_money(e6)
-        
-        e7 = st.text_input("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", value="0")
-        e7 = format_money(e7)
-        
-        e8 = st.text_input("8. ຄ່າໂທລະສັບ & ບັນເທີງ", value="0")
-        e8 = format_money(e8)
-        
-        e9 = st.text_input("9. ຄ່າຫວຍ/ລາງວັນ", value="0")
-        e9 = format_money(e9)
-        
-        e10 = st.text_input("10. ຄ່າສ້າງເຮືອນ", value="0")
-        e10 = format_money(e10)
+        st.error("### 🔴 ລາຍຈ່າຍ")
+        e1 = st.text_input("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", value="0", key="e1")
+        e2 = st.text_input("2. ຄ່າເຊົ່າທີ່ຢູ່", value="0", key="e2")
+        e3 = st.text_input("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", value="0", key="e3")
+        e4 = st.text_input("4. ຄ່າເດີນທາງ", value="0", key="e4")
+        e5 = st.text_input("5. ຄ່າການສຶກສາ", value="0", key="e5")
+        e6 = st.text_input("6. ຄ່າປິ່ນປົວ", value="0", key="e6")
+        e7 = st.text_input("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", value="0", key="e7")
+        e8 = st.text_input("8. ຄ່າໂທລະສັບ & ບັນເທີງ", value="0", key="e8")
+        e9 = st.text_input("9. ຄ່າຫວຍ/ລາງວັນ", value="0", key="e9")
+        e10 = st.text_input("10. ຄ່າສ້າງເຮືອນ", value="0", key="e10")
 
-    # ປຸ່ມບັນທຶກ
-    submit = st.form_submit_button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True)
-
-if submit:
-    st.balloons()
-    st.success("✅ ບັນທຶກຂໍ້ມູນຮຽບຮ້ອຍແລ້ວ!")
+    submit = st.form_submit_button("💾 ບັນທຶກຂໍ້ມູນ", use_container_width=True)
 
 # 3. ສ່ວນການຈັດການຂໍ້ມູນຫຼັງກົດປຸ່ມ
 if submit:
