@@ -19,9 +19,6 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(0,0,0,0.1); color: #1B4F72; margin-top: 20px; font-size: 18px;
     }
     </style>
-    <div style="background-color:#1B4F72; padding:20px; border-radius:15px; text-align:center; color:white; margin-bottom:25px;">
-        <h1 style="margin:0;">🏦 ລະບົບ AI ທີ່ປຶກສາການເງິນສະຫຼາດສຸດ (ປ້າພອນສຸກ)</h1>
-    </div>
     """, unsafe_allow_html=True)
 
 # ຟັງຊັນຈັດຮູບແບບຕົວເລກ
@@ -37,7 +34,6 @@ def parse_num(v):
     nums = "".join(filter(str.isdigit, str(v)))
     return int(nums) if nums else 0
 
-# ສ້າງກ່ອງປ້ອນຂໍ້ມູນ
 def input_box(label, key):
     if key not in st.session_state:
         st.session_state[key] = ""
@@ -48,16 +44,13 @@ def input_box(label, key):
         st.rerun()
     return new_val
 
-# ຟັງຊັນບັນທຶກຂໍ້ມູນ
 def save_data(data_dict):
     df_new = pd.DataFrame([data_dict])
-    
     if os.path.exists(FILE_NAME):
         df_existing = pd.read_csv(FILE_NAME)
         df_combined = pd.concat([df_existing, df_new], ignore_index=True)
     else:
         df_combined = df_new
-    
     df_combined.to_csv(FILE_NAME, index=False, encoding='utf-8-sig')
     return True
 
@@ -85,6 +78,71 @@ with col2:
     e8 = input_box("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
     e9 = input_box("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
     e10 = input_box("10. ຄ່າສ້າງເຮືອນ", "e10")
+
+if st.button("💾 ບັນທຶກ", use_container_width=True):
+    data = {
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "ເງິນເດືອນ": parse_num(i1),
+        "ລາຍຮັບ Creator": parse_num(i2),
+        "ຂາຍຂອງຍ່ອຍ": parse_num(i3),
+        "ຮັບຕັດຫຍິບ": parse_num(i4),
+        "ຕູ້ກົດນ້ຳ": parse_num(i5),
+        "ຕູ້ຊັກຜ້າ": parse_num(i6),
+        "ຄ່າອາຫານ": parse_num(e1),
+        "ຄ່າເຊົ່າ": parse_num(e2),
+        "ຄ່ານ້ຳ-ໄຟ-ເນັດ": parse_num(e3),
+        "ຄ່າເດີນທາງ": parse_num(e4),
+        "ຄ່າການສຶກສາ": parse_num(e5),
+        "ຄ່າປິ່ນປົວ": parse_num(e6),
+        "ຄ່າເສື້ອຜ້າ": parse_num(e7),
+        "ຄ່າໂທລະສັບ": parse_num(e8),
+        "ຄ່າຫວຍ": parse_num(e9),
+        "ຄ່າສ້າງເຮືອນ": parse_num(e10),
+    }
+    if save_data(data):
+        st.success("✅ ບັນທຶກສຳເລັດ!")
+        st.balloons()
+    else:
+        st.error("❌ ບັນທຶກບໍ່ສຳເລັດ")
+
+# --- ສ່ວນສະແດງຜົນລວມ ---
+st.markdown("---")
+total_income = parse_num(i1) + parse_num(i2) + parse_num(i3) + parse_num(i4) + parse_num(i5) + parse_num(i6)
+total_expense = parse_num(e1) + parse_num(e2) + parse_num(e3) + parse_num(e4) + parse_num(e5) + parse_num(e6) + parse_num(e7) + parse_num(e8) + parse_num(e9) + parse_num(e10)
+balance = total_income - total_expense
+
+col_a, col_b, col_c = st.columns(3)
+with col_a:
+    st.markdown(f'<div class="money-box">💰 ລາຍຮັບລວມ<br>{format_num(total_income)} ກີບ</div>', unsafe_allow_html=True)
+with col_b:
+    st.markdown(f'<div class="money-box">💸 ລາຍຈ່າຍລວມ<br>{format_num(total_expense)} ກີບ</div>', unsafe_allow_html=True)
+with col_c:
+    color = "#00FFAA" if balance >= 0 else "#FF5555"
+    st.markdown(f'<div class="money-box" style="color:{color}">📊 ສົມດຸນ<br>{format_num(balance)} ກີບ</div>', unsafe_allow_html=True)
+
+# AI ຄຳແນະນຳ
+if balance < 0:
+    advice = "⚠️ ທ່ານມີລາຍຈ່າຍຫຼາຍກວ່າລາຍຮັບ! ຄວນຫຼຸດຄ່າໃຊ້ຈ່າຍທີ່ບໍ່ຈຳເປັນ."
+elif balance < 2000000:
+    advice = "✅ ທ່ານມີສົມດຸນທີ່ດີ ແຕ່ຍັງບໍ່ຫຼາຍ ຄວນພະຍາຍາມອົມຫຼຽນເພີ່ມ."
+else:
+    advice = "🎉 ທ່ານມີສຸຂະພາບການເງິນທີ່ແຂງແຮງ! ຄວນແບ່ງເງິນໄປລົງທຶນ."
+
+st.markdown(f'<div class="ai-card">🤖 <strong>AI ໃຫ້ຄຳແນະນຳ:</strong><br>{advice}</div>', unsafe_allow_html=True)
+
+# --- ສະແດງປະຫວັດ ---
+st.markdown("---")
+st.subheader("📜 ປະຫວັດການບັນທຶກ")
+
+if os.path.exists(FILE_NAME):
+    df_history = pd.read_csv(FILE_NAME)
+    st.dataframe(df_history.tail(10), use_container_width=True)
+    if st.button("🗑️ ລຶບຂໍ້ມູນທັງໝົດ", use_container_width=True):
+        os.remove(FILE_NAME)
+        st.success("ລຶບສຳເລັດ!")
+        st.rerun()
+else:
+    st.info("ຍັງບໍ່ມີຂໍ້ມູນ, ກະລຸນາບັນທຶກກ່ອນ.")
 
 if submit:
         # ບວກ 7 ຊົ່ວໂມງເຂົ້າໄປຕົງໆເລີຍ ເພື່ອໃຫ້ເປັນເວລາລາວ
