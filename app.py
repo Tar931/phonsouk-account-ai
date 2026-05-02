@@ -25,7 +25,7 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ຈັດລະບຽບໃໝ່ໃຫ້ມີຈຸດ ແລະ ບໍ່ Error) ---
+# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ຈັດລະບຽບໃໝ່: ມີຈຸດຄົບ, ຕົວເລກປ່ຽນໄວ, ບໍ່ Error) ---
 st.write("### 📝 ບັນທຶກລາຍຮັບ ແລະ ລາຍຈ່າຍ")
 
 with st.form("super_form", clear_on_submit=True):
