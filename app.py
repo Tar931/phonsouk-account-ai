@@ -4,99 +4,101 @@ import os
 from datetime import datetime
 
 # --- 1. ຕັ້ງຄ່າເວັບໄຊ ---
-st.set_page_config(page_title="Phonsouk AI Business Planner", page_icon="📈", layout="wide")
-FILE_NAME = 'shop_database_v4.csv'
+st.set_page_config(page_title="Phonsouk AI Ultimate Planner", page_icon="💰", layout="wide")
+FILE_NAME = 'shop_database_vfinal.csv'
 
 st.markdown("""
-    <div style="background-color:#002B36;padding:25px;border-radius:15px;text-align:center;border: 3px solid #268BD2;">
-        <h1 style="color:#268BD2;">📈 AI ວາງແຜນການເງິນ & ອາຊີບ ປ້າພອນສຸກ</h1>
-        <p style="color:#93A1A1;">ສະຫຼຸບລາຍອາທິດ, ລາຍເດືອນ, ລາຍປີ ແລະ ຊອກຫາຊ່ອງທາງປະຢັດ</p>
+    <style>
+    .main-header {background-color:#002B36; padding:20px; border-radius:15px; text-align:center; border: 2px solid #268BD2; color:white;}
+    .income-section {background-color:#E8F5E9; padding:15px; border-radius:10px; border-left:5px solid #2E7D32;}
+    .expense-section {background-color:#FFEBEE; padding:15px; border-radius:10px; border-left:5px solid #C62828;}
+    </style>
+    <div class="main-header">
+        <h1>💰 ລະບົບບັນຊີ & AI ວາງແຜນຊີວິດ ປ້າພອນສຸກ</h1>
+        <p>ລະບົບວິເຄາະການເງິນຄົບວົງຈອນ (ລາຍອາທິດ, ລາຍເດືອນ, ລາຍປີ)</p>
     </div>
     """, unsafe_allow_html=True)
 
-# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ ---
-with st.expander("➕ ບັນທຶກລາຍຮັບ-ລາຍຈ່າຍ (ມື້ນີ້ຈ່າຍຫຍັງ ຮັບຫຍັງ)", expanded=True):
+# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ຈັດກຸ່ມໃໝ່ໃຫ້ຄົບຕາມທີ່ປ້າຂໍ) ---
+st.write("### 📝 ບັນທຶກລາຍຮັບ-ລາຍຈ່າຍມື້ນີ້")
+with st.form("finance_form"):
     col1, col2 = st.columns(2)
+    
     with col1:
-        s1 = st.number_input("ຍອດຂາຍ (ໜ້າຮ້ານ/Online)", min_value=0, step=5000, key="inc1")
-        s2 = st.number_input("ຄ່າແຮງຕັດຫຍິບ (Sewing)", min_value=0, step=5000, key="inc2")
+        st.markdown('<div class="income-section"><h4>🟢 ລາຍຮັບ (Income)</h4></div>', unsafe_allow_html=True)
+        in1 = st.number_input("ເງິນເດືອນຈາກການທຳງານ", min_value=0, step=50000)
+        in2 = st.number_input("ລາຍຮັບຈາກການເປັນ Creator", min_value=0, step=10000)
+        in3 = st.number_input("ລາຍຮັບຈາກຂາຍຂອງຍ່ອຍ", min_value=0, step=5000)
+        in4 = st.number_input("ລາຍຮັບຈາກຮັບຕັດຫຍິບ", min_value=0, step=5000)
+        in5 = st.number_input("ລາຍຮັບຈາກຕູ້ກົດນ້ຳ", min_value=0, step=2000)
+        in6 = st.number_input("ລາຍຮັບຈາກຕູ້ຊັກຜ້າ", min_value=0, step=5000)
+
     with col2:
-        e1 = st.number_input("ຄ່າເຄື່ອງ/Stock", min_value=0, step=5000, key="exp1")
-        e2 = st.number_input("ຄ່າກິນ/ໃຊ້ໃນເຮືອນ", min_value=0, step=5000, key="exp2")
-        e3 = st.number_input("ລາຍຈ່າຍອື່ນໆ", min_value=0, step=5000, key="exp3")
+        st.markdown('<div class="expense-section"><h4>🔴 ລາຍຈ່າຍ (Expense)</h4></div>', unsafe_allow_html=True)
+        ex1 = st.number_input("ຄ່າອາຫານ ແລະ ເຄື່ອງບໍລິໂພກ", min_value=0, step=5000)
+        ex2 = st.number_input("ຄ່າເຊົ່າທີ່ຢູ່", min_value=0, step=100000)
+        ex3 = st.number_input("ຄ່າໄຟຟ້າ-ນໍ້າ-ອິນເຕີເນັດ", min_value=0, step=5000)
+        ex4 = st.number_input("ຄ່າເດີນທາງ (ນໍ້າມັນ/ລົດຈ້າງ)", min_value=0, step=5000)
+        ex5 = st.number_input("ຄ່າການສຶກສາລູກ", min_value=0, step=50000)
+        ex6 = st.number_input("ຄ່າປິ່ນປົວ/ຢາພະຍາດ", min_value=0, step=5000)
+        ex7 = st.number_input("ຄ່າເສື້ອຜ້າ ແລະ ຂອງໃຊ້ສ່ວນຕົວ", min_value=0, step=5000)
+        ex8 = st.number_input("ຄ່າໂທລະສັບ ແລະ ບັນເທີງ", min_value=0, step=5000)
+        ex9 = st.number_input("ຄ່າຜ່ອນຊຳລະໜີ້ (ລົດ ແລະ ອື່ນໆ)", min_value=0, step=50000)
+        ex10 = st.number_input("ຄ່າຊື້ເຄື່ອງເຂົ້າຮ້ານ", min_value=0, step=10000)
 
-    if st.button("💾 ບັນທຶກ ແລະ ໃຫ້ AI ວິເຄາະທັນທີ", use_container_width=True, type="primary"):
-        now = datetime.now()
-        new_data = {
-            'Date': now.strftime("%Y-%m-%d %H:%M"),
-            'Day': now.strftime("%A"),
-            'Week': now.isocalendar()[1],
-            'Month': now.strftime("%m-%Y"),
-            'Year': str(now.year), # ເກັບເປັນປີ
-            'Income': s1 + s2,
-            'Sewing': s2,
-            'Expense': e1 + e2 + e3,
-            'Food': e2,
-            'Stock': e1,
-            'Profit': (s1 + s2) - (e1 + e2 + e3)
-        }
-        df_new = pd.DataFrame([new_data])
-        df_new.to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME))
-        st.balloons()
-        st.success("AI ໄດ້ບັນທຶກ ແລະ ເກັບຂໍ້ມູນໄວ້ໃນລາຍງານປະຈຳປີແລ້ວ!")
+    submit = st.form_submit_button("🚀 ບັນທຶກ ແລະ ໃຫ້ AI ວາງແຜນໃຫ້ປ້າ", use_container_width=True)
 
-# --- 3. ສ່ວນລາຍງານ AI (Weekly/Monthly/Yearly) ---
+if submit:
+    now = datetime.now()
+    total_in = in1+in2+in3+in4+in5+in6
+    total_ex = ex1+ex2+ex3+ex4+ex5+ex6+ex7+ex8+ex9+ex10
+    new_data = {
+        'Date': now.strftime("%Y-%m-%d %H:%M"),
+        'Week': now.isocalendar()[1],
+        'Month': now.strftime("%m-%Y"),
+        'Year': str(now.year),
+        'Total_In': total_in, 'Total_Ex': total_ex, 'Profit': total_in - total_ex,
+        'Salary': in1, 'Creator': in2, 'Retail': in3, 'Sewing': in4, 'Water_Machine': in5, 'Laundry': in6,
+        'Food': ex1, 'Rent': ex2, 'Utilities': ex3, 'Travel': ex4, 'Education': ex5, 'Medical': ex6, 'Personal': ex7, 'Entertainment': ex8, 'Debt': ex9, 'Stock': ex10
+    }
+    pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME))
+    st.balloons(); st.success("AI ບັນທຶກຮຽບຮ້ອຍແລ້ວ!")
+
+# --- 3. ສ່ວນ AI ລາຍງານ ແລະ ວາງແຜນ (Weekly/Monthly/Yearly) ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
-    df['Year'] = df['Year'].astype(str) # ເຮັດໃຫ້ປີເປັນຕົວໜັງສືເພື່ອຄົ້ນຫາງ່າຍ
-    
     st.markdown("---")
-    st.header("🧠 ສະຫຼຸບລາຍງານ ແລະ ແຜນອາຊີບ")
-    
-    # ປຸ່ມເລືອກເບິ່ງລາຍງານ
-    report_type = st.segmented_control("ເລືອກໄລຍະເວລາທີ່ຕ້ອງການໃຫ້ AI ລາຍງານ:", ["ລາຍອາທິດ", "ລາຍເດືອນ", "ລາຍປີ"], default="ລາຍອາທິດ")
+    report_type = st.radio("📊 ເບິ່ງລາຍງານ AI:", ["ລາຍອາທິດ", "ລາຍເດືອນ", "ລາຍປີ"], horizontal=True)
     
     now = datetime.now()
-    if report_type == "ລາຍອາທິດ":
-        summary = df[df['Week'] == now.isocalendar()[1]]
-        text = "ອາທິດນີ້"
-    elif report_type == "ລາຍເດືອນ":
-        summary = df[df['Month'] == now.strftime("%m-%Y")]
-        text = "ເດືອນນີ້"
-    else:
-        summary = df[df['Year'] == str(now.year)]
-        text = f"ປີ {now.year}"
+    if report_type == "ລາຍອາທິດ": summary = df[df['Week'] == now.isocalendar()[1]]; label = "ອາທິດນີ້"
+    elif report_type == "ລາຍເດືອນ": summary = df[df['Month'] == now.strftime("%m-%Y")]; label = "ເດືອນນີ້"
+    else: summary = df[df['Year'] == str(now.year)]; label = f"ປີ {now.year}"
 
-    # ສະແດງຕົວເລກລວມ
     c1, c2, c3 = st.columns(3)
-    in_sum = summary['Income'].sum()
-    out_sum = summary['Expense'].sum()
-    pro_sum = in_sum - out_sum
-    
-    c1.metric(f"ລາຍຮັບ {text}", "{:,.0f} ກີບ".format(in_sum))
-    c2.metric(f"ລາຍຈ່າຍ {text}", "{:,.0f} ກີບ".format(out_sum))
-    c3.metric(f"ກຳໄລ {text}", "{:,.0f} ກີບ".format(pro_sum), delta=float(pro_sum))
+    c1.metric(f"ລາຍຮັບ {label}", "{:,.0f} ກີບ".format(summary['Total_In'].sum()))
+    c2.metric(f"ລາຍຈ່າຍ {label}", "{:,.0f} ກີບ".format(summary['Total_Ex'].sum()))
+    c3.metric(f"ກຳໄລ {label}", "{:,.0f} ກີບ".format(summary['Profit'].sum()))
 
-    # --- 4. AI ວິເຄາະຊ່ອງທາງປະຢັດ ແລະ ວາງແຜນອາຊີບ ---
-    st.markdown("### 💡 ຄຳແນະນຳຈາກ AI ສໍາລັບປ້າ")
+    # --- 4. ສະໝອງ AI ວິເຄາະຫາຊ່ອງທາງປະຢັດ ---
+    st.markdown("### 🧠 AI Analysis: ຊ່ອງທາງປະຢັດ & ແຜນວຽກມືອາຊີບ")
     col_ai1, col_ai2 = st.columns(2)
-    
+
     with col_ai1:
-        st.write("**📍 ຊ່ອງທາງປະຢັດ:**")
-        food_total = summary['Food'].sum()
-        if food_total > (in_sum * 0.3) and in_sum > 0:
-            st.error(f"ປ້າໃຊ້ເງິນຄ່າກິນໄປ {format(food_total, ',.0f')} ກີບ. AI ແນະນຳໃຫ້ປ້າລອງວາງແຜນຊື້ຂອງສົດເປັນອາທິດ ຈະປະຢັດໄດ້ຫຼາຍຂຶ້ນ!")
-        else:
-            st.success("ການໃຊ້ຈ່າຍຄົວເຮືອນຂອງປ້າຢູ່ໃນເກນທີ່ດີຫຼາຍ. ຮັກສາລະດັບນີ້ໄວ້ເດີ້!")
+        st.info("**💡 ຊ່ອງທາງປະຢັດຂອງປ້າ:**")
+        if summary['Food'].sum() > (summary['Total_In'].sum() * 0.4):
+            st.warning("⚠️ AI ກວດພົບ: ຄ່າອາຫານສູງເກີນໄປ! ລອງຫຼຸດການກິນນອກບ້ານເດີ້ປ້າ.")
+        if summary['Debt'].sum() > 0:
+            st.write(f"📌 ປ້າມີພາລະໜີ້ສິນ {summary['Debt'].sum():,.0f} ກີບ. AI ແນະນຳໃຫ້ປ້າຈ່າຍໃຫ້ຕົງເວລາເພື່ອຫຼີກລ່ຽງດອກເບ້ຍເພີ່ມ.")
+        if summary['Utilities'].sum() > 500000:
+            st.write("📌 ຄ່າໄຟ-ນໍ້າ ສູງ! ກວດເບິ່ງວ່າປິດຕູ້ກົດນໍ້າ ຫຼື ຈັກຊັກຜ້າຕອນບໍ່ມີຄົນໃຊ້ຫຼືບໍ່.")
 
     with col_ai2:
-        st.write("**📍 ແຜນວາງແຜນອາຊີບ:**")
-        sewing_total = summary['Sewing'].sum()
-        if sewing_total > 0:
-            st.info(f"ລາຍໄດ້ຈາກການຕັດຫຍິບແມ່ນ {format(sewing_total, ',.0f')} ກີບ. ເພື່ອໃຫ້ເປັນມືອາຊີບ, ປ້າຄວນເກັບສະສົມກຳໄລ 10% ໄວ້ຊື້ຈັກເຍັບຜ້າລຸ້ນໃໝ່ໃນອະນາຄົດ.")
-        else:
-            st.warning("ຍັງບໍ່ມີລາຍຮັບຈາກການຕັດຫຍິບ. ປ້າລອງໂທຫາລູກຄ້າເກົ່າເພື່ອຖາມຂ່າວຄາວ ແລະ ຮັບງານໃໝ່ເບິ່ງເດີ້.")
+        st.success("**🚀 ແຜນວາງແຜນອາຊີບ:**")
+        sources = {'ຕັດຫຍິບ': summary['Sewing'].sum(), 'Creator': summary['Creator'].sum(), 'ຕູ້ກົດນໍ້າ/ຊັກຜ້າ': summary['Water_Machine'].sum() + summary['Laundry'].sum()}
+        best_source = max(sources, key=sources.get)
+        st.write(f"✨ ວຽກທີ່ເຮັດເງິນໃຫ້ປ້າຫຼາຍທີ່ສຸດຄື: **{best_source}**")
+        st.write(f"AI ແນະນຳ: ປ້າຄວນແບ່ງເວລາ 70% ໃຫ້ກັບວຽກ {best_source} ເພາະເປັນບໍ່ເງິນຫຼັກຂອງປີນີ້!")
 
-    # ສະແດງປະຫວັດ
-    with st.expander("📜 ເບິ່ງປະຫວັດການບັນທຶກທັງໝົດ"):
+    with st.expander("📜 ເບິ່ງປະຫວັດລະອຽດທັງໝົດ"):
         st.dataframe(df.sort_values(by='Date', ascending=False), use_container_width=True)
