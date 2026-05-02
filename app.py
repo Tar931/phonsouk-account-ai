@@ -3,11 +3,11 @@ import pandas as pd
 import os
 from datetime import datetime
 
-# --- 1. ຕັ້ງຄ່າໜ້າຈໍ ---
+# --- ຕັ້ງຄ່າໜ້າຈໍ ---
 st.set_page_config(page_title="Phonsouk Super Smart AI", page_icon="💰", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
 
-# Style ຕົບແຕ່ງ (ປັບໃຫ້ກ່ອງຕົວເລກເຫັນແຈ້ງຂຶ້ນ)
+# Style ຕົບແຕ່ງ
 st.markdown("""
     <style>
     .money-box { 
@@ -18,23 +18,29 @@ st.markdown("""
         background-color: #ffffff; padding: 25px; border-radius: 20px; border-left: 15px solid #268BD2; 
         box-shadow: 0 4px 15px rgba(0,0,0,0.1); color: #1B4F72; margin-top: 20px; font-size: 18px;
     }
-    .stNumberInput input { font-size: 20px !important; }
     </style>
     <div style="background-color:#1B4F72; padding:20px; border-radius:15px; text-align:center; color:white; margin-bottom:25px;">
         <h1 style="margin:0;">🏦 ລະບົບ AI ທີ່ປຶກສາການເງິນສະຫຼາດສຸດ (ປ້າພອນສຸກ)</h1>
     </div>
     """, unsafe_allow_html=True)
 
-import streamlit as st
-
+# ຟັງຊັນຈັດຮູບແບບຕົວເລກ
 def format_num(v):
+    if v == "" or v is None:
+        return ""
     nums = "".join(filter(str.isdigit, str(v)))
     return "{:,}".format(int(nums)) if nums else ""
 
-st.set_page_config(layout="wide")
+def parse_num(v):
+    if v == "" or v is None:
+        return 0
+    nums = "".join(filter(str.isdigit, str(v)))
+    return int(nums) if nums else 0
 
+# ສ້າງກ່ອງປ້ອນຂໍ້ມູນ
 def input_box(label, key):
-    if key not in st.session_state: st.session_state[key] = ""
+    if key not in st.session_state:
+        st.session_state[key] = ""
     val = st.text_input(label, value=st.session_state[key], key=f"k_{key}")
     new_val = format_num(val)
     if new_val != st.session_state[key]:
@@ -42,7 +48,22 @@ def input_box(label, key):
         st.rerun()
     return new_val
 
+# ຟັງຊັນບັນທຶກຂໍ້ມູນ
+def save_data(data_dict):
+    df_new = pd.DataFrame([data_dict])
+    
+    if os.path.exists(FILE_NAME):
+        df_existing = pd.read_csv(FILE_NAME)
+        df_combined = pd.concat([df_existing, df_new], ignore_index=True)
+    else:
+        df_combined = df_new
+    
+    df_combined.to_csv(FILE_NAME, index=False, encoding='utf-8-sig')
+    return True
+
+# --- ສ່ວນແບ່ງການປ້ອນຂໍ້ມູນ ---
 col1, col2 = st.columns(2)
+
 with col1:
     st.success("### 🟢 ສ່ວນລາຍຮັບ")
     i1 = input_box("1. ເງິນເດືອນ", "i1")
@@ -64,9 +85,6 @@ with col2:
     e8 = input_box("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
     e9 = input_box("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
     e10 = input_box("10. ຄ່າສ້າງເຮືອນ", "e10")
-
-if st.button("💾 ບັນທຶກ", use_container_width=True):
-    st.success("ບັນທຶກແລ້ວ")
 
 if submit:
         # ບວກ 7 ຊົ່ວໂມງເຂົ້າໄປຕົງໆເລີຍ ເພື່ອໃຫ້ເປັນເວລາລາວ
