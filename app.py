@@ -74,31 +74,6 @@ if submit:
         pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME))
         st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວປັດຈຸບັນ: {now_lao.strftime('%H:%M')}")
         st.rerun()
-# --- ສ່ວນ AI ວິເຄາະແບບມືອາຊີບ (ທຸກໄລຍະ) ---
-if os.path.exists(FILE_NAME):
-    df = pd.read_csv(FILE_NAME)
-    st.markdown("---")
-    
-    # 1. ປຸ່ມໃຫ້ປ້າເລືອກເບິ່ງໄລຍະເວລາ
-    st.subheader("📊 ເລືອກໄລຍະເວລາທີ່ປ້າຢາກໃຫ້ AI ວິເຄາະ")
-    option = st.radio("ເບິ່ງລາຍງານ:", ["ມື້ນີ້", "ອາທິດນີ້", "ເດືອນນີ້", "ປີນີ້"], horizontal=True)
-
-    # 2. ຈັດການຂໍ້ມູນຕາມໄລຍະເວລາທີ່ເລືອກ
-    df['Date_Obj'] = pd.to_datetime(df['ວັນທີ'], format="%d/%m/%Y %H:%M")
-    now = datetime.now()
-    
-    if option == "ມື້ນີ້":
-        filtered_df = df[df['Date_Obj'].dt.date == now.date()]
-        text_time = "ຂອງມື້ນີ້"
-    elif option == "ອາທິດນີ້":
-        filtered_df = df[df['Date_Obj'].dt.isocalendar().week == now.isocalendar()[1]]
-        text_time = "ຂອງອາທິດນີ້"
-    elif option == "ເດືອນນີ້":
-        filtered_df = df[df['Date_Obj'].dt.month == now.month]
-        text_time = "ຂອງເດືອນນີ້"
-    else:
-        filtered_df = df[df['Date_Obj'].dt.year == now.year]
-        text_time = "ຂອງປີນີ້"
 
     # 3. ສະແດງຕົວເລກສະຫຼຸບ
     if not filtered_df.empty:
