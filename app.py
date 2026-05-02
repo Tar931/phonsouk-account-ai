@@ -74,31 +74,6 @@ if submit:
         pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME))
         st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວປັດຈຸບັນ: {now_lao.strftime('%H:%M')}")
         st.rerun()
-
-    # 3. ສະແດງຕົວເລກສະຫຼຸບ
-    if not filtered_df.empty:
-        t_in = filtered_df['ລາຍຮັບລວມ'].sum()
-        t_ex = filtered_df['ລາຍຈ່າຍລວມ'].sum()
-        profit = t_in - t_ex
-        
-        c1, c2, c3 = st.columns(3)
-        c1.metric(f"ລາຍຮັບ {text_time}", f"{t_in:,.0f} ກີບ")
-        c2.metric(f"ລາຍຈ່າຍ {text_time}", f"{t_ex:,.0f} ກີບ")
-        c3.metric(f"ກຳໄລ {text_time}", f"{profit:,.0f} ກີບ")
-
-        # 4. ບົດວິເຄາະ AI ແບບເຈາະຈຶກ
-        st.markdown(f"""
-        <div class="ai-card">
-            <h3>🤖 AI Professional Advisor ({text_time})</h3>
-            <p>✅ <b>ສະຫຼຸບການເງິນ:</b> {text_time} ປ້າມີກຳໄລສຸດທິ <b>{profit:,.0f} ກີບ</b>.</p>
-            <p>📈 <b>ວິເຄາະຊ່ອງທາງລາຍໄດ້:</b> ລາຍຮັບຈາກການຫຍິບຜ້າ ແລະ ຕູ້ຢອດຫຼຽນເປັນລາຍໄດ້ທີ່ໝັ້ນຄົງທີ່ສຸດ.</p>
-            <p>⚠️ <b>ຂໍ້ຄວນລະວັງ:</b> ຖ້າລາຍຈ່າຍຄ່າຫວຍ ຫຼື ຄ່າບັນເທີງສູງເກີນ 10% ຂອງລາຍຮັບ, AI ແນະນຳໃຫ້ປ້າປັບຫຼຸດລົງເພື່ອເອົາໄປໃສ່ຄ່າສ້າງເຮືອນແທນ.</p>
-            <p>🚀 <b>ຄຳແນະນຳມືອາຊີບ:</b> ໃນໄລຍະ {text_time}, ປ້າຄວນແບ່ງກຳໄລ 5% ໄປບຳລຸງຮັກສາຕູ້ຊັກຜ້າ ແລະ ຕູ້ກົດນ້ຳ ເພື່ອໃຫ້ມັນສ້າງເງິນໃຫ້ປ້າໄດ້ຍາວໆ.</p>
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.info(f"ຍັງບໍ່ມີຂໍ້ມູນ {text_time} ເດີ້ປ້າ!")
-
 # --- 3. ສ່ວນ AI ວິເຄາະ (Professional Analysis) ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
