@@ -7,18 +7,14 @@ from datetime import datetime
 st.set_page_config(page_title="App ປ້າ", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
 
-# Style ຕົບແຕ່ງ (ລົບຫົວຂໍ້ເກົ່າອອກໝົດແລ້ວ)
+# Style ຕົບແຕ່ງ (ລົບຫົວຂໍ້ ແລະ ຂໍ້ຄວາມເກົ່າອອກໝົດແລ້ວ)
 st.markdown("""
     <style>
     .money-box { 
         background-color: #002B36; color: #00FFAA; padding: 15px; border-radius: 12px; 
         font-size: 28px; font-weight: bold; text-align: right; border: 2px solid #268BD2; margin-bottom: 20px;
     }
-    .ai-card { 
-        background-color: #ffffff; padding: 20px; border-radius: 15px; border-left: 10px solid #268BD2; 
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: #1B4F72; margin-top: 10px;
-    }
-    /* ເຮັດໃຫ້ສ່ວນເທິງສຸດສະອາດ */
+    /* ໃຫ້ໜ້າຈໍເລີ່ມຈາກຊ່ອງປ້ອນເລກເລີຍ */
     .block-container { padding-top: 1rem; }
     </style>
     """, unsafe_allow_html=True)
@@ -29,7 +25,7 @@ def format_num(v):
     nums = "".join(filter(str.isdigit, str(v)))
     return "{:,}".format(int(nums)) if nums else ""
 
-# ຟັງຊັນແປງເປັນຕົວເລກ
+# ຟັງຊັນແປງເປັນຕົວເລກເພື່ອຄິດໄລ່
 def parse_num(v):
     if v == "" or v is None: return 0
     nums = "".join(filter(str.isdigit, str(v)))
@@ -56,7 +52,7 @@ def save_data(data_dict):
     df_combined.to_csv(FILE_NAME, index=False, encoding='utf-8-sig')
     return True
 
-# --- ສະແດງແຕ່ສ່ວນປ້ອນຂໍ້ມູນເລີຍ ---
+# --- ສະແດງແຕ່ສ່ວນປ້ອນຂໍ້ມູນ ---
 col1, col2 = st.columns(2)
 
 with col1:
@@ -82,7 +78,7 @@ with col2:
     e10 = input_box("10. ຄ່າສ້າງເຮືອນ", "e10")
 
 # ປຸ່ມບັນທຶກ
-if st.button("💾 ບັນທຶກຂໍ້ມູນ", use_container_width=True):
+if st.button("💾 ບັນທຶກ", use_container_width=True):
     data = {
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "ເງິນເດືອນ": parse_num(i1), "ລາຍຮັບ Creator": parse_num(i2),
@@ -95,9 +91,9 @@ if st.button("💾 ບັນທຶກຂໍ້ມູນ", use_container_width=Tr
         "ຄ່າຫວຍ": parse_num(e9), "ຄ່າສ້າງເຮືອນ": parse_num(e10),
     }
     if save_data(data):
-        st.success("ບັນທຶກແລ້ວ!")
+        st.success("✅ ບັນທຶກແລ້ວ!")
 
-# --- ສະແດງຜົນລວມ ---
+# --- ສະແດງຜົນລວມລຸ່ມສຸດ ---
 st.markdown("---")
 total_i = parse_num(i1)+parse_num(i2)+parse_num(i3)+parse_num(i4)+parse_num(i5)+parse_num(i6)
 total_e = parse_num(e1)+parse_num(e2)+parse_num(e3)+parse_num(e4)+parse_num(e5)+parse_num(e6)+parse_num(e7)+parse_num(e8)+parse_num(e9)+parse_num(e10)
@@ -110,9 +106,9 @@ with cc:
     col_bal = "#00FFAA" if balance >= 0 else "#FF5555"
     st.markdown(f'<div class="money-box" style="color:{col_bal}">📊 ສົມດຸນ<br>{format_num(balance)}</div>', unsafe_allow_html=True)
 
-# ປະຫວັດ
+# ປະຫວັດ (ຊ້ອນໄວ້ໃນ Expander)
 if os.path.exists(FILE_NAME):
-    with st.expander("📜 ເບິ່ງປະຫວັດ"):
+    with st.expander("📜 ປະຫວັດ"):
         df = pd.read_csv(FILE_NAME)
         st.dataframe(df.tail(5), use_container_width=True)
 
