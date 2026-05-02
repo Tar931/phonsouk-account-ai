@@ -18,8 +18,7 @@ st.markdown("""
         font-weight: bold; 
         text-align: right; 
         border: 2px solid #268BD2; 
-        margin-top: -15px; 
-        margin-bottom: 15px;
+        margin-bottom: 20px;
     }
     .ai-report { background-color: #F0F2F6; padding: 20px; border-radius: 15px; border-left: 10px solid #268BD2; color: #1B4F72; }
     </style>
@@ -28,33 +27,35 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ໃຊ້ AI ໂຕເກົ່າ ແຕ່ແກ້ໃຫ້ໂຊຈຸດຕົວເລກ) ---
-with st.form("main_form"):
-    c1, c2 = st.columns(2)
-    with c1:
-        st.markdown("### 🟢 ລາຍຮັບ (6 ທາງ)")
-        i1 = st.number_input("ເງິນເດືອນ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i1:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        i2 = st.number_input("ລາຍຮັບ Creator", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i2:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        i3 = st.number_input("ຂາຍຂອງຍ່ອຍ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i3:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        i4 = st.number_input("ວຽກຕັດຫຍິບ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i4:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        i5 = st.number_input("ຕູ້ກົດນ້ຳ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i5:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        i6 = st.number_input("ຕູ້ຊັກຜ້າ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i6:,.0f} ກີບ</div>', unsafe_allow_html=True)
-    with c2:
-        st.markdown("### 🔴 ລາຍຈ່າຍ (10 ຢ່າງ)")
-        e1 = st.number_input("ຄ່າອາຫານ/ເຄື່ອງໃຊ້", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e1:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        e2 = st.number_input("ຄ່າເຊົ່າທີ່ຢູ່", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e2:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        e3 = st.number_input("ໄຟຟ້າ-ນໍ້າ-ເນັດ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e3:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        e4 = st.number_input("ນ້ຳມັນ/ລົດຈ້າງ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e4:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        e5 = st.number_input("ຄ່າຮຽນລູກ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e5:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        e6 = st.number_input("ຄ່າຢາ/ປິ່ນປົວ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e6:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        e7 = st.number_input("ເສື້ອຜ້າ/ສ່ວນຕົວ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e7:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        e8 = st.number_input("ໂທລະສັບ/ບັນເທີງ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e8:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        e9 = st.number_input("ຜ່ອນໜີ້/ລົດ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e9:,.0f} ກີບ</div>', unsafe_allow_html=True)
-        e10 = st.number_input("ຊື້ເຄື່ອງເຂົ້າຮ້ານ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e10:,.0f} ກີບ</div>', unsafe_allow_html=True)
-    
-    submit = st.form_submit_button("🚀 ບັນທຶກ ແລະ ໃຫ້ AI ວິເຄາະທັງໝົດ", use_container_width=True)
+# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ແກ້ໄຂໃຫ້ໂຊຈຸດຕົວເລກທັນທີທີ່ພິມ) ---
+st.write("### 📝 ປ້ອນຂໍ້ມູນລາຍວັນ")
 
-if submit:
+c1, c2 = st.columns(2)
+
+with c1:
+    st.markdown("### 🟢 ລາຍຮັບ (6 ທາງ)")
+    i1 = st.number_input("ເງິນເດືອນ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i1:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    i2 = st.number_input("ລາຍຮັບ Creator", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i2:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    i3 = st.number_input("ຂາຍຂອງຍ່ອຍ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i3:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    i4 = st.number_input("ວຽກຕັດຫຍິບ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i4:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    i5 = st.number_input("ຕູ້ກົດນ້ຳ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i5:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    i6 = st.number_input("ຕູ້ຊັກຜ້າ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{i6:,.0f} ກີບ</div>', unsafe_allow_html=True)
+
+with c2:
+    st.markdown("### 🔴 ລາຍຈ່າຍ (10 ຢ່າງ)")
+    e1 = st.number_input("ຄ່າອາຫານ/ເຄື່ອງໃຊ້", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e1:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    e2 = st.number_input("ຄ່າເຊົ່າທີ່ຢູ່", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e2:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    e3 = st.number_input("ໄຟຟ້າ-ນໍ້າ-ເນັດ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e3:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    e4 = st.number_input("ນ້ຳມັນ/ລົດຈ້າງ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e4:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    e5 = st.number_input("ຄ່າຮຽນລູກ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e5:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    e6 = st.number_input("ຄ່າຢາ/ປິ່ນປົວ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e6:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    e7 = st.number_input("ເສື້ອຜ້າ/ສ່ວນຕົວ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e7:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    e8 = st.number_input("ໂທລະສັບ/ບັນເທີງ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e8:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    e9 = st.number_input("ຜ່ອນໜີ້/ລົດ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e9:,.0f} ກີບ</div>', unsafe_allow_html=True)
+    e10 = st.number_input("ຊື້ເຄື່ອງເຂົ້າຮ້ານ", min_value=0, step=10000); st.markdown(f'<div class="money-box">{e10:,.0f} ກີບ</div>', unsafe_allow_html=True)
+
+# ປຸ່ມບັນທຶກແຍກຕ່າງຫາກ
+if st.button("🚀 ບັນທຶກຂໍ້ມູນ ແລະ ໃຫ້ AI ວິເຄາະ", use_container_width=True):
     now = datetime.now()
     total_in = i1+i2+i3+i4+i5+i6
     total_ex = e1+e2+e3+e4+e5+e6+e7+e8+e9+e10
@@ -64,7 +65,9 @@ if submit:
         'Food': e1, 'Bills': e3, 'Debt': e9, 'Sewing': i4, 'Creator': i2
     }
     pd.DataFrame([new_entry]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME))
-    st.balloons(); st.rerun()
+    st.success("ບັນທຶກສຳເລັດແລ້ວ!")
+    st.balloons()
+    st.rerun()
 
 # --- 3. ສ່ວນ AI ວິເຄາະ (ຮັກສາໄວ້ຄືເກົ່າ 100% ຕາມຄຳສັ່ງປ້າ) ---
 if os.path.exists(FILE_NAME):
