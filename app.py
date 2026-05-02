@@ -9,19 +9,17 @@ FILE_NAME = 'phonsouk_final_database_v2.csv'
 
 st.markdown("""
     <style>
-    /* ປັບແຕ່ງກ່ອງໂຊຈຸດຕົວເລກໃຫ້ນ້ອຍລົງ ແລະ ພໍດີ */
     .money-box { 
         background-color: #002B36; 
         color: #00FFAA; 
-        padding: 5px 15px; 
-        border-radius: 5px; 
-        font-size: 20px; 
+        padding: 8px 15px; 
+        border-radius: 8px; 
+        font-size: 22px; 
         font-weight: bold; 
         text-align: right; 
-        border: 1px solid #268BD2; 
-        margin-top: -10px; 
-        margin-bottom: 10px;
-        width: 100%;
+        border: 2px solid #268BD2; 
+        margin-top: -15px; 
+        margin-bottom: 15px;
     }
     .ai-report { background-color: #F0F2F6; padding: 20px; border-radius: 15px; border-left: 10px solid #268BD2; color: #1B4F72; }
     </style>
@@ -30,6 +28,7 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
+# ຟັງຊັນສະແດງຈຸດຕົວເລກ (ເຊື່ອມຕໍ່ກັບຄ່າທີ່ປ້າພິມແລ້ວ)
 def display_money(val):
     st.markdown(f'<div class="money-box">{val:,.0f} ກີບ</div>', unsafe_allow_html=True)
 
@@ -57,7 +56,6 @@ with st.form("main_form"):
         e9 = st.number_input("ຜ່ອນໜີ້/ລົດ", min_value=0, step=10000); display_money(e9)
         e10 = st.number_input("ຊື້ເຄື່ອງເຂົ້າຮ້ານ", min_value=0, step=10000); display_money(e10)
     
-    st.markdown("<br>", unsafe_allow_html=True)
     submit = st.form_submit_button("🚀 ບັນທຶກ ແລະ ໃຫ້ AI ວິເຄາະທັງໝົດ", use_container_width=True)
 
 if submit:
@@ -72,7 +70,7 @@ if submit:
     pd.DataFrame([new_entry]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME))
     st.balloons(); st.rerun()
 
-# --- 3. ສ່ວນ AI ວິເຄາະ (ຄືເກົ່າແຕ່ຈັດວາງໃໝ່ໃຫ້ງາມ) ---
+# --- 3. ສ່ວນ AI ວິເຄາະ (ຮັກສາໄວ້ຄືເກົ່າ 100%) ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
     st.markdown("---")
@@ -92,12 +90,10 @@ if os.path.exists(FILE_NAME):
         c3.metric(f"ກຳໄລ {t}", "{:,.0f} ກີບ".format(in_sum - ex_sum))
 
         st.markdown(f'<div class="ai-report"><h3>💡 AI Advisor ວິເຄາະ{t}:</h3>', unsafe_allow_html=True)
-        food_val = data['Food'].sum()
-        if food_val > 0: st.write(f"📌 **ຊ່ອງທາງປະຢັດ:** {t} ປ້າຈ່າຍຄ່າອາຫານ {food_val:,.0f} ກີບ. AI ແນະນຳໃຫ້ຄຸມງົບສ່ວນນີ້ໃຫ້ດີ.")
-        
-        sewing_val = data['Sewing'].sum()
-        if sewing_val > 0: st.write(f"🚀 **ແຜນອາຊີບ:** ລາຍໄດ້ຕັດຫຍິບ {sewing_val:,.0f} ກີບ. ປ້າຄວນເຮັດ Content ຕັດຫຍິບລົງ TikTok ຕື່ມເດີ້!")
+        # AI ວິເຄາະຊ່ອງທາງປະຢັດ
+        food_sum = data['Food'].sum()
+        if food_sum > 0: st.write(f"📌 **ຊ່ອງທາງປະຢັດ:** ປ້າຈ່າຍຄ່າອາຫານ {food_sum:,.0f} ກີບ. ລອງເບິ່ງວ່າຫຼຸດບ່ອນໃດໄດ້ແດ່ເດີ້.")
+        # AI ວາງແຜນອາຊີບ
+        sewing_sum = data['Sewing'].sum()
+        if sewing_sum > 0: st.write(f"🚀 **ແຜນອາຊີບ:** ລາຍໄດ້ຫຍິບຜ້າ {sewing_sum:,.0f} ກີບ. ປ້າເຮັດ Content Creator ສອນຫຍິບຜ້າມາແຮງແນ່ນອນ!")
         st.markdown('</div>', unsafe_allow_html=True)
-    
-    with st.expander("📜 ເບິ່ງປະຫວັດ (ມີຈຸດຄັ່ນ)"):
-        st.dataframe(df.sort_values(by='Date', ascending=False), use_container_width=True)
