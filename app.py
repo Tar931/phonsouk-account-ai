@@ -56,25 +56,23 @@ with st.form("super_form", clear_on_submit=True):
     submit = st.form_submit_button("💾 ບັນທຶກ ແລະ ລ້າງຄ່າທັງໝົດ", use_container_width=True)
 
 if submit:
-        # --- ຂັ້ນຕອນບັງຄັບເວລາລາວ ---
-        tz_laos = pytz.timezone('Asia/Vientiane')
-        now_laos = datetime.now(tz_laos) 
-        time_string = now_laos.strftime("%d/%m/%Y %H:%M")
+        # ບວກ 7 ຊົ່ວໂມງແບບບັງຄັບ (ເພາະ Server ມັນຊ້າກວ່າລາວ 7 ຊົ່ວໂມງ)
+        from datetime import timedelta
+        now_lao = datetime.now() + timedelta(hours=7) 
         
         t_in = i1+i2+i3+i4+i5+i6
         t_ex = e1+e2+e3+e4+e5+e6+e7+e8+e9+e10
         
         new_data = {
-            'ວັນທີ': time_string, # ຈະບັນທຶກເປັນເວລາລາວ 23:xx ທັນທີ
+            'ວັນທີ': now_lao.strftime("%d/%m/%Y %H:%M"), 
             'ລາຍຮັບລວມ': t_in, 
             'ລາຍຈ່າຍລວມ': t_ex, 
             'ເຫຼືອເກັບ': t_in - t_ex,
             'ເງິນເດືອນ': i1, 'Creator': i2, 'ຂາຍຂອງ': i3, 'ຫຍິບຜ້າ': i4, 'ຕູ້້ກົດນ້ຳ': i5, 'ຕູ້ຊັກຜ້າ': i6,
             'ອາຫານ': e1, 'ຄ່າເຊົ່າ': e2, 'ນ້ຳໄຟ': e3, 'ເດີນທາງ': e4, 'ການສຶກສາ': e5, 'ຢາ': e6, 'ເສື້ອຜ້າ': e7, 'ບັນເທີງ': e8, 'ຫວຍ': e9, 'ສ້າງເຮືອນ': e10
         }
-        
         pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME))
-        st.success(f"✅ ບັນທຶກສຳເລັດ! ເວລາປະຈຸບັນຢູ່ລາວ: {time_string}")
+        st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
         st.rerun()
 # --- ສ່ວນ AI ວິເຄາະແບບມືອາຊີບ (ທຸກໄລຍະ) ---
 if os.path.exists(FILE_NAME):
