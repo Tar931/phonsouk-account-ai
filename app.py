@@ -85,7 +85,9 @@ with st.form("super_form", clear_on_submit=True):
         e10 = st.number_input("10. ຄ່າສິນເຊື່ອ/ສ້າງເຮືອນ", min_value=0, step=100000)
         st.markdown(f'<div class="money-box">{e10:,.0f}</div>', unsafe_allow_html=True)
 
-  if submit:
+    submit = st.form_submit_button("💾 ບັນທຶກ ແລະ ລ້າງຄ່າທັງໝົດ", use_container_width=True)
+
+if submit:
         # ບວກ 7 ຊົ່ວໂມງເຂົ້າໄປຕົງໆເລີຍ ເພື່ອໃຫ້ເປັນເວລາລາວ
         from datetime import timedelta
         now_lao = datetime.now() + timedelta(hours=7) 
