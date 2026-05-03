@@ -91,46 +91,31 @@ if submit:
     st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
     st.rerun()
 
-# --- ສ່ວນ AI Advisor (ເວີຊັນປັບປຸງໃໝ່: ປ້ອງກັນ Error) ---
-st.divider()
-st.write("### 🧠 AI ອັດສະລິຍະ: ວິເຄາະ & ວາງແຜນທຸລະກິດ")
-
-if os.path.exists(FILE_NAME):
-    try:
-        df = pd.read_csv(FILE_NAME)
-        # ກວດສອບວ່າໄຟລ໌ມີຂໍ້ມູນ ແລະ ມີຖັນທີ່ຕ້ອງການຫຼືບໍ່
-        required_cols = ['ລາຍຮັບ', 'ລາຍຈ່າຍ', 'ເຫຼືອ']
-        if not df.empty and all(col in df.columns for col in required_cols):
-            
-            # ຄິດໄລ່ຄ່າສະເລ່ຍ
-            avg_income = pd.to_numeric(df['ລາຍຮັບ']).mean()
-            avg_expense = pd.to_numeric(df['ລາຍຈ່າຍ']).mean()
-            
-            tab1, tab2, tab3 = st.tabs(["💰 ການເງິນ", "📈 ການຕະຫຼາດ", "🏢 ການບໍລິຫານ"])
-            
-            with tab1:
-                st.info("#### ວິເຄາະການເງິນ")
-                if avg_income > avg_expense:
-                    st.write("✅ **ສະພາບຄ່ອງ:** ດີຫຼາຍ! ປ້າມີລາຍຮັບສະເລ່ຍສູງກວ່າລາຍຈ່າຍ.")
-                    st.write(f"💡 **ແນະນຳ:** ຄວນແບ່ງເງິນ {avg_income * 0.2:,.0f} ກີບ (20%) ໄປຝາກປະຈຳ.")
-                else:
-                    st.warning("⚠️ **ຂໍ້ຄວນລະວັງ:** ລາຍຈ່າຍສະເລ່ຍສູງ! ໃຫ້ກວດສອບຕົ້ນທຶນຄືນໃໝ່.")
-
-            with tab2:
-                st.info("#### ວາງແຜນການຕະຫຼາດ")
-                st.write("💡 **ກົນຍຸດ:** ປ້າຄວນໂພສວິດີໂອ 'ເບື້ອງຫຼັງການເຮັດວຽກ' ລົງ TikTok ຫຼື Facebook ມື້ລະ 1 ຄລິບ.")
-                st.write("🚀 **ໂປຣໂມຊັນ:** ແນະນຳໃຫ້ເຮັດ 'ບັດສະສົມແຕ້ມ' ສຳລັບລູກຄ້າທີ່ມາໃຊ້ບໍລິການປະຈຳ.")
-
-            with tab3:
-                st.info("#### ການບໍລິຫານຈັດການ")
-                st.write("⏳ **ການຈັດສັນເວລາ:** ແບ່ງເວລາ 1 ຊົ່ວໂມງຕໍ່ມື້ ເພື່ອກວດສອບສະຕັອກສິນຄ້າ.")
-                st.write("📝 **ແຜນງານ:** ຄວນໃຊ້ AI ຊ່ວຍສະຫຼຸບບັນຊີທຸກໆທ້າຍອາທິດ.")
-        else:
-            st.warning("⚠️ ຍັງບໍ່ມີຂໍ້ມູນພຽງພໍໃຫ້ AI ວິເຄາະ. ກະລຸນາລອງ 'ບັນທຶກຂໍ້ມູນ' ໃໝ່ອີກ 1-2 ລາຍການກ່ອນເດີ້ເຈົ້າປ້າ.")
-    except Exception as e:
-        st.error("ພົບຂໍ້ຜິດພາດໃນການອ່ານຂໍ້ມູນ. ແນະນຳໃຫ້ລຶບໄຟລ໌ CSV ເກົ່າຖິ້ມ ແລ້ວເລີ່ມບັນທຶກໃໝ່.")
-else:
-    st.info("ຍັງບໍ່ມີຂໍ້ມູນໃຫ້ວິເຄາະໃນເວລານີ້.")
+# --- ສ່ວນປຸ່ມບັນທຶກ (ແບບບັງຄັບຫົວຂໍ້ໃຫ້ AI ອ່ານໄດ້) ---
+if st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True):
+    # ລວມຕົວເລກ (ໃຫ້ແນ່ໃຈວ່າ i1, i2... ແມ່ນຊື່ຕົວປ່ຽນທີ່ປ້າໃຊ້ປ້ອນເງິນ)
+    total_in = float(i1 + i2 + i3) 
+    total_ex = float(e1 + e2 + e3)
+    balance = total_in - total_ex
+    current_time = (datetime.now() + timedelta(hours=7)).strftime("%d/%m/%Y %H:%M")
+    
+    # ສ້າງຂໍ້ມູນໃໝ່ (ຊື່ຖັນຕ້ອງກົງກັບທີ່ AI ຖ້າອ່ານ)
+    new_data = pd.DataFrame([{
+        'ວັນທີ': current_time, 
+        'ລາຍຮັບ': total_in, 
+        'ລາຍຈ່າຍ': total_ex, 
+        'ເຫຼືອ': balance
+    }])
+    
+    # ບັນທຶກລົງໄຟລ໌
+    if not os.path.exists(FILE_NAME):
+        new_data.to_csv(FILE_NAME, index=False, encoding='utf-8-sig')
+    else:
+        new_data.to_csv(FILE_NAME, mode='a', index=False, header=False, encoding='utf-8-sig')
+    
+    st.balloons()
+    st.success("✅ ບັນທຶກສຳເລັດ! ຕອນນີ້ AI ພ້ອມວິເຄາະໃຫ້ປ້າແລ້ວ.")
+    st.rerun() # ໃຫ້ມັນໂຫຼດໜ້າໃໝ່ເພື່ອໃຫ້ AI ເຫັນຂໍ້ມູນທັນທີ
  
 # --- ຕະລາງ Excel ແລະ ປຸ່ມລົບ (Code ທີ່ປ້າໃຫ້ເພີ່ມ) ---
     st.write("### 📅 ປະຫວັດການເງິນ (Excel)")
