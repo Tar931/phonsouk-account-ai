@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 st.set_page_config(page_title="App ບັນຊີຂອງປ້າ", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
 
-# --- ຕັ້ງຄ່າຕົວແປສຳລັບລ້າງຂໍ້ມູນ (ສຳຄັນຫຼາຍ) ---
+# --- ຕັ້ງຄ່າຕົວແປສຳລັບລ້າງຂໍ້ມູນ ---
 if 'clear_counter' not in st.session_state:
     st.session_state.clear_counter = 0
 
@@ -56,7 +56,7 @@ header_text = """
 """
 st.write(header_text, unsafe_allow_html=True)
 
-# --- ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ (ໃສ່ຈຸດ ແລະ ແປງເປັນຕົວເລກ) ---
+# --- ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ ---
 def format_num(v):
     if v == "" or v is None: return ""
     nums = "".join(filter(str.isdigit, str(v)))
@@ -67,14 +67,13 @@ def parse_num(v):
     nums = "".join(filter(str.isdigit, str(v)))
     return int(nums) if nums else 0
 
-# ຟັງຊັນອັບເດດຈຸດ (,) ເມື່ອພິມສຳເລັດ
+# ຟັງຊັນອັບເດດຈຸດ (,)
 def update_val(key):
     val = st.session_state[key]
     st.session_state[key] = format_num(val)
 
-# ຟັງຊັນສ້າງຊ່ອງພິມ (ໃຊ້ clear_counter ເພື່ອໃຫ້ມັນລ້າງຄ່າໄດ້ 100%)
+# ຟັງຊັນສ້າງຊ່ອງພິມ 
 def input_box(label, base_key):
-    # ເອົາ counter ມາຕໍ່ທ້າຍ key ເພື່ອໃຫ້ມັນເປັນຊ່ອງໃໝ່ທຸກຄັ້ງທີ່ກົດບັນທຶກ
     actual_key = f"{base_key}_{st.session_state.clear_counter}"
     
     if actual_key not in st.session_state:
@@ -115,14 +114,12 @@ submit = st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ"
 if submit:
     now_lao = datetime.now() + timedelta(hours=7) 
     
-    # ດຶງຂໍ້ມູນທີ່ແປງເປັນຕົວເລກແລ້ວ
     v_i = [parse_num(i1_v), parse_num(i2_v), parse_num(i3_v), parse_num(i4_v), parse_num(i5_v), parse_num(i6_v), parse_num(i7_v)]
     v_e = [parse_num(e1_v), parse_num(e2_v), parse_num(e3_v), parse_num(e4_v), parse_num(e5_v), parse_num(e6_v), parse_num(e7_v), parse_num(e8_v), parse_num(e9_v), parse_num(e10_v), parse_num(e11_v)]
     
     t_in = sum(v_i)
     t_ex = sum(v_e)
     
-    # ກວດສອບຖ້າບໍ່ມີການປ້ອນຂໍ້ມູນຫຍັງເລີຍ ບໍ່ໃຫ້ບັນທຶກ
     if t_in == 0 and t_ex == 0:
         st.warning("⚠️ ກະລຸນາປ້ອນຂໍ້ມູນກ່ອນບັນທຶກ!")
     else:
@@ -133,15 +130,12 @@ if submit:
             'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3], 'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7], 'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9], 'ຊື້ຂອງເຂົ້າຮ້ານ': v_e[10]
         }
         
-        # ບັນທຶກລົງ CSV
         pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
         
-        # --- ວິທີລ້າງຂໍ້ມູນແບບປອດໄພ 100% ---
-        # ບວກຄ່າ clear_counter ເພື່ອໃຫ້ລະບົບປ່ຽນໄປໃຊ້ຊ່ອງພິມອັນໃໝ່ທີ່ວ່າງເປົ່າ
         st.session_state.clear_counter += 1
             
         st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
-        st.rerun() # ຣີເຟຣຊໜ້າຈໍ ຕົວເລກໃນຫ້ອງຈະຫາຍໄປທັນທີ
+        st.rerun() 
 
 # --- 3. ສ່ວນສະແດງຜົນ ແລະ AI ວິເຄາະ ---
 if os.path.exists(FILE_NAME):
@@ -189,10 +183,23 @@ if os.path.exists(FILE_NAME):
     else:
         st.info(f"ຍັງບໍ່ມີຂໍ້ມູນ {text_time} ເດີ້ປ້າ!")
 
-    # --- ຕາຕະລາງ Excel ---
+    # --- ຕາຕະລາງ Excel (ແກ້ໄຂໃຫ້ໃສ່ຈຸດທຸກຫ້ອງແລ້ວ) ---
     st.markdown("---")
     st.write("### 📅 ປະຫວັດການເງິນ (10 ລາຍການຫຼ້າສຸດ)")
-    st.dataframe(df.tail(10).style.format(subset=['ລາຍຮັບລວມ', 'ລາຍຈ່າຍລວມ', 'ເຫຼືອເກັບ'], formatter="{:,.0f}"), use_container_width=True)
+    
+    # ດຶງເອົາສະເພາະຄໍລຳທີ່ເປັນຕົວເລກ (ເພື່ອເອົາໄປສັ່ງໃສ່ຈຸດ)
+    numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
+    
+    # ເອົາຄໍລຳ 'Date_Obj' ອອກຈາກການສະແດງຜົນ ເພາະມັນຮົກຕາ (ມີວັນທີແລ້ວ)
+    display_df = df.drop(columns=['Date_Obj'], errors='ignore')
+    if 'Date_Obj' in numeric_cols:
+        numeric_cols.remove('Date_Obj')
+        
+    # ສະແດງຜົນ ແລະ ໃສ່ຈຸດໃຫ້ "ທຸກຄໍລຳທີ່ເປັນຕົວເລກ"
+    st.dataframe(
+        display_df.tail(10).style.format(subset=numeric_cols, formatter="{:,.0f}"), 
+        use_container_width=True
+    )
 
     # --- ສ່ວນລົບຂໍ້ມູນ ---
     with st.expander("🛠️ ລ້າງຂໍ້ມູນທັງໝົດ"):
