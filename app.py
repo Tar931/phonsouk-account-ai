@@ -3,6 +3,10 @@ import pandas as pd
 import os
 from datetime import datetime, timedelta
 
+# --- ຕັ້ງຄ່າໜ້າຈໍ ---
+st.set_page_config(page_title="App ບັນຊີຂອງປ້າ", layout="wide")
+FILE_NAME = 'phonsouk_final_database_v3.csv'
+
 # --- ຫົວຂໍ້ແບບປອດໄພ 100% ---
 header_text = """
 <div style="background-color: #1B4F72; padding: 25px; border-radius: 15px; border: 3px solid #F1C40F; text-align: center; color: white;">
@@ -14,6 +18,7 @@ header_text = """
 <br>
 """
 st.write(header_text, unsafe_allow_html=True)
+
 
 # 1. ຟັງຊັນຈັດຮູບແບບຕົວເລກ (ໃຫ້ມີຈຸດຄືເກົ່າ)
 def format_num(v):
