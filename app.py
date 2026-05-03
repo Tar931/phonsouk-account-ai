@@ -42,60 +42,70 @@ def input_box(label, key):
         st.rerun()
     return new_val
 
-# --- 1. ສ່ວນຂອງຊ່ອງປ້ອນຂໍ້ມູນ (ຕ້ອງຕັ້ງຊື່ i ແລະ e ແບບນີ້ AI ຈຶ່ງຈະເຫັນ) ---
-st.write("### 💰 ປ້ອນລາຍຮັບ-ລາຍຈ່າຍ")
-col1, col2 = st.columns(2)
+# --- 2. ສ່ວນຊ່ອງປ້ອນຂໍ້ມູນ (ພາສາລາວຄົບຖ້ວນ) ---
+st.write("---")
+st.subheader("📝 ປ້ອນລາຍລະອຽດມື້ນີ້")
+c1, c2 = st.columns(2)
 
-with col1:
-    st.success("🟢 ສ່ວນລາຍຮັບ")
-    i1 = st.number_input("1. ລາຍຮັບເງິນເດືອນ", value=0, step=1000)
-    i2 = st.number_input("2. ລາຍຮັບ Creator", value=0, step=1000)
-    i3 = st.number_input("3. ຂາຍຂອງ", value=0, step=1000)
-    i4 = st.number_input("4. ຫຍິບຜ້າ", value=0, step=1000)
-    i5 = st.number_input("5. ຕູ້ກົດນ້ຳ", value=0, step=1000)
-    i6 = st.number_input("6. ຕູ້ຊັກຜ້າ", value=0, step=1000)
-    i7 = st.number_input("7. ອາຫານ(ຮັບ)", value=0, step=1000)
+with c1:
+    st.success("🟢 ພາກສ່ວນ ລາຍຮັບ")
+    i1 = st.number_input("1. ເງິນເດືອນ/ລາຍໄດ້ຫຼັກ", value=0, step=1000)
+    i2 = st.number_input("2. ລາຍໄດ້ຈາກ YouTube/FB", value=0, step=1000)
+    i3 = st.number_input("3. ຂາຍເຄື່ອງຍ່ອຍ", value=0, step=1000)
+    i4 = st.number_input("4. ວຽກຫຍິບຜ້າ", value=0, step=1000)
+    i5 = st.number_input("5. ເງິນຈາກຕູ້ກົດນ້ຳ", value=0, step=1000)
+    i6 = st.number_input("6. ເງິນຈາກຕູ້ຊັກຜ້າ", value=0, step=1000)
+    i7 = st.number_input("7. ຄ່າອາຫານ (ຮັບ)", value=0, step=1000)
     i8 = st.number_input("8. ລາຍຮັບອື່ນໆ", value=0, step=1000)
 
-with col2:
-    st.error("🔴 ສ່ວນລາຍຈ່າຍ")
-    e1 = st.number_input("1. ຄ່າອາຫານ", value=0, step=1000)
-    e2 = st.number_input("2. ຄ່າເຊົ່າ", value=0, step=1000)
-    e3 = st.number_input("3. ນ້ຳໄຟ", value=0, step=1000)
-    e4 = st.number_input("4. ເດີນທາງ", value=0, step=1000)
-    e5 = st.number_input("5. ການສຶກສາ", value=0, step=1000)
-    e6 = st.number_input("6. ຢາ", value=0, step=1000)
-    e7 = st.number_input("7. ເສື້ອຜ້າ", value=0, step=1000)
-    e8 = st.number_input("8. ຄ່າໂທລະສັບ & ບັນເທີງ", value=0, step=1000)
-    e9 = st.number_input("9. ຄ່າຫວຍ/ລາງວັນ", value=0, step=1000)
-    e10 = st.number_input("10. ຄ່າສ້າງເຮືອນ", value=0, step=1000)
-    e11 = st.number_input("11. ຄ່າຊື້ສິນຄ້າເຂົ້າຮ້ານ", value=0, step=1000)
+with c2:
+    st.error("🔴 ພາກສ່ວນ ລາຍຈ່າຍ")
+    e1 = st.number_input("1. ຄ່າກິນ/ອາຫານ", value=0, step=1000)
+    e2 = st.number_input("2. ຄ່າເຊົ່າບ້ານ/ສະຖານທີ່", value=0, step=1000)
+    e3 = st.number_input("3. ຄ່ານ້ຳ/ຄ່າໄຟ", value=0, step=1000)
+    e4 = st.number_input("4. ຄ່ານ້ຳມັນ/ເດີນທາງ", value=0, step=1000)
+    e5 = st.number_input("5. ຄ່າຮຽນ/ການສຶກສາ", value=0, step=1000)
+    e6 = st.number_input("6. ຄ່າຢາ/ປິ່ນປົວ", value=0, step=1000)
+    e7 = st.number_input("7. ຊື້ເຄື່ອງນຸ່ງ/ຂອງໃຊ້", value=0, step=1000)
+    e8 = st.number_input("8. ໂທລະສັບ/ເນັດ/ບັນເທີງ", value=0, step=1000)
+    e9 = st.number_input("9. ສ່ຽງໂຊກ/ຫວຍ", value=0, step=1000)
+    e10 = st.number_input("10. ຄ່າສ້າງ/ສ້ອມເຮືອນ", value=0, step=1000)
+    e11 = st.number_input("11. ຕົ້ນທຶນຊື້ເຄື່ອງເຂົ້າຮ້ານ", value=0, step=1000)
 
-# --- 2. ສ່ວນປຸ່ມບັນທຶກ ແລະ ສະແດງຜົນແບບມີຈຸດ (,) ---
+# --- 3. ປຸ່ມບັນທຶກ ແລະ ການຈັດການຂໍ້ມູນ ---
 if st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True):
-    # ຄິດໄລ່ຍອດລວມ
-    total_in = float(i1 + i2 + i3 + i4 + i5 + i6 + i7 + i8)
-    total_ex = float(e1 + e2 + e3 + e4 + e5 + e6 + e7 + e8 + e9 + e10 + e11)
-    balance = total_in - total_ex
+    t_in = float(i1+i2+i3+i4+i5+i6+i7+i8)
+    t_ex = float(e1+e2+e3+e4+e5+e6+e7+e8+e9+e10+e11)
+    bal = t_in - t_ex
     
-    # ສະແດງຍອດລວມແບບມີຈຸດຂັ້ນ (,) ໃຫ້ເຫັນທັນທີ
-    st.info(f"📊 ສະຫຼຸບຕອນນີ້: ຮັບ {total_in:,.0f} | ຈ່າຍ {total_ex:,.0f} | ເຫຼືອ {balance:,.0f} ກີບ")
-    
-    # ບັນທຶກລົງ CSV
-    new_entry = {
+    new_data = {
         'ວັນທີ': datetime.now().strftime("%d/%m/%Y %H:%M"),
-        'ລາຍຮັບລວມ': total_in, 'ລາຍຈ່າຍລວມ': total_ex, 'ເຫຼືອກັບ': balance,
-        'ເງິນເດືອນ': i1, 'ອາຫານ': e1, 'ສ້າງເຮືອນ': e10 # (ຕື່ມໃຫ້ຄົບຕາມ Columns ຂອງປ້າ)
+        'ລາຍຮັບທັງໝົດ': t_in, 'ລາຍຈ່າຍທັງໝົດ': t_ex, 'ເຫຼືອສຸດທິ': bal,
+        'ເງິນເດືອນ': i1, 'ລາຍໄດ້ເນັດ': i2, 'ຂາຍເຄື່ອງ': i3, 'ຫຍິບຜ້າ': i4,
+        'ຕູ້ກົດນ້ຳ': i5, 'ຕູ້ຊັກຜ້າ': i6, 'ອາຫານຮັບ': i7, 'ຮັບອື່ນໆ': i8,
+        'ຄ່າກິນ': e1, 'ຄ່າເຊົ່າ': e2, 'ນ້ຳໄຟ': e3, 'ເດີນທາງ': e4,
+        'ການສຶກສາ': e5, 'ຄ່າຢາ': e6, 'ເຄື່ອງນຸ່ງ': e7, 'ເນັດບັນເທີງ': e8,
+        'ຫວຍ': e9, 'ສ້າງເຮືອນ': e10, 'ທຶນຊື້ເຄື່ອງ': e11
     }
     
-    df_new = pd.DataFrame([new_entry])
+    df_new = pd.DataFrame([new_data])
     if not os.path.exists(FILE_NAME):
         df_new.to_csv(FILE_NAME, index=False, encoding='utf-8-sig')
     else:
         df_new.to_csv(FILE_NAME, mode='a', index=False, header=False, encoding='utf-8-sig')
     
-    st.success("✅ ບັນທຶກຂໍ້ມູນຮຽບຮ້ອຍແລ້ວ!")
+    st.balloons()
+    st.success(f"✅ ບັນທຶກສຳເລັດ! ຮັບ: {t_in:,.0f} | ຈ່າຍ: {t_ex:,.0f} | ເຫຼືອ: {bal:,.0f}")
     st.rerun()
+
+# --- 4. ສະແດງຕາຕະລາງພາສາລາວ (ມີຈຸດຂັ້ນ) ---
+st.write("---")
+st.subheader("📊 ຕາຕະລາງປະຫວັດການເງິນ (Excel)")
+if os.path.exists(FILE_NAME):
+    df_display = pd.read_csv(FILE_NAME)
+    if not df_display.empty:
+        # ໃສ່ຈຸດຂັ້ນໃຫ້ທຸກຖັນທີ່ເປັນຕົວເລກ
+        st.dataframe(df_display.style.format(thousands=",", precision=0), use_container_width=True)
 
 # --- 3. ສ່ວນຕາຕະລາງ Excel ໃຫ້ມີຈຸດທັງໝົດ ---
 if os.path.exists(FILE_NAME):
