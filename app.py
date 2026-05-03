@@ -8,7 +8,7 @@ ai_error_msg = ""
 try:
     import google.generativeai as genai
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    model = genai.GenerativeModel('gemini-1.5-flash-latest')
+    model = genai.GenerativeModel('gemini-1.5-flash')
     ai_ready = True
 except Exception as e:
     ai_ready = False
