@@ -3,33 +3,31 @@ import pandas as pd
 import os
 from datetime import datetime, timedelta
 
-# --- ຕັ້ງຄ່າໜ້າຈໍ ---
-st.set_page_config(page_title="App ບັນຊີຂອງປ້າ", layout="wide")
-FILE_NAME = 'phonsouk_final_database_v3.csv'
-
-# --- ຫົວຂໍ້ເວີຊັນດອກຈຳປາ & ເງິນກີບ (ແກ້ໄຂແລ້ວ ບໍ່ຫຼຸດ) ---
-st.markdown("""
-    <div style="background-color: #1B4F72; padding: 30px; border-radius: 20px; border: 3px solid #F1C40F; text-align: center; color: white;">
-        <h1 style="margin: 0; font-size: 35px;">🌸 ລະບົບບັນຊີ AI ປ້າພອນສຸກ ₭</h1>
-        <p style="font-size: 18px; color: #D5D8DC; margin-top: 10px;">ລະບົບບັນທຶກການເງິນ ແລະ ວິເຄາະດ້ວຍ AI (ເວີຊັນເມືອງລາວ)</p>
-        
-        <hr style="border: 0.5px solid #F1C40F; width: 80%; margin: 20px auto;">
-        
-        <div style="background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; display: inline-block; text-align: left;">
-            <h4 style="margin: 0 0 10px 0; color: #F1C40F;">📞 ຂໍ້ມູນຕິດຕໍ່ຜູ້ເດູແລ:</h4>
-            <p style="margin: 5px 0; font-size: 16px; color: white;"><b>ເບີໂທ:</b> 020 99858310</p>
-            <p style="margin: 5px 0; font-size: 16px; color: white;"><b>Line ID:</b> Tarvan</p>
-            <p style="margin: 5px 0; font-size: 16px; color: white;"><b>Facebook:</b> ນາງພອນສຸກ ພັນທະຜອງ</p>
-        </div>
-        
-        <div style="margin-top: 15px;">
-            <span style="font-size: 40px;">🌸</span>
-            <span style="font-size: 30px; vertical-align: middle; margin: 0 15px;">🇱🇦</span>
-            <span style="font-size: 40px;">🌸</span>
-        </div>
+# --- ຫົວຂໍ້ ແລະ ຂໍ້ມູນຕິດຕໍ່ (ແບບປ້ອງກັນການຫຼຸດ 100%) ---
+header_html = """
+<div style="background-color: #1B4F72; padding: 30px; border-radius: 20px; border: 3px solid #F1C40F; text-align: center; color: white; font-family: 'Arial';">
+    <h1 style="margin: 0; font-size: 35px;">🌸 ລະບົບບັນຊີ AI ປ້າພອນສຸກ ₭</h1>
+    <p style="font-size: 18px; color: #D5D8DC; margin-top: 10px;">ລະບົບບັນທຶກການເງິນ ແລະ ວິເຄາະດ້ວຍ AI (ເວີຊັນເມືອງລາວ)</p>
+    
+    <hr style="border: 0.5px solid #F1C40F; width: 80%; margin: 20px auto;">
+    
+    <div style="background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; display: inline-block; text-align: left;">
+        <h4 style="margin: 0 0 10px 0; color: #F1C40F;">📞 ຂໍ້ມູນຕິດຕໍ່ຜູ້ເດູແລ:</h4>
+        <p style="margin: 5px 0; font-size: 18px; color: white;"><b>ເບີໂທ:</b> 020 99858310</p>
+        <p style="margin: 5px 0; font-size: 18px; color: white;"><b>Line ID:</b> Tarvan</p>
+        <p style="margin: 5px 0; font-size: 18px; color: white;"><b>Facebook:</b> ນາງພອນສຸກ ພັນທະຜອງ</p>
     </div>
-    <br>
-    """, unsafe_allow_html=True)
+    
+    <div style="margin-top: 15px;">
+        <span style="font-size: 40px;">🌸</span>
+        <span style="font-size: 30px; vertical-align: middle; margin: 0 15px;">🇱🇦</span>
+        <span style="font-size: 40px;">🌸</span>
+    </div>
+</div>
+<br>
+"""
+# ສັ່ງໃຫ້ມັນສະແດງຜົນ (ຫ້າມລືມແຖວນີ້ເດີ້ປ້າ)
+st.markdown(header_html, unsafe_allow_html=True)
 
 # ຟັງຊັນແປງເປັນຕົວເລກ
 def parse_num(v):
