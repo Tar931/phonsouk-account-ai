@@ -124,7 +124,7 @@ if os.path.exists(FILE_NAME):
         c2.metric(f"ລາຍຈ່າຍ {text_time}", f"{total_ex:,.0f} ກີບ")
         c3.metric(f"ກຳໄລ {text_time}", f"{profit:,.0f} ກີບ")
 
-        # --- ສ່ວນ AI Advisor (ວິເຄາະ-ວາງແຜນ-ແນະນຳ) ---
+# --- ສ່ວນ AI Advisor (ວິເຄາະ-ວາງແຜນ-ແນະນຳ) ---
 st.divider()
 st.write("### 🧠 AI ອັດສະລິຍະ: ວິເຄາະ & ວາງແຜນທຸລະກິດ")
 
@@ -136,7 +136,7 @@ if os.path.exists(FILE_NAME):
         avg_expense = df['ລາຍຈ່າຍ'].mean()
         total_balance = df['ເຫຼືອ'].sum()
         
- # ສ້າງ Tab ເພື່ອແຍກການວິເຄາະ
+        # ສ້າງ Tab ເພື່ອແຍກການວິເຄາະ
         tab1, tab2, tab3 = st.tabs(["💰 ການເງິນ", "📈 ການຕະຫຼາດ", "🏢 ການບໍລິຫານ"])
         
         with tab1:
@@ -162,9 +162,10 @@ if os.path.exists(FILE_NAME):
     else:
         st.write("ກະລຸນາບັນທຶກຂໍ້ມູນກ່ອນ ເພື່ອໃຫ້ AI ເລີ່ມວິເຄາະ.")
 else:
-    
-st.info("ຍັງບໍ່ມີຂໍ້ມູນໃຫ້ວິເຄາະໃນເວລານີ້.")
-    # --- ຕະລາງ Excel ແລະ ປຸ່ມລົບ (Code ທີ່ປ້າໃຫ້ເພີ່ມ) ---
+    st.info("ຍັງບໍ່ມີຂໍ້ມູນໃຫ້ວິເຄາະໃນເວລານີ້.")
+
+ 
+# --- ຕະລາງ Excel ແລະ ປຸ່ມລົບ (Code ທີ່ປ້າໃຫ້ເພີ່ມ) ---
     st.write("### 📅 ປະຫວັດການເງິນ (Excel)")
     st.dataframe(df.tail(10), use_container_width=True)
 
