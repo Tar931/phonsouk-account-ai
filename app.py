@@ -16,19 +16,19 @@ st.markdown("""
     <br>
     """, unsafe_allow_html=True)
 
-# --- ສ່ວນຂໍ້ມູນຕິດຕໍ່ (Contact Information) ---
-st.divider() # ຂີດເສັ້ນຄັ່ນກ່ອນຂຶ້ນສ່ວນຕິດຕໍ່
+# --- ສ່ວນຂໍ້ມູນຕິດຕໍ່ (Contact Information) - ແກ້ໄຂສີຕົວໜັງສື ---
+st.divider()
 
-# ສ້າງ Card ສຳລັບລວມຂໍ້ມູນຕິດຕໍ່
 st.markdown(f"""
-    <div style="background-color: #F0F2F6; padding: 20px; border-radius: 15px; border: 1px solid #D1D5DB;">
-        <h3 style="color: #1B4F72; margin-top: 0;">📞 ຂໍ້ມູນຕິດຕໍ່ຜູ້ເດູແລ</h3>
-        <p style="font-size: 18px; margin-bottom: 5px;"><b>ເບີໂທຕິດຕໍ່:</b> 020 99858310</p>
-        <p style="font-size: 18px; margin-bottom: 5px;"><b>Line ID:</b> Tarvan</p>
-        <p style="font-size: 18px; margin-bottom: 0;"><b>Facebook:</b> ນາງພອນສຸກ ພັນທະຜອງ</p>
+    <div style="background-color: #F0F2F6; padding: 25px; border-radius: 15px; border: 2px solid #1B4F72;">
+        <h3 style="color: #1B4F72; margin-top: 0; font-size: 24px;">📞 ຂໍ້ມູນຕິດຕໍ່ຜູ້ເດູແລ</h3>
+        <hr style="border: 0.5px solid #1B4F72;">
+        <p style="font-size: 20px; color: #000000; margin-bottom: 8px;"><b>ເບີໂທຕິດຕໍ່:</b> 020 99858310</p>
+        <p style="font-size: 20px; color: #000000; margin-bottom: 8px;"><b>Line ID:</b> Tarvan</p>
+        <p style="font-size: 20px; color: #000000; margin-bottom: 0;"><b>Facebook:</b> ນາງພອນສຸກ ພັນທະຜອງ</p>
     </div>
     <br>
-    <p style="text-align: center; color: gray; font-size: 12px;">© 2024 System by AI Assistant for Paphonsouk</p>
+    <p style="text-align: center; color: #5D6D7E; font-size: 14px;">© 2024 System by AI Assistant for Paphonsouk</p>
     """, unsafe_allow_html=True)
 
 # ຟັງຊັນແປງເປັນຕົວເລກ
