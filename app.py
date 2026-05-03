@@ -7,28 +7,28 @@ from datetime import datetime, timedelta
 st.set_page_config(page_title="App ບັນຊີຂອງປ້າ", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
 
-# --- ສ່ວນຫົວຂໍ້ແບບມີສີພື້ນຫຼັງ ---
+# --- ສ່ວນຫົວຂໍ້ ແລະ ຂໍ້ມູນຕິດຕໍ່ ແບບຕົບແຕ່ງພິເສດ ---
 st.markdown("""
-    <div style="background-color:#1B4F72; padding:20px; border-radius:15px; text-align:center;">
-        <h1 style="color:white; margin:0;">🏦 ລະບົບບັນຊີ AI ປ້າພອນສຸກ</h1>
-        <p style="color:#D5D8DC; font-size:18px; margin-top:10px;">ລະບົບບັນທຶກການເງິນ ແລະ ວິເຄາະດ້ວຍ AI</p>
+    <div style="background-color: #1B4F72; padding: 30px; border-radius: 20px; border: 3px solid #F1C40F; text-align: center; color: white;">
+        <h1 style="margin: 0; font-size: 35px;">🌸 ລະບົບບັນຊີ AI ປ້າພອນສຸກ ₭</h1>
+        <p style="font-size: 18px; color: #D5D8DC; margin-top: 10px;">ລະບົບບັນທຶກການເງິນ ແລະ ວິເຄາະດ້ວຍ AI (ເວີຊັນເມືອງລາວ)</p>
+        
+        <hr style="border: 0.5px solid #F1C40F; width: 80%; margin: 20px auto;">
+        
+        <div style="background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; display: inline-block; text-align: left;">
+            <h4 style="margin: 0 0 10px 0; color: #F1C40F;">📞 ຂໍ້ມູນຕິດຕໍ່ຜູ້ເດູແລ:</h4>
+            <p style="margin: 5px 0; font-size: 16px;"><b>ເບີໂທ:</b> 020 99858310</p>
+            <p style="margin: 5px 0; font-size: 16px;"><b>Line ID:</b> Tarvan</p>
+            <p style="margin: 5px 0; font-size: 16px;"><b>Facebook:</b> ນາງພອນສຸກ ພັນທະຜອງ</p>
+        </div>
+        
+        <div style="margin-top: 15px;">
+            <span style="font-size: 40px;">🌸</span>
+            <span style="font-size: 25px; vertical-align: middle; margin: 0 15px;">🇱🇦</span>
+            <span style="font-size: 40px;">🌸</span>
+        </div>
     </div>
     <br>
-    """, unsafe_allow_html=True)
-
-# --- ສ່ວນຂໍ້ມູນຕິດຕໍ່ (Contact Information) - ແກ້ໄຂສີຕົວໜັງສື ---
-st.divider()
-
-st.markdown(f"""
-    <div style="background-color: #F0F2F6; padding: 25px; border-radius: 15px; border: 2px solid #1B4F72;">
-        <h3 style="color: #1B4F72; margin-top: 0; font-size: 24px;">📞 ຂໍ້ມູນຕິດຕໍ່ຜູ້ເດູແລ</h3>
-        <hr style="border: 0.5px solid #1B4F72;">
-        <p style="font-size: 20px; color: #000000; margin-bottom: 8px;"><b>ເບີໂທຕິດຕໍ່:</b> 020 99858310</p>
-        <p style="font-size: 20px; color: #000000; margin-bottom: 8px;"><b>Line ID:</b> Tarvan</p>
-        <p style="font-size: 20px; color: #000000; margin-bottom: 0;"><b>Facebook:</b> ນາງພອນສຸກ ພັນທະຜອງ</p>
-    </div>
-    <br>
-    <p style="text-align: center; color: #5D6D7E; font-size: 14px;">© 2024 System by AI Assistant for Paphonsouk</p>
     """, unsafe_allow_html=True)
 
 # ຟັງຊັນແປງເປັນຕົວເລກ
