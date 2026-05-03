@@ -4,80 +4,64 @@ import os
 from datetime import datetime, timedelta
 
 # --- ຕັ້ງຄ່າໜ້າຈໍ ---
-st.set_page_config(page_title="App ປ້າ", layout="wide")
+st.set_page_config(page_title="App ບັນຊີຂອງປ້າ", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
 
-# ລົບ Header ແລະ ຂໍ້ຄວາມທີ່ປ້າບໍ່ມັກອອກໃຫ້ໝົດ
+# CSS ຕົບແຕ່ງ (ລົບ Header ທີ່ປ້າບໍ່ມັກອອກ)
 st.markdown("""
     <style>
-    .block-container { padding-top: 0rem; }
+    .block-container { padding-top: 1rem; }
     header {visibility: hidden;}
     footer {visibility: hidden;}
     .money-box { 
         background-color: #002B36; color: #00FFAA; padding: 15px; border-radius: 12px; 
-        font-size: 24px; font-weight: bold; text-align: right; border: 2px solid #268BD2; margin-bottom: 10px;
+        font-size: 22px; font-weight: bold; text-align: right; border: 2px solid #268BD2; margin-bottom: 10px;
+    }
+    .ai-card { 
+        background-color: #f0f2f6; padding: 20px; border-radius: 15px; border-left: 10px solid #268BD2; 
+        color: #1B4F72; margin-top: 10px; line-height: 1.6;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# ຟັງຊັນຈັດຮູບແບບຕົວເລກ (ໃສ່ຈຸດ)
-def format_num(v):
-    if v == "" or v is None: return ""
-    nums = "".join(filter(str.isdigit, str(v)))
-    return "{:,}".format(int(nums)) if nums else ""
-
-# ຟັງຊັນແປງເປັນຕົວເລກເພື່ອຄິດໄລ່
+# ຟັງຊັນແປງເປັນຕົວເລກ
 def parse_num(v):
     if v == "" or v is None: return 0
     nums = "".join(filter(str.isdigit, str(v)))
     return int(nums) if nums else 0
 
-# ຊ່ອງປ້ອນຂໍ້ມູນແບບມີຈຸດ
-def input_box(label, key):
-    if key not in st.session_state: st.session_state[key] = ""
-    val = st.text_input(label, value=st.session_state[key], key=f"k_{key}")
-    new_val = format_num(val)
-    if new_val != st.session_state[key]:
-        st.session_state[key] = new_val
-        st.rerun()
-    return new_val
-
-# --- ສ່ວນປ້ອນຂໍ້ມູນ ---
+# --- 1. ສ່ວນປ້ອນຂໍ້ມູນ ---
 c1, c2 = st.columns(2)
 
 with c1:
     st.success("### 🟢 ລາຍຮັບ")
-    i1_val = input_box("1. ເງິນເດືອນ", "i1")
-    i2_val = input_box("2. ລາຍຮັບ Creator (FB/YouTube)", "i2")
-    i3_val = input_box("3. ຂາຍຂອງຍ່ອຍ", "i3")
-    i4_val = input_box("4. ຮັບຕັດຫຍິບ", "i4")
-    i5_val = input_box("5. ຕູ້ກົດນ້ຳ", "i5")
-    i6_val = input_box("6. ຕູ້ຊັກຜ້າ", "i6")
+    i1 = parse_num(st.text_input("1. ເງິນເດືອນ", key="in1"))
+    i2 = parse_num(st.text_input("2. ລາຍຮັບ Creator (FB/YouTube)", key="in2"))
+    i3 = parse_num(st.text_input("3. ຂາຍຂອງຍ່ອຍ", key="in3"))
+    i4 = parse_num(st.text_input("4. ຮັບຕັດຫຍິບ", key="in4"))
+    i5 = parse_num(st.text_input("5. ຕູ້ກົດນ້ຳ", key="in5"))
+    i6 = parse_num(st.text_input("6. ຕູ້ຊັກຜ້າ", key="in6"))
 
 with c2:
     st.error("### 🔴 ລາຍຈ່າຍ")
-    e1_val = input_box("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", "e1")
-    e2_val = input_box("2. ຄ່າເຊົ່າທີ່ຢູ່", "e2")
-    e3_val = input_box("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", "e3")
-    e4_val = input_box("4. ຄ່າເດີນທາງ", "e4")
-    e5_val = input_box("5. ຄ່າການສຶກສາ", "e5")
-    e6_val = input_box("6. ຄ່າປິ່ນປົວ", "e6")
-    e7_val = input_box("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", "e7")
-    e8_val = input_box("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
-    e9_val = input_box("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
-    e10_val = input_box("10. ຄ່າສ້າງເຮືອນ", "e10")
+    e1 = parse_num(st.text_input("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", key="ex1"))
+    e2 = parse_num(st.text_input("2. ຄ່າເຊົ່າທີ່ຢູ່", key="ex2"))
+    e3 = parse_num(st.text_input("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", key="ex3"))
+    e4 = parse_num(st.text_input("4. ຄ່າເດີນທາງ", key="ex4"))
+    e5 = parse_num(st.text_input("5. ຄ່າການສຶກສາ", key="ex5"))
+    e6 = parse_num(st.text_input("6. ຄ່າປິ່ນປົວ", key="ex6"))
+    e7 = parse_num(st.text_input("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", key="ex7"))
+    e8 = parse_num(st.text_input("8. ຄ່າໂທລະສັບ & ບັນເທີງ", key="ex8"))
+    e9 = parse_num(st.text_input("9. ຄ່າຫວຍ/ລາງວັນ", key="ex9"))
+    e10 = parse_num(st.text_input("10. ຄ່າສ້າງເຮືອນ", key="ex10"))
 
-# --- ປຸ່ມບັນທຶກ (ນີ້ຄືສ່ວນທີ່ປ້າໃຫ້ເພີ່ມ) ---
-st.write("")
-submit = st.button("💾 ບັນທຶກຂໍ້ມູນ", use_container_width=True)
+submit = st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True)
 
+# --- 2. ສ່ວນບັນທຶກຂໍ້ມູນ (ທີ່ປ້າບອກໃຫ້ເພີ່ມ) ---
 if submit:
     # ບວກ 7 ຊົ່ວໂມງເຂົ້າໄປຕົງໆເລີຍ ເພື່ອໃຫ້ເປັນເວລາລາວ
+    from datetime import timedelta
     now_lao = datetime.now() + timedelta(hours=7) 
-    
-    # ແປງຄ່າໃຫ້ເປັນຕົວເລກກ່ອນຄິດໄລ່
-    i1, i2, i3, i4, i5, i6 = parse_num(i1_val), parse_num(i2_val), parse_num(i3_val), parse_num(i4_val), parse_num(i5_val), parse_num(i6_val)
-    e1, e2, e3, e4, e5, e6, e7, e8, e9, e10 = parse_num(e1_val), parse_num(e2_val), parse_num(e3_val), parse_num(e4_val), parse_num(e5_val), parse_num(e6_val), parse_num(e7_val), parse_num(e8_val), parse_num(e9_val), parse_num(e10_val)
     
     t_in = i1+i2+i3+i4+i5+i6
     t_ex = e1+e2+e3+e4+e5+e6+e7+e8+e9+e10
@@ -90,28 +74,66 @@ if submit:
         'ເງິນເດືອນ': i1, 'Creator': i2, 'ຂາຍຂອງ': i3, 'ຫຍິບຜ້າ': i4, 'ຕູ້້ກົດນ້ຳ': i5, 'ຕູ້ຊັກຜ້າ': i6,
         'ອາຫານ': e1, 'ຄ່າເຊົ່າ': e2, 'ນ້ຳໄຟ': e3, 'ເດີນທາງ': e4, 'ການສຶກສາ': e5, 'ຢາ': e6, 'ເສື້ອຜ້າ': e7, 'ບັນເທີງ': e8, 'ຫວຍ': e9, 'ສ້າງເຮືອນ': e10
     }
-    
-    # ບັນທຶກລົງ CSV (utf-8-sig ເພື່ອໃຫ້ Excel ອ່ານພາສາລາວອອກ)
     pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
-    
     st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວປັດຈຸບັນ: {now_lao.strftime('%H:%M')}")
     st.rerun()
 
-# --- ສະແດງຜົນລວມລຸ່ມສຸດ ---
-st.markdown("---")
-ti = parse_num(i1_val)+parse_num(i2_val)+parse_num(i3_val)+parse_num(i4_val)+parse_num(i5_val)+parse_num(i6_val)
-te = parse_num(e1_val)+parse_num(e2_val)+parse_num(e3_val)+parse_num(e4_val)+parse_num(e5_val)+parse_num(e6_val)+parse_num(e7_val)+parse_num(e8_val)+parse_num(e9_val)+parse_num(e10_val)
-bal = ti - te
-
-ca, cb, cc = st.columns(3)
-with ca: st.markdown(f'<div class="money-box">💰 ລາຍຮັບ: {format_num(ti)}</div>', unsafe_allow_html=True)
-with cb: st.markdown(f'<div class="money-box">💸 ລາຍຈ່າຍ: {format_num(te)}</div>', unsafe_allow_html=True)
-with cc: 
-    col_bal = "#00FFAA" if bal >= 0 else "#FF5555"
-    st.markdown(f'<div class="money-box" style="color:{col_bal}">📊 ສົມດຸນ: {format_num(bal)}</div>', unsafe_allow_html=True)
-
-# ປະຫວັດ
+# --- 3. ສ່ວນ AI ວິເຄາະ ແລະ ສະແດງຜົນ ---
 if os.path.exists(FILE_NAME):
-    with st.expander("📜 ເບິ່ງປະຫວັດການບັນທຶກ"):
-        df = pd.read_csv(FILE_NAME)
-        st.dataframe(df.tail(10), use_container_width=True)
+    df = pd.read_csv(FILE_NAME)
+    st.markdown("---")
+    
+    # ເລືອກໄລຍະເວລາ
+    st.subheader("📊 ເລືອກໄລຍະເວລາທີ່ປ້າຢາກໃຫ້ AI ວິເຄາະ")
+    option = st.radio("ເບິ່ງລາຍງານ:", ["ມື້ນີ້", "ອາທິດນີ້", "ເດືອນນີ້", "ປີນີ້"], horizontal=True)
+
+    df['Date_Obj'] = pd.to_datetime(df['ວັນທີ'], format="%d/%m/%Y %H:%M")
+    now = datetime.now() + timedelta(hours=7)
+    
+    if option == "ມື້ນີ້":
+        filtered_df = df[df['Date_Obj'].dt.date == now.date()]
+        text_time = "ຂອງມື້ນີ້"
+    elif option == "ອາທິດນີ້":
+        filtered_df = df[df['Date_Obj'].dt.isocalendar().week == now.isocalendar()[1]]
+        text_time = "ຂອງອາທິດນີ້"
+    elif option == "ເດືອນນີ້":
+        filtered_df = df[df['Date_Obj'].dt.month == now.month]
+        text_time = "ຂອງເດືອນນີ້"
+    else:
+        filtered_df = df[df['Date_Obj'].dt.year == now.year]
+        text_time = "ຂອງປີນີ້"
+
+    if not filtered_df.empty:
+        t_in_sum = filtered_df['ລາຍຮັບລວມ'].sum()
+        t_ex_sum = filtered_df['ລາຍຈ່າຍລວມ'].sum()
+        profit = t_in_sum - t_ex_sum
+        
+        c1, c2, c3 = st.columns(3)
+        c1.metric(f"ລາຍຮັບ {text_time}", f"{t_in_sum:,.0f} ກີບ")
+        c2.metric(f"ລາຍຈ່າຍ {text_time}", f"{t_ex_sum:,.0f} ກີບ")
+        c3.metric(f"ກຳໄລ {text_time}", f"{profit:,.0f} ກີບ")
+
+        st.markdown(f"""
+        <div class="ai-card">
+            <h3>🤖 AI Professional Advisor ({text_time})</h3>
+            <p>✅ <b>ສະຫຼຸບການເງິນ:</b> {text_time} ປ້າມີກຳໄລສຸດທິ <b>{profit:,.0f} ກີບ</b>.</p>
+            <p>📈 <b>ວິເຄາະຊ່ອງທາງລາຍໄດ້:</b> ລາຍຮັບຈາກການຫຍິບຜ້າ ແລະ ຕູ້ຢອດຫຼຽນເປັນລາຍໄດ້ທີ່ໝັ້ນຄົງທີ່ສຸດ.</p>
+            <p>⚠️ <b>ຂໍ້ຄວນລະວັງ:</b> ຖ້າລາຍຈ່າຍຄ່າຫວຍ ຫຼື ຄ່າບັນເທີງສູງເກີນ 10% ຂອງລາຍຮັບ, AI ແນະນຳໃຫ້ປ້າປັບຫຼຸດລົງເພື່ອເອົາໄປໃສ່ຄ່າສ້າງເຮືອນແທນ.</p>
+            <p>🚀 <b>ຄຳແນະນຳມືອາຊີບ:</b> ໃນໄລຍະ {text_time}, ປ້າຄວນແບ່ງກຳໄລ 5% ໄປບຳລຸງຮັກສາຕູ້ຊັກຜ້າ ແລະ ຕູ້ກົດນ້ຳ ເພື່ອໃຫ້ມັນສ້າງເງິນໃຫ້ປ້າໄດ້ຍາວໆ.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.info(f"ຍັງບໍ່ມີຂໍ້ມູນ {text_time} ເດີ້ປ້າ!")
+
+    # --- 4. ຕະລາງ Excel ແລະ ປຸ່ມລົບ (Password Lock) ທີ່ປ້າຫາກໍ່ສົ່ງມາໃຫ້ ---
+    st.write("### 📅 ປະຫວັດການເງິນ (Excel)")
+    st.dataframe(df.tail(10), use_container_width=True)
+
+    with st.expander("🛠️ ລ້າງຂໍ້ມູນທັງໝົດ"):
+        pwd = st.text_input("ໃສ່ລະຫັດ 9999 ເພື່ອລົບ:", type="password")
+        if st.button("🗑️ ຢືນຢັນລົບ"):
+            if pwd == "9999":
+                os.remove(FILE_NAME)
+                st.rerun()
+            else:
+                st.error("ລະຫັດບໍ່ຖືກ!")
