@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 st.set_page_config(page_title="App ບັນຊີຂອງປ້າ", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
 
-# --- CSS ຕົບແຕ່ງ (ຄືເກົ່າ 100%) ---
+# --- CSS ຕົບແຕ່ງ (ຮັກສາໄວ້ຄືເກົ່າຕາມ image_4e7d9c.png) ---
 st.markdown("""
 <style>
     [data-testid="stMetricValue"] {
@@ -40,7 +40,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- ຫົວຂໍ້ (ຄືເກົ່າ 100%) ---
+# --- ຫົວຂໍ້ແບບປອດໄພ (ຮັກສາໄວ້ຄືເກົ່າ) ---
 header_text = """
 <div style="background-color: #1B4F72; padding: 25px; border-radius: 15px; border: 3px solid #F1C40F; text-align: center; color: white;">
     <h1 style="margin: 0;">🌸 ລະບົບບັນຊີ AI ປ້າພອນສຸກ </h1>
@@ -52,7 +52,7 @@ header_text = """
 """
 st.write(header_text, unsafe_allow_html=True)
 
-# --- ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ (ປັບປຸງໃໝ່ໃຫ້ມີຈຸດ ແລະ ລ້າງຄ່າໄດ້ດີຂຶ້ນ) ---
+# --- ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ (ປັບປຸງໃໝ່ໃຫ້ລ້າງຄ່າໄດ້ ແລະ ມີຈຸດ) ---
 def format_num(v):
     if v == "" or v is None: return ""
     nums = "".join(filter(str.isdigit, str(v)))
@@ -64,12 +64,15 @@ def parse_num(v):
     return int(nums) if nums else 0
 
 def input_box(label, key):
-    # ໃຊ້ key ໂດຍກົງໃນ text_input ເພື່ອໃຫ້ລະບົບລ້າງຄ່າໄດ້ 100%
-    if key not in st.session_state: st.session_state[key] = ""
+    # ສ້າງຄ່າເລີ່ມຕົ້ນໃນ session_state
+    if key not in st.session_state:
+        st.session_state[key] = ""
     
-    # ປ່ຽນມາໃຊ້ key=key ເພື່ອໃຫ້ Streamlit ຈັດການ Session ໄດ້ຖືກຕ້ອງ
-    val = st.text_input(label, value=st.session_state[key], key=f"widget_{key}")
+    # ໃຊ້ key ທີ່ປ່ຽນແປງໄດ້ເພື່ອບັງຄັບໃຫ້ Streamlit ລ້າງຄ່າ (Clear)
+    # ໂດຍການຕື່ມ prefix 'w_' ໃສ່ທາງໜ້າ key ຂອງ widget
+    val = st.text_input(label, value=st.session_state[key], key=f"w_{key}")
     
+    # ຈັດຮູບແບບຕົວເລກໃຫ້ມີຈຸດ (,) ທັນທີທີ່ພິມ
     new_val = format_num(val)
     if new_val != st.session_state[key]:
         st.session_state[key] = new_val
@@ -123,14 +126,14 @@ if submit:
     
     pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
     
-    # --- ຈຸດທີ່ແກ້ໄຂ: ລ້າງຄ່າໃນ Session State ໃຫ້ໝົດກ້ຽງ ---
+    # ລ້າງຂໍ້ມູນໃນ session_state ຫຼັງບັນທຶກ
     for k in ["i1","i2","i3","i4","i5","i6","i7","e1","e2","e3","e4","e5","e6","e7","e8","e9", "e10", "e11"]:
         st.session_state[k] = ""
         
     st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
-    st.rerun() # Refresh ໜ້າຈໍເພື່ອລ້າງຕົວເລກອອກຈາກຊ່ອງພິມ
+    st.rerun() # Refresh ໃຫ້ຕົວເລກໃນຊ່ອງພິມຫາຍໄປ
 
-# --- 3. ສ່ວນສະແດງຜົນ ແລະ AI ວິເຄາະ (ຄືເກົ່າ 100%) ---
+# --- 3. ສ່ວນສະແດງຜົນ ແລະ AI ວິເຄາະ (ຮັກສາໄວ້ຄືເກົ່າທຸກຕົວອັກສອນ) ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
     st.markdown("---")
