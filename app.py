@@ -3,6 +3,16 @@ import pandas as pd
 import os
 from datetime import datetime, timedelta
 
+# --- ດຶງເອົາສະໝອງກົນ AI ເຂົ້າມາ ---
+try:
+    import google.generativeai as genai
+    # ເອີ້ນໃຊ້ລະຫັດລັບທີ່ເຮົາເຊື່ອງໄວ້ໃນ Streamlit Secrets
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    ai_ready = True
+except Exception as e:
+    ai_ready = False
+
 # --- ຕັ້ງຄ່າໜ້າຈໍ ---
 st.set_page_config(page_title="App ບັນຊີຂອງປ້າ", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
@@ -37,9 +47,7 @@ st.markdown("""
         border-radius: 10px;
         color: #1B4F72 !important;
         margin: 20px 0;
-    }
-    .ai-card h3, .ai-card p, .ai-card b {
-        color: #1B4F72 !important;
+        line-height: 1.6;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -47,7 +55,7 @@ st.markdown("""
 # --- ຫົວຂໍ້ ---
 header_text = """
 <div style="background-color: #1B4F72; padding: 25px; border-radius: 15px; border: 3px solid #F1C40F; text-align: center; color: white;">
-    <h1 style="margin: 0;">🌸 ລະບົບບັນຊີ AI ປ້າພອນສຸກ </h1>
+    <h1 style="margin: 0;">🌸 ລະບົບບັນຊີ Super AI ປ້າພອນສຸກ </h1>
     <p style="margin: 10px 0;">ເບີໂທ: 020 99858310 | Line: Tarvan</p>
     <p style="margin: 0;">Facebook: ນາງພອນສຸກ ພັນທະຜອງ</p>
     <div style="font-size: 30px; margin-top: 10px;">🌸 🇱🇦 🌸</div>
@@ -75,10 +83,8 @@ def update_val(key):
 # ຟັງຊັນສ້າງຊ່ອງພິມ 
 def input_box(label, base_key):
     actual_key = f"{base_key}_{st.session_state.clear_counter}"
-    
     if actual_key not in st.session_state:
         st.session_state[actual_key] = ""
-    
     val = st.text_input(label, key=actual_key, on_change=update_val, args=(actual_key,))
     return val
 
@@ -129,11 +135,8 @@ if submit:
             'ເງິນເດືອນ': v_i[0], 'Creator': v_i[1], 'ຂາຍຂອງ': v_i[2], 'ຫຍິບຜ້າ': v_i[3], 'ຕູ້ກົດນ້ຳ': v_i[4], 'ຕູ້ຊັກຜ້າ': v_i[5], 'ຮັບອື່ນໆ': v_i[6],
             'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3], 'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7], 'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9], 'ຊື້ຂອງເຂົ້າຮ້ານ': v_e[10]
         }
-        
         pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
-        
         st.session_state.clear_counter += 1
-            
         st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
         st.rerun() 
 
@@ -142,8 +145,8 @@ if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
     st.markdown("---")
     
-    st.subheader("📊 ເລືອກໄລຍະເວລາທີ່ປ້າຢາກໃຫ້ AI ວິເຄາະ")
-    option = st.radio("ເບິ່ງລາຍງານ:", ["ມື້ນີ້", "ອາທິດນີ້", "ເດືອນນີ້", "ປີນີ້"], horizontal=True)
+    st.subheader("📊 ເບິ່ງສະຫຼຸບ ແລະ ໃຫ້ AI ວິເຄາະ")
+    option = st.radio("ເລືອກໄລຍະເວລາ:", ["ມື້ນີ້", "ອາທິດນີ້", "ເດືອນນີ້", "ປີນີ້"], horizontal=True)
 
     df['Date_Obj'] = pd.to_datetime(df['ວັນທີ'], format="%d/%m/%Y %H:%M")
     now = datetime.now()
@@ -171,31 +174,46 @@ if os.path.exists(FILE_NAME):
         c2.metric(f"ລາຍຈ່າຍ {text_time}", f"{t_ex:,.0f} ກີບ")
         c3.metric(f"ກຳໄລ {text_time}", f"{profit:,.0f} ກີບ")
 
-        st.markdown(f"""
-        <div class="ai-card">
-            <h3>🤖 AI Professional Advisor ({text_time})</h3>
-            <p>✅ <b>ສະຫຼຸບການເງິນ:</b> {text_time} ປ້າມີກຳໄລສຸດທິ <b>{profit:,.0f} ກີບ</b>.</p>
-            <p>📈 <b>ວິເຄາະຊ່ອງທາງລາຍໄດ້:</b> ລາຍຮັບຈາກການຫຍິບຜ້າ ແລະ ຕູ້ຢອດຫຼຽນເປັນລາຍໄດ້ທີ່ໝັ້ນຄົງທີ່ສຸດ.</p>
-            <p>⚠️ <b>ຂໍ້ຄວນລະວັງ:</b> ຖ້າລາຍຈ່າຍຄ່າຫວຍ ຫຼື ຄ່າບັນເທີງສູງເກີນ 10% ຂອງລາຍຮັບ, AI ແນະນຳໃຫ້ປ້າປັບຫຼຸດລົງເພື່ອເອົາໄປໃສ່ຄ່າສ້າງເຮືອນແທນ.</p>
-            <p>🚀 <b>ຄຳແນະນຳມືອາຊີບ:</b> ໃນໄລຍະ {text_time}, ປ້າຄວນແບ່ງກຳໄລ 5% ໄປບຳລຸງຮັກສາຕູ້ຊັກຜ້າ ແລະ ຕູ້ກົດນ້ຳ ເພື່ອໃຫ້ມັນສ້າງເງິນໃຫ້ປ້າໄດ້ຍາວໆ.</p>
-        </div>
-        """, unsafe_allow_html=True)
+        # ປຸ່ມສັ່ງໃຫ້ AI ເຮັດວຽກ
+        if not ai_ready:
+            st.warning("⚠️ ລະບົບ AI ຍັງບໍ່ພ້ອມໃຊ້ງານ: ກະລຸນາໃສ່ລະຫັດ GEMINI_API_KEY ໃນ Streamlit Secrets ກ່ອນເດີ້.")
+        else:
+            if st.button("✨ ໃຫ້ AI ຊ່ວຍວິເຄາະບັນຊີ ແລະ ວາງແຜນການເງິນ", use_container_width=True):
+                with st.spinner("🤖 ທີ່ປຶກສາ AI ກຳລັງຄິດຄຳນວນຈາກຕົວເລກຈິງຂອງປ້າ..."):
+                    
+                    # ສ້າງຄຳຖາມ (Prompt) ໃຫ້ AI ໂດຍເອົາຕົວເລກແທ້ໆຂອງປ້າສົ່ງໄປ
+                    prompt = f"""
+                    ເຈົ້າຄືທີ່ປຶກສາດ້ານການເງິນ (CFO) ແລະ ນັກການຕະຫຼາດມືອາຊີບ.
+                    ຈົ່ງວິເຄາະຂໍ້ມູນການເງິນ {text_time} ຂອງທຸລະກິດ "ປ້າພອນສຸກ" ຕາມຕົວເລກຈິງລຸ່ມນີ້:
+                    - ລາຍຮັບທັງໝົດ: {t_in} ກີບ
+                    - ລາຍຈ່າຍທັງໝົດ: {t_ex} ກີບ
+                    - ເຫຼືອກຳໄລສຸດທິ: {profit} ກີບ
+                    
+                    ກະລຸນາຂຽນຄຳແນະນຳເປັນ "ພາສາລາວ (Lao Language)" ໃຫ້ອ່ານງ່າຍ, ສຸພາບ ແລະ ໃຫ້ກຳລັງໃຈ.
+                    ໂດຍແບ່ງເປັນ 3 ຫົວຂໍ້ດັ່ງນີ້:
+                    1. 📊 ສະຫຼຸບສະຖານະການເງິນ: (ຊົມເຊີຍຖ້າມີກຳໄລ, ຫຼື ໃຫ້ກຳລັງໃຈຖ້າຂາດທຶນພ້ອມບອກສາເຫດ)
+                    2. 💡 ໄອເດຍເພີ່ມລາຍຮັບ: (ແນະນຳໄອເດຍສັ້ນໆ ກ່ຽວກັບການຂາຍຂອງຍ່ອຍ, ຕູ້ຊັກຜ້າ, ຕັດຫຍິບ ຫຼື ການເຮັດຄລິບ)
+                    3. ⚠️ ຄຳແນະນຳການບໍລິຫານເງິນ: (ຄວນເກັບເງິນແນວໃດ? ຄວນລະວັງລາຍຈ່າຍຫຍັງແດ່?)
+                    """
+                    
+                    try:
+                        response = model.generate_content(prompt)
+                        st.markdown(f'<div class="ai-card"><h3>🤖 ບົດລາຍງານຈາກ AI CFO</h3>{response.text}</div>', unsafe_allow_html=True)
+                    except Exception as e:
+                        st.error(f"ເກີດຂໍ້ຜິດພາດໃນການເຊື່ອມຕໍ່ AI: {e}")
+
     else:
         st.info(f"ຍັງບໍ່ມີຂໍ້ມູນ {text_time} ເດີ້ປ້າ!")
 
-    # --- ຕາຕະລາງ Excel (ແກ້ໄຂໃຫ້ໃສ່ຈຸດທຸກຫ້ອງແລ້ວ) ---
+    # --- ຕາຕະລາງ Excel ---
     st.markdown("---")
     st.write("### 📅 ປະຫວັດການເງິນ (10 ລາຍການຫຼ້າສຸດ)")
     
-    # ດຶງເອົາສະເພາະຄໍລຳທີ່ເປັນຕົວເລກ (ເພື່ອເອົາໄປສັ່ງໃສ່ຈຸດ)
     numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
-    
-    # ເອົາຄໍລຳ 'Date_Obj' ອອກຈາກການສະແດງຜົນ ເພາະມັນຮົກຕາ (ມີວັນທີແລ້ວ)
     display_df = df.drop(columns=['Date_Obj'], errors='ignore')
     if 'Date_Obj' in numeric_cols:
         numeric_cols.remove('Date_Obj')
         
-    # ສະແດງຜົນ ແລະ ໃສ່ຈຸດໃຫ້ "ທຸກຄໍລຳທີ່ເປັນຕົວເລກ"
     st.dataframe(
         display_df.tail(10).style.format(subset=numeric_cols, formatter="{:,.0f}"), 
         use_container_width=True
