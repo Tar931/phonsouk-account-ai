@@ -20,107 +20,93 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 1. ຟັງຊັນຈັດຮູບແບບຕົວເລກ (ໃຫ້ມີຈຸດ)
-def format_num(v):
-    if v == "" or v is None: return ""
+# 1. ຟັງຊັນຈັດຮູບແບບຕົວເລກ (ໃສ່ຈຸດ)
+def format_with_commas(v):
     nums = "".join(filter(str.isdigit, str(v)))
-    return "{:,}".format(int(nums)) if nums else ""
+    if nums:
+        return "{:,}".format(int(nums))
+    return ""
 
-# 2. ຟັງຊັນແປງເປັນຕົວເລກແທ້ເພື່ອຄິດໄລ່
-def parse_num(v):
-    if v == "" or v is None: return 0
+# 2. ຟັງຊັນແປງເປັນຕົວເລກ (ຄິດໄລ່)
+def to_int(v):
     nums = "".join(filter(str.isdigit, str(v)))
     return int(nums) if nums else 0
 
-# 3. ຟັງຊັນຊ່ອງປ້ອນຂໍ້ມູນ (ອັນນີ້ແຫຼະທີ່ຈະເຮັດໃຫ້ມັນປ່ຽນ Real-time)
-def input_box(label, key_name):
-    # ຖ້າບໍ່ທັນມີຄ່າໃນລະບົບ ໃຫ້ຕັ້ງເປັນຄ່າຫວ່າງ
-    if key_name not in st.session_state:
-        st.session_state[key_name] = ""
-    
-    # ສ້າງຊ່ອງປ້ອນ
-    val = st.text_input(label, value=st.session_state[key_name], key=f"input_{key_name}")
-    
-    # ຈັດຮູບແບບໃຫ້ມີຈຸດ
-    formatted = format_num(val)
-    
-    # ຖ້າຄ່າທີ່ພິມປ່ຽນໄປ ໃຫ້ Update ແລະ Rerun ທັນທີ
-    if formatted != st.session_state[key_name]:
-        st.session_state[key_name] = formatted
-        st.rerun()
-    
-    return formatted
+# 3. ຟັງຊັນຈັດການເມື່ອມີການປ່ຽນແປງຂໍ້ມູນ (Callback)
+def on_change_callback(key):
+    raw_value = st.session_state[f"raw_{key}"]
+    st.session_state[key] = format_with_commas(raw_value)
+
+# ຟັງຊັນສ້າງຊ່ອງປ້ອນ
+def make_input(label, key):
+    if key not in st.session_state:
+        st.session_state[key] = ""
+    return st.text_input(label, value=st.session_state[key], key=f"raw_{key}", on_change=on_change_callback, args=(key,))
 
 # --- ສ່ວນຫົວຂໍ້ ---
+st.markdown(f'<div style="background-color:#1B4F72; padding:15px; border-radius:10px; text-align:center; color:white;"><h2>🏦 ລະບົບ AI ທີ່ປຶກສາການເງິນສະຫຼາດສຸດ (ປ້າພອນສຸກ)</h2></div>', unsafe_allow_html=True)
 st.markdown("### 💰 ລະບົບບ້ອນເລກແບບມີຈຸດ (Real-time)")
-st.write("ປ້າພິມເລກລົງໄປ ແລ້ວກົດ Enter ຫຼື ກົດບ່ອນຫວ່າງ ມັນຈະໃສ່ຈຸດໃຫ້ທັນທີ!")
+st.write("ປ້າພິມເລກລົງໄປ ແລ້ວກົດ **Enter** ຫຼື **ກົດບ່ອນຫວ່າງ** ມັນຈະໃສ່ຈຸດໃຫ້ທັນທີ!")
 
 # --- ສ່ວນປ້ອນຂໍ້ມູນ ---
 c1, c2 = st.columns(2)
 
 with c1:
     st.success("### 🟢 ສ່ວນລາຍຮັບ")
-    i1_v = input_box("1. ເງິນເດືອນ", "i1")
-    i2_v = input_box("2. ລາຍຮັບ Creator (FB/YouTube)", "i2")
-    i3_v = input_box("3. ຂາຍຂອງຍ່ອຍ", "i3")
-    i4_v = input_box("4. ຮັບຕັດຫຍິບ", "i4")
-    i5_v = input_box("5. ຕູ້ກົດນ້ຳ", "i5")
-    i6_v = input_box("6. ຕູ້ຊັກຜ້າ", "i6")
+    i1 = make_input("1. ເງິນເດືອນ", "i1")
+    i2 = make_input("2. ລາຍຮັບ Creator (FB/YouTube)", "i2")
+    i3 = make_input("3. ຂາຍຂອງຍ່ອຍ", "i3")
+    i4 = make_input("4. ຮັບຕັດຫຍິບ", "i4")
+    i5 = make_input("5. ຕູ້ກົດນ້ຳ", "i5")
+    i6 = make_input("6. ຕູ້ຊັກຜ້າ", "i6")
 
 with c2:
     st.error("### 🔴 ສ່ວນລາຍຈ່າຍ")
-    e1_v = input_box("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", "e1")
-    e2_v = input_box("2. ຄ່າເຊົ່າທີ່ຢູ່", "e2")
-    e3_v = input_box("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", "e3")
-    e4_v = input_box("4. ຄ່າເດີນທາງ", "e4")
-    e5_v = input_box("5. ຄ່າການສຶກສາ", "e5")
-    e6_v = input_box("6. ຄ່າປິ່ນປົວ", "e6")
-    e7_v = input_box("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", "e7")
-    e8_v = input_box("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
-    e9_v = input_box("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
-    e10_v = input_box("10. ຄ່າສ້າງເຮືອນ", "e10")
+    e1 = make_input("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", "e1")
+    e2 = make_input("2. ຄ່າເຊົ່າທີ່ຢູ່", "e2")
+    e3 = make_input("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", "e3")
+    e4 = make_input("4. ຄ່າເດີນທາງ", "e4")
+    e5 = make_input("5. ຄ່າການສຶກສາ", "e5")
+    e6 = make_input("6. ຄ່າປິ່ນປົວ", "e6")
+    e7 = make_input("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", "e7")
+    e8 = make_input("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
+    e9 = make_input("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
+    e10 = make_input("10. ຄ່າສ້າງເຮືອນ", "e10")
 
-submit = st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True)
-
-# --- 4. ສ່ວນບັນທຶກຂໍ້ມູນ ---
-if submit:
-    now_lao = datetime.now() + timedelta(hours=7) 
+st.markdown("---")
+if st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True):
+    now_lao = datetime.now() + timedelta(hours=7)
     
-    # ແປງທຸກຢ່າງເປັນຕົວເລກເພື່ອບວກກັນ
-    v_i = [parse_num(i1_v), parse_num(i2_v), parse_num(i3_v), parse_num(i4_v), parse_num(i5_v), parse_num(i6_v)]
-    v_e = [parse_num(e1_v), parse_num(e2_v), parse_num(e3_v), parse_num(e4_v), parse_num(e5_v), parse_num(e6_v), parse_num(e7_v), parse_num(e8_v), parse_num(e9_v), parse_num(e10_v)]
+    # ດຶງຄ່າ ແລະ ແປງເປັນຕົວເລກ
+    in_vals = [to_int(st.session_state.get(k, "")) for k in ["i1","i2","i3","i4","i5","i6"]]
+    ex_vals = [to_int(st.session_state.get(k, "")) for k in ["e1","e2","e3","e4","e5","e6","e7","e8","e9","e10"]]
     
-    t_in = sum(v_i)
-    t_ex = sum(v_e)
+    sum_in = sum(in_vals)
+    sum_ex = sum(ex_vals)
     
-    new_data = {
-        'ວັນທີ': now_lao.strftime("%d/%m/%Y %H:%M"), 
-        'ລາຍຮັບລວມ': t_in, 
-        'ລາຍຈ່າຍລວມ': t_ex, 
-        'ເຫຼືອເກັບ': t_in - t_ex,
-        'ເງິນເດືອນ': v_i[0], 'Creator': v_i[1], 'ຂາຍຂອງ': v_i[2], 'ຫຍິບຜ້າ': v_i[3], 'ຕູ້້ກົດນ້ຳ': v_i[4], 'ຕູ້ຊັກຜ້າ': v_i[5],
-        'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3], 'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7], 'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9]
+    new_row = {
+        'ວັນທີ': now_lao.strftime("%d/%m/%Y %H:%M"),
+        'ລາຍຮັບລວມ': sum_in, 'ລາຍຈ່າຍລວມ': sum_ex, 'ເຫຼືອເກັບ': sum_in - sum_ex,
+        'ເງິນເດືອນ': in_vals[0], 'Creator': in_vals[1], 'ຂາຍຂອງ': in_vals[2], 'ຫຍິບຜ້າ': in_vals[3], 'ຕູ້້ກົດນ້ຳ': in_vals[4], 'ຕູ້ຊັກຜ້າ': in_vals[5],
+        'ອາຫານ': ex_vals[0], 'ຄ່າເຊົ່າ': ex_vals[1], 'ນ້ຳໄຟ': ex_vals[2], 'ເດີນທາງ': ex_vals[3], 'ການສຶກສາ': ex_vals[4], 'ຢາ': ex_vals[5], 'ເສື້ອຜ້າ': ex_vals[6], 'ບັນເທີງ': ex_vals[7], 'ຫວຍ': ex_vals[8], 'ສ້າງເຮືອນ': ex_vals[9]
     }
     
-    pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
+    pd.DataFrame([new_row]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
     
-    # ລ້າງຄ່າໃນຊ່ອງປ້ອນຫຼັງບັນທຶກ
+    # Reset ຄ່າ
     for k in ["i1","i2","i3","i4","i5","i6","e1","e2","e3","e4","e5","e6","e7","e8","e9","e10"]:
         st.session_state[k] = ""
+        st.session_state[f"raw_{k}"] = ""
         
-    st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາ: {now_lao.strftime('%H:%M')}")
+    st.success("✅ ບັນທຶກຂໍ້ມູນສຳເລັດແລ້ວ!")
     st.rerun()
 
-# --- 5. ສ່ວນ AI ວິເຄາະ ແລະ ຕະລາງ ---
+# --- ສ່ວນສະແດງຜົນ ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
-    st.markdown("---")
-    
-    # ຕະລາງ Excel
     st.write("### 📅 ປະຫວັດການເງິນ (Excel)")
     st.dataframe(df.tail(10), use_container_width=True)
 
-    # ປຸ່ມລົບຂໍ້ມູນ
     with st.expander("🛠️ ລ້າງຂໍ້ມູນທັງໝົດ"):
         pwd = st.text_input("ໃສ່ລະຫັດ 9999 ເພື່ອລົບ:", type="password")
         if st.button("🗑️ ຢືນຢັນລົບ"):
