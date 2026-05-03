@@ -91,57 +91,55 @@ if submit:
     st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
     st.rerun()
 
-# --- ສ່ວນ AI Advisor ເວີຊັນສະຫຼາດ ແລະ ປອດໄພ (Daily/Weekly/Monthly/Yearly) ---
-st.divider()
-st.write("### 🧠 AI ສູນວິເຄາະ ແລະ ວາງແຜນທຸລະກິດອັດສະລິຍະ")
-
+# --- ສ່ວນ AI ວິເຄາະແບບມືອາຊີບ (ທຸກໄລຍະ) ---
 if os.path.exists(FILE_NAME):
-    try:
-        df = pd.read_csv(FILE_NAME)
-        # ກວດສອບວ່າຖັນຂໍ້ມູນຄົບຫຼືບໍ່ ກ່ອນຈະຄິດໄລ່
-        cols = df.columns.tolist()
-        if not df.empty and 'ລາຍຮັບ' in cols and 'ລາຍຈ່າຍ' in cols:
-            # ແປງວັນທີໃຫ້ລະບົບອ່ານໄດ້
-            df['ວັນທີ'] = pd.to_datetime(df['ວັນທີ'], dayfirst=True, errors='coerce')
-            
-            # ຄິດໄລ່ຄ່າຕ່າງໆ
-            total_in = pd.to_numeric(df['ລາຍຮັບ'], errors='coerce').sum()
-            total_ex = pd.to_numeric(df['ລາຍຈ່າຍ'], errors='coerce').sum()
-            net_profit = total_in - total_ex
-            
-            t1, t2, t3, t4 = st.tabs(["📅 ວິເຄາະໄລຍະເວລາ", "💰 ວາງແຜນການເງິນ", "📢 ການຕະຫຼາດ", "🛠 ການບໍລິຫານ"])
-            
-            with t1:
-                st.info("#### 📊 ສະຫຼຸບຜົນການດຳເນີນງານ")
-                c1, c2 = st.columns(2)
-                c1.metric("ລາຍຮັບລວມທັງໝົດ", f"{total_in:,.0f} ₭")
-                c2.metric("ກຳໄລສຸດທິ", f"{net_profit:,.0f} ₭")
-                
-                # ວິເຄາະລາຍເດືອນເບື້ອງຕົ້ນ
-                avg_monthly = total_in / (len(df['ວັນທີ'].dt.month.unique()) if len(df) > 0 else 1)
-                st.write(f"📈 **ຄາດການ:** ລາຍຮັບສະເລ່ຍຕໍ່ເດືອນຂອງປ້າແມ່ນ: **{avg_monthly:,.0f} ₭**")
+    df = pd.read_csv(FILE_NAME)
+    st.markdown("---")
+    
+    # 1. ປຸ່ມໃຫ້ປ້າເລືອກເບິ່ງໄລຍະເວລາ
+    st.subheader("📊 ເລືອກໄລຍະເວລາທີ່ປ້າຢາກໃຫ້ AI ວິເຄາະ")
+    option = st.radio("ເບິ່ງລາຍງານ:", ["ມື້ນີ້", "ອາທິດນີ້", "ເດືອນນີ້", "ປີນີ້"], horizontal=True)
 
-            with t2:
-                st.success("#### 💵 ກົນຍຸດການເງິນ")
-                st.write(f"💡 **ແຜນອອມ:** ປ້າຄວນແບ່ງເກັບ 20% ເປັນເງິນ {total_in * 0.2:,.0f} ₭ ໄວ້ຂະຫຍາຍທຸລະກິດ.")
-                if total_ex > total_in:
-                    st.error("⚠️ ເຕືອນ: ລາຍຈ່າຍເກີນລາຍຮັບ! ຄວນກວດສອບຕົ້ນທຶນດ່ວນ.")
+    # 2. ຈັດການຂໍ້ມູນຕາມໄລຍະເວລາທີ່ເລືອກ
+    df['Date_Obj'] = pd.to_datetime(df['ວັນທີ'], format="%d/%m/%Y %H:%M")
+    now = datetime.now()
+    
+    if option == "ມື້ນີ້":
+        filtered_df = df[df['Date_Obj'].dt.date == now.date()]
+        text_time = "ຂອງມື້ນີ້"
+    elif option == "ອາທິດນີ້":
+        filtered_df = df[df['Date_Obj'].dt.isocalendar().week == now.isocalendar()[1]]
+        text_time = "ຂອງອາທິດນີ້"
+    elif option == "ເດືອນນີ້":
+        filtered_df = df[df['Date_Obj'].dt.month == now.month]
+        text_time = "ຂອງເດືອນນີ້"
+    else:
+        filtered_df = df[df['Date_Obj'].dt.year == now.year]
+        text_time = "ຂອງປີນີ້"
 
-            with t3:
-                st.warning("#### 📣 ການຕະຫຼາດ & ການຂາຍ")
-                st.write("🎯 **ແຜນການ:** ເນັ້ນການເຮັດ Content 'ວຽກຝີມືປ້າພອນສຸກ' ລົງ Facebook Reels ທຸກໆມື້.")
-                st.write("🎁 **ໂປຣ:** ເຮັດບັດສະສົມແຕ້ມ 10 ແຖມ 1 ສຳລັບລູກຄ້າທີ່ມາຮ້ານປະຈຳ.")
+    # 3. ສະແດງຕົວເລກສະຫຼຸບ
+    if not filtered_df.empty:
+        t_in = filtered_df['ລາຍຮັບລວມ'].sum()
+        t_ex = filtered_df['ລາຍຈ່າຍລວມ'].sum()
+        profit = t_in - t_ex
+        
+        c1, c2, c3 = st.columns(3)
+        c1.metric(f"ລາຍຮັບ {text_time}", f"{t_in:,.0f} ກີບ")
+        c2.metric(f"ລາຍຈ່າຍ {text_time}", f"{t_ex:,.0f} ກີບ")
+        c3.metric(f"ກຳໄລ {text_time}", f"{profit:,.0f} ກີບ")
 
-            with t4:
-                st.error("#### ⚙️ ການບໍລິຫານ (Management)")
-                st.write("⏳ **ບໍລິຫານເວລາ:** ແບ່ງເວລາ 15 ນາທີກ່ອນປິດຮ້ານ ເພື່ອສະຫຼຸບບັນຊີທຸກມື້.")
-                st.write("🌟 **ການບໍລິການ:** ເນັ້ນຄວາມຈິງໃຈ ແລະ ແນະນຳສິນຄ້າທີ່ເໝາະກັບລູກຄ້າແທ້ໆ.")
-        else:
-            st.warning("⚠️ ຍັງຫາຂໍ້ມູນ 'ລາຍຮັບ' ບໍ່ເຫັນ. ກະລຸນາລອງ 'ບັນທຶກຂໍ້ມູນ' ໃໝ່ 1 ລາຍການກ່ອນເດີ້ເຈົ້າປ້າ.")
-    except Exception as e:
-        st.error("ພົບຂໍ້ຜິດພາດໃນການອ່ານຂໍ້ມູນ. ແນະນຳໃຫ້ລຶບໄຟລ໌ CSV ເກົ່າອອກ ແລ້ວເລີ່ມບັນທຶກໃໝ່.")
-else:
-    st.info("ຍັງບໍ່ມີຂໍ້ມູນໃນລະບົບ. ປ້າມີແຜນຈະຂາຍຫຍັງມື້ນີ້ ປ້ອນຂໍ້ມູນໄດ້ເລີຍ!")
+        # 4. ບົດວິເຄາະ AI ແບບເຈາະຈຶກ
+        st.markdown(f"""
+        <div class="ai-card">
+            <h3>🤖 AI Professional Advisor ({text_time})</h3>
+            <p>✅ <b>ສະຫຼຸບການເງິນ:</b> {text_time} ປ້າມີກຳໄລສຸດທິ <b>{profit:,.0f} ກີບ</b>.</p>
+            <p>📈 <b>ວິເຄາະຊ່ອງທາງລາຍໄດ້:</b> ລາຍຮັບຈາກການຫຍິບຜ້າ ແລະ ຕູ້ຢອດຫຼຽນເປັນລາຍໄດ້ທີ່ໝັ້ນຄົງທີ່ສຸດ.</p>
+            <p>⚠️ <b>ຂໍ້ຄວນລະວັງ:</b> ຖ້າລາຍຈ່າຍຄ່າຫວຍ ຫຼື ຄ່າບັນເທີງສູງເກີນ 10% ຂອງລາຍຮັບ, AI ແນະນຳໃຫ້ປ້າປັບຫຼຸດລົງເພື່ອເອົາໄປໃສ່ຄ່າສ້າງເຮືອນແທນ.</p>
+            <p>🚀 <b>ຄຳແນະນຳມືອາຊີບ:</b> ໃນໄລຍະ {text_time}, ປ້າຄວນແບ່ງກຳໄລ 5% ໄປບຳລຸງຮັກສາຕູ້ຊັກຜ້າ ແລະ ຕູ້ກົດນ້ຳ ເພື່ອໃຫ້ມັນສ້າງເງິນໃຫ້ປ້າໄດ້ຍາວໆ.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.info(f"ຍັງບໍ່ມີຂໍ້ມູນ {text_time} ເດີ້ປ້າ!")
  
 # --- ຕະລາງ Excel ແລະ ປຸ່ມລົບ (Code ທີ່ປ້າໃຫ້ເພີ່ມ) ---
     st.write("### 📅 ປະຫວັດການເງິນ (Excel)")
