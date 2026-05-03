@@ -7,21 +7,13 @@ from datetime import datetime, timedelta
 st.set_page_config(page_title="App ບັນຊີຂອງປ້າ", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
 
-# CSS ຕົບແຕ່ງ (ລົບ Header ທີ່ປ້າບໍ່ມັກອອກ)
+# --- ສ່ວນຫົວຂໍ້ແບບມີສີພື້ນຫຼັງ ---
 st.markdown("""
-    <style>
-    .block-container { padding-top: 1rem; }
-    header {visibility: hidden;}
-    footer {visibility: hidden;}
-    .money-box { 
-        background-color: #002B36; color: #00FFAA; padding: 15px; border-radius: 12px; 
-        font-size: 22px; font-weight: bold; text-align: right; border: 2px solid #268BD2; margin-bottom: 10px;
-    }
-    .ai-card { 
-        background-color: #f0f2f6; padding: 20px; border-radius: 15px; border-left: 10px solid #268BD2; 
-        color: #1B4F72; margin-top: 10px; line-height: 1.6;
-    }
-    </style>
+    <div style="background-color:#1B4F72; padding:20px; border-radius:15px; text-align:center;">
+        <h1 style="color:white; margin:0;">🏦 ລະບົບບັນຊີ AI ປ້າພອນສຸກ</h1>
+        <p style="color:#D5D8DC; font-size:18px; margin-top:10px;">ລະບົບບັນທຶກການເງິນ ແລະ ວິເຄາະດ້ວຍ AI</p>
+    </div>
+    <br>
     """, unsafe_allow_html=True)
 
 # ຟັງຊັນແປງເປັນຕົວເລກ
