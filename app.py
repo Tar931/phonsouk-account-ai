@@ -67,6 +67,7 @@ with c2:
     e8_v = input_box("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
     e9_v = input_box("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
     e10_v = input_box("10. ຄ່າສ້າງເຮືອນ", "e10")
+    e11_v = input_box("11. ຄ່າຊື້ສິນຄ້າເຂົ້າຮ້ານເພື່ອຂາຍ", "e11")
 
 submit = st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True)
 
