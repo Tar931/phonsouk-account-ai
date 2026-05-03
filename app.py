@@ -71,7 +71,42 @@ with c2:
     e10_v = input_box("10. ຄ່າສ້າງເຮືອນ", "e10")
     e11_v = input_box("11. ຄ່າຊື້ສິນຄ້າເຂົ້າຮ້ານເພື່ອຂາຍ", "e11")
 
-submit = st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True)
+# --- ສ່ວນປຸ່ມບັນທຶກ: ດຶງຄ່າຈາກທຸກຊ່ອງມາລົງ Excel ---
+if st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True):
+    # 1. ລວມຍອດລາຍຮັບ (ໃຫ້ປ້າກວດຊື່ຕົວແປ i1, i2... ໃຫ້ຕົງກັບຊ່ອງ Input ຂອງປ້າເດີ້)
+    total_in = float(i1 + i2 + i3 + i4 + i5 + i6 + i7 + i8)
+    
+    # 2. ລວມຍອດລາຍຈ່າຍ
+    total_ex = float(e1 + e2 + e3 + e4 + e5 + e6 + e7 + e8 + e9 + e10 + e11)
+    
+    # 3. ຄິດໄລ່ເຫຼືອ
+    balance = total_in - total_ex
+    
+    # 4. ສ້າງຊຸດຂໍ້ມູນເພື່ອບັນທຶກ (ຊື່ Column ຕ້ອງຄົບຕາມຮູບ image_4f75b5.png)
+    new_entry = {
+        'ວັນທີ': (datetime.now() + timedelta(hours=7)).strftime("%d/%m/%Y %H:%M"),
+        'ລາຍຮັບລວມ': total_in,
+        'ລາຍຈ່າຍລວມ': total_ex,
+        'ເຫຼືອກັບ': balance,
+        # ລາຍຮັບແຍກຍ່ອຍ
+        'ເງິນເດືອນ': i1, 'Creator': i2, 'ຂາຍຂອງ': i3, 'ຫຍິບຜ້າ': i4,
+        'ຕູ້ກົດນ້ຳ': i5, 'ຕູ້ຊັກຜ້າ': i6, 'ອາຫານ(ຮັບ)': i7, 'ອື່ນໆ(ຮັບ)': i8,
+        # ລາຍຈ່າຍແຍກຍ່ອຍ
+        'ອາຫານ': e1, 'ຄ່າເຊົ່າ': e2, 'ນ້ຳໄຟ': e3, 'ເດີນທາງ': e4,
+        'ການສຶກສາ': e5, 'ຢາ': e6, 'ເສື້ອຜ້າ': e7, 'ບັນເທີງ': e8,
+        'ຫວຍ': e9, 'ສ້າງເຮືອນ': e10, 'ອື່ນໆ(ຈ່າຍ)': e11
+    }
+    
+    # 5. ບັນທຶກລົງໄຟລ໌ CSV
+    df_new = pd.DataFrame([new_entry])
+    if not os.path.exists(FILE_NAME):
+        df_new.to_csv(FILE_NAME, index=False, encoding='utf-8-sig')
+    else:
+        df_new.to_csv(FILE_NAME, mode='a', index=False, header=False, encoding='utf-8-sig')
+    
+    st.balloons()
+    st.success("✅ ບັນທຶກລາຍຮັບ-ລາຍຈ່າຍທັງໝົດສຳເລັດແລ້ວ!")
+    st.rerun() # ເພື່ອໃຫ້ຕາຕະລາງອັບເດດຕົວເລກທັນທີ
 
 # --- ສ່ວນບັນທຶກ (Code ທີ່ປ້າໃຫ້ເພີ່ມ) ---
 if submit:
