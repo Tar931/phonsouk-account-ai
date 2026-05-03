@@ -7,6 +7,10 @@ from datetime import datetime, timedelta
 st.set_page_config(page_title="App ບັນຊີຂອງປ້າ", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
 
+# --- ຕັ້ງຄ່າຕົວແປສຳລັບລ້າງຂໍ້ມູນ (ສຳຄັນຫຼາຍ) ---
+if 'clear_counter' not in st.session_state:
+    st.session_state.clear_counter = 0
+
 # --- CSS ຕົບແຕ່ງ ---
 st.markdown("""
 <style>
@@ -40,7 +44,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- ຫົວຂໍ້ແບບປອດໄພ ---
+# --- ຫົວຂໍ້ ---
 header_text = """
 <div style="background-color: #1B4F72; padding: 25px; border-radius: 15px; border: 3px solid #F1C40F; text-align: center; color: white;">
     <h1 style="margin: 0;">🌸 ລະບົບບັນຊີ AI ປ້າພອນສຸກ </h1>
@@ -63,18 +67,21 @@ def parse_num(v):
     nums = "".join(filter(str.isdigit, str(v)))
     return int(nums) if nums else 0
 
-# ຟັງຊັນອັບເດດຈຸດ (,) ເມື່ອພິມແລ້ວກົດອອກຈາກຫ້ອງ
+# ຟັງຊັນອັບເດດຈຸດ (,) ເມື່ອພິມສຳເລັດ
 def update_val(key):
-    st.session_state[key] = format_num(st.session_state[key])
+    val = st.session_state[key]
+    st.session_state[key] = format_num(val)
 
-def input_box(label, key):
-    # ສ້າງຄ່າເລີ່ມຕົ້ນໃນ session_state ເປັນຊ່ອງວ່າງ
-    if key not in st.session_state:
-        st.session_state[key] = ""
+# ຟັງຊັນສ້າງຊ່ອງພິມ (ໃຊ້ clear_counter ເພື່ອໃຫ້ມັນລ້າງຄ່າໄດ້ 100%)
+def input_box(label, base_key):
+    # ເອົາ counter ມາຕໍ່ທ້າຍ key ເພື່ອໃຫ້ມັນເປັນຊ່ອງໃໝ່ທຸກຄັ້ງທີ່ກົດບັນທຶກ
+    actual_key = f"{base_key}_{st.session_state.clear_counter}"
     
-    # ໃຊ້ on_change ເພື່ອໃຫ້ມັນອັບເດດຈຸດ (,) ຫຼັງຈາກພິມແລ້ວ
-    st.text_input(label, key=key, on_change=update_val, args=(key,))
-    return st.session_state[key]
+    if actual_key not in st.session_state:
+        st.session_state[actual_key] = ""
+    
+    val = st.text_input(label, key=actual_key, on_change=update_val, args=(actual_key,))
+    return val
 
 # --- 1. ສ່ວນປ້ອນຂໍ້ມູນ ---
 c1, c2 = st.columns(2)
@@ -108,28 +115,33 @@ submit = st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ"
 if submit:
     now_lao = datetime.now() + timedelta(hours=7) 
     
+    # ດຶງຂໍ້ມູນທີ່ແປງເປັນຕົວເລກແລ້ວ
     v_i = [parse_num(i1_v), parse_num(i2_v), parse_num(i3_v), parse_num(i4_v), parse_num(i5_v), parse_num(i6_v), parse_num(i7_v)]
     v_e = [parse_num(e1_v), parse_num(e2_v), parse_num(e3_v), parse_num(e4_v), parse_num(e5_v), parse_num(e6_v), parse_num(e7_v), parse_num(e8_v), parse_num(e9_v), parse_num(e10_v), parse_num(e11_v)]
     
     t_in = sum(v_i)
     t_ex = sum(v_e)
     
-    new_data = {
-        'ວັນທີ': now_lao.strftime("%d/%m/%Y %H:%M"), 
-        'ລາຍຮັບລວມ': t_in, 'ລາຍຈ່າຍລວມ': t_ex, 'ເຫຼືອເກັບ': t_in - t_ex,
-        'ເງິນເດືອນ': v_i[0], 'Creator': v_i[1], 'ຂາຍຂອງ': v_i[2], 'ຫຍິບຜ້າ': v_i[3], 'ຕູ້ກົດນ້ຳ': v_i[4], 'ຕູ້ຊັກຜ້າ': v_i[5], 'ຮັບອື່ນໆ': v_i[6],
-        'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3], 'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7], 'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9], 'ຊື້ຂອງເຂົ້າຮ້ານ': v_e[10]
-    }
-    
-    # ບັນທຶກລົງ CSV
-    pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
-    
-    # ແກ້ໄຂບັນຫາທີ 2: ລ້າງຂໍ້ມູນໃນ session_state ອອກທັງໝົດ ຫຼັງບັນທຶກ
-    for k in ["i1","i2","i3","i4","i5","i6","i7","e1","e2","e3","e4","e5","e6","e7","e8","e9", "e10", "e11"]:
-        st.session_state[k] = ""
+    # ກວດສອບຖ້າບໍ່ມີການປ້ອນຂໍ້ມູນຫຍັງເລີຍ ບໍ່ໃຫ້ບັນທຶກ
+    if t_in == 0 and t_ex == 0:
+        st.warning("⚠️ ກະລຸນາປ້ອນຂໍ້ມູນກ່ອນບັນທຶກ!")
+    else:
+        new_data = {
+            'ວັນທີ': now_lao.strftime("%d/%m/%Y %H:%M"), 
+            'ລາຍຮັບລວມ': t_in, 'ລາຍຈ່າຍລວມ': t_ex, 'ເຫຼືອເກັບ': t_in - t_ex,
+            'ເງິນເດືອນ': v_i[0], 'Creator': v_i[1], 'ຂາຍຂອງ': v_i[2], 'ຫຍິບຜ້າ': v_i[3], 'ຕູ້ກົດນ້ຳ': v_i[4], 'ຕູ້ຊັກຜ້າ': v_i[5], 'ຮັບອື່ນໆ': v_i[6],
+            'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3], 'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7], 'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9], 'ຊື້ຂອງເຂົ້າຮ້ານ': v_e[10]
+        }
         
-    st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
-    st.rerun() # Refresh ໜ້າຈໍເພື່ອໃຫ້ຊ່ອງພິມທັງໝົດກາຍເປັນຊ່ອງວ່າງ
+        # ບັນທຶກລົງ CSV
+        pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
+        
+        # --- ວິທີລ້າງຂໍ້ມູນແບບປອດໄພ 100% ---
+        # ບວກຄ່າ clear_counter ເພື່ອໃຫ້ລະບົບປ່ຽນໄປໃຊ້ຊ່ອງພິມອັນໃໝ່ທີ່ວ່າງເປົ່າ
+        st.session_state.clear_counter += 1
+            
+        st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
+        st.rerun() # ຣີເຟຣຊໜ້າຈໍ ຕົວເລກໃນຫ້ອງຈະຫາຍໄປທັນທີ
 
 # --- 3. ສ່ວນສະແດງຜົນ ແລະ AI ວິເຄາະ ---
 if os.path.exists(FILE_NAME):
