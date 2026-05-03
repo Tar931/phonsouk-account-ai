@@ -3,11 +3,9 @@ import pandas as pd
 import os
 from datetime import datetime, timedelta
 
-# --- ຕັ້ງຄ່າໜ້າຈໍ ---
 st.set_page_config(page_title="App ບັນຊີຂອງປ້າ", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
 
-# --- CSS ຕົບແຕ່ງ ---
 st.markdown("""
 <style>
     [data-testid="stMetricValue"] {
@@ -40,7 +38,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- ຫົວຂໍ້ ---
 st.write("""
 <div style="background-color: #1B4F72; padding: 25px; border-radius: 15px; border: 3px solid #F1C40F; text-align: center; color: white;">
     <h1 style="margin: 0;">🌸 ລະບົບບັນຊີ AI ປ້າພອນສຸກ </h1>
@@ -51,7 +48,7 @@ st.write("""
 <br>
 """, unsafe_allow_html=True)
 
-# --- ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ ---
+# --- ຟັງຊັນຕົວເລກ ---
 def format_num(v):
     if v == "" or v is None: return ""
     nums = "".join(filter(str.isdigit, str(v)))
@@ -62,24 +59,33 @@ def parse_num(v):
     nums = "".join(filter(str.isdigit, str(v)))
     return int(nums) if nums else 0
 
-# --- ✅ ແກ້ໄຂ: ໃຊ້ reset_counter ໃນ widget key ---
-# ເມື່ອ reset_counter ເພີ່ມຂຶ້ນ, Streamlit ຈະສ້າງ widget ໃໝ່ທັງໝົດ = ລ້າງຄ່າ
+# --- ກຽມ session_state ---
+ALL_KEYS = ["i1","i2","i3","i4","i5","i6","i7",
+            "e1","e2","e3","e4","e5","e6","e7","e8","e9","e10","e11"]
+
+if 'reset_counter' not in st.session_state:
+    st.session_state['reset_counter'] = 0
+
+for k in ALL_KEYS:
+    if k not in st.session_state:
+        st.session_state[k] = ""
+
+# --- ✅ ຟັງຊັນ input_box ໃຊ້ on_change ເພື່ອ format ທັນທີທີ່ພິມ ---
 def input_box(label, key):
-    if 'reset_counter' not in st.session_state:
-        st.session_state['reset_counter'] = 0
-    if key not in st.session_state:
-        st.session_state[key] = ""
-    
-    # widget_key ລວມ reset_counter ເຂົ້າໄປ → ເມື່ອ counter ປ່ຽນ = widget ໃໝ່ = ຄ່າຫາຍ
-    widget_key = f"w_{key}_{st.session_state['reset_counter']}"
-    val = st.text_input(label, value=st.session_state[key], key=widget_key)
-    
-    # Format ຕົວເລກໃຫ້ມີຈຸດ (,) ທັນທີ
-    new_val = format_num(val)
-    if new_val != st.session_state[key]:
-        st.session_state[key] = new_val
-        st.rerun()
-    return new_val
+    rc = st.session_state['reset_counter']
+    widget_key = f"widget_{key}_{rc}"
+
+    def _on_change():
+        raw = st.session_state.get(widget_key, "")
+        st.session_state[key] = format_num(raw)
+
+    st.text_input(
+        label,
+        value=st.session_state[key],
+        key=widget_key,
+        on_change=_on_change
+    )
+    return st.session_state[key]
 
 # --- 1. ສ່ວນປ້ອນຂໍ້ມູນ ---
 c1, c2 = st.columns(2)
@@ -109,44 +115,53 @@ with c2:
 
 submit = st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True)
 
-# --- 2. ສ່ວນບັນທຶກຂໍ້ມູນ ---
+# --- 2. ບັນທຶກຂໍ້ມູນ ---
 if submit:
-    now_lao = datetime.now() + timedelta(hours=7) 
-    
-    v_i = [parse_num(i1_v), parse_num(i2_v), parse_num(i3_v), parse_num(i4_v), parse_num(i5_v), parse_num(i6_v), parse_num(i7_v)]
-    v_e = [parse_num(e1_v), parse_num(e2_v), parse_num(e3_v), parse_num(e4_v), parse_num(e5_v), parse_num(e6_v), parse_num(e7_v), parse_num(e8_v), parse_num(e9_v), parse_num(e10_v), parse_num(e11_v)]
-    
+    now_lao = datetime.now() + timedelta(hours=7)
+
+    v_i = [parse_num(i1_v), parse_num(i2_v), parse_num(i3_v), parse_num(i4_v),
+           parse_num(i5_v), parse_num(i6_v), parse_num(i7_v)]
+    v_e = [parse_num(e1_v), parse_num(e2_v), parse_num(e3_v), parse_num(e4_v),
+           parse_num(e5_v), parse_num(e6_v), parse_num(e7_v), parse_num(e8_v),
+           parse_num(e9_v), parse_num(e10_v), parse_num(e11_v)]
+
     t_in = sum(v_i)
     t_ex = sum(v_e)
-    
+
     new_data = {
-        'ວັນທີ': now_lao.strftime("%d/%m/%Y %H:%M"), 
+        'ວັນທີ': now_lao.strftime("%d/%m/%Y %H:%M"),
         'ລາຍຮັບລວມ': t_in, 'ລາຍຈ່າຍລວມ': t_ex, 'ເຫຼືອເກັບ': t_in - t_ex,
-        'ເງິນເດືອນ': v_i[0], 'Creator': v_i[1], 'ຂາຍຂອງ': v_i[2], 'ຫຍິບຜ້າ': v_i[3], 'ຕູ້ກົດນ້ຳ': v_i[4], 'ຕູ້ຊັກຜ້າ': v_i[5], 'ຮັບອື່ນໆ': v_i[6],
-        'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3], 'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7], 'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9], 'ຊື້ຂອງເຂົ້າຮ້ານ': v_e[10]
+        'ເງິນເດືອນ': v_i[0], 'Creator': v_i[1], 'ຂາຍຂອງ': v_i[2], 'ຫຍິບຜ້າ': v_i[3],
+        'ຕູ້ກົດນ້ຳ': v_i[4], 'ຕູ້ຊັກຜ້າ': v_i[5], 'ຮັບອື່ນໆ': v_i[6],
+        'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3],
+        'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7],
+        'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9], 'ຊື້ຂອງເຂົ້າຮ້ານ': v_e[10]
     }
-    
-    pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
-    
-    # ✅ ແກ້ໄຂ: ລ້າງ session_state ແລ້ວເພີ່ມ reset_counter → widget ທັງໝົດຈະຖືກສ້າງໃໝ່ = ຄ່າຫາຍໝົດ
-    for k in ["i1","i2","i3","i4","i5","i6","i7","e1","e2","e3","e4","e5","e6","e7","e8","e9","e10","e11"]:
+
+    pd.DataFrame([new_data]).to_csv(
+        FILE_NAME, mode='a', index=False,
+        header=not os.path.exists(FILE_NAME), encoding='utf-8-sig'
+    )
+
+    # ✅ ລ້າງຄ່າທັງໝົດ + ເພີ່ມ counter → widget ໃໝ່ທັງໝົດ
+    for k in ALL_KEYS:
         st.session_state[k] = ""
-    st.session_state['reset_counter'] = st.session_state.get('reset_counter', 0) + 1
-        
+    st.session_state['reset_counter'] += 1
+
     st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
     st.rerun()
 
-# --- 3. ສ່ວນສະແດງຜົນ ແລະ AI ວິເຄາະ ---
+# --- 3. ສ່ວນສະແດງຜົນ ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
     st.markdown("---")
-    
+
     st.subheader("📊 ເລືອກໄລຍະເວລາທີ່ປ້າຢາກໃຫ້ AI ວິເຄາະ")
     option = st.radio("ເບິ່ງລາຍງານ:", ["ມື້ນີ້", "ອາທິດນີ້", "ເດືອນນີ້", "ປີນີ້"], horizontal=True)
 
     df['Date_Obj'] = pd.to_datetime(df['ວັນທີ'], format="%d/%m/%Y %H:%M")
     now = datetime.now()
-    
+
     if option == "ມື້ນີ້":
         filtered_df = df[df['Date_Obj'].dt.date == now.date()]
         text_time = "ຂອງມື້ນີ້"
@@ -164,7 +179,7 @@ if os.path.exists(FILE_NAME):
         t_in = filtered_df['ລາຍຮັບລວມ'].sum()
         t_ex = filtered_df['ລາຍຈ່າຍລວມ'].sum()
         profit = t_in - t_ex
-        
+
         c1, c2, c3 = st.columns(3)
         c1.metric(f"ລາຍຮັບ {text_time}", f"{t_in:,.0f} ກີບ")
         c2.metric(f"ລາຍຈ່າຍ {text_time}", f"{t_ex:,.0f} ກີບ")
@@ -182,12 +197,16 @@ if os.path.exists(FILE_NAME):
     else:
         st.info(f"ຍັງບໍ່ມີຂໍ້ມູນ {text_time} ເດີ້ປ້າ!")
 
-    # --- ຕາຕະລາງ ---
     st.markdown("---")
     st.write("### 📅 ປະຫວັດການເງິນ (10 ລາຍການຫຼ້າສຸດ)")
-    st.dataframe(df.tail(10).style.format(subset=['ລາຍຮັບລວມ', 'ລາຍຈ່າຍລວມ', 'ເຫຼືອເກັບ'], formatter="{:,.0f}"), use_container_width=True)
+    st.dataframe(
+        df.tail(10).style.format(
+            subset=['ລາຍຮັບລວມ', 'ລາຍຈ່າຍລວມ', 'ເຫຼືອເກັບ'],
+            formatter="{:,.0f}"
+        ),
+        use_container_width=True
+    )
 
-    # --- ສ່ວນລົບຂໍ້ມູນ ---
     with st.expander("🛠️ ລ້າງຂໍ້ມູນທັງໝົດ"):
         st.warning("ຄຳເຕືອນ: ການລົບຂໍ້ມູນຈະບໍ່ສາມາດກູ້ຄືນໄດ້!")
         pwd = st.text_input("ໃສ່ລະຫັດ 9999 ເພື່ອລົບ:", type="password")
