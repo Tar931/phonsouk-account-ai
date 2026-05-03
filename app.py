@@ -154,7 +154,8 @@ df_styled = df.tail(10).style.format(thousands=",", precision=0)
 
 st.dataframe(df_styled, use_container_width=True)
 
-  with st.expander("🛠️ ລ້າງຂໍ້ມູນທັງໝົດ"):
+  
+with st.expander("🛠️ ລ້າງຂໍ້ມູນທັງໝົດ"):
         pwd = st.text_input("ໃສ່ລະຫັດ 9999 ເພື່ອລົບ:", type="password")
         if st.button("🗑️ ຢືນຢັນລົບ"):
             if pwd == "9999":
