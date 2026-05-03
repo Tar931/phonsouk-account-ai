@@ -10,7 +10,7 @@ FILE_NAME = 'phonsouk_final_database_v3.csv'
 # --- ຫົວຂໍ້ແບບປອດໄພ 100% ---
 header_text = """
 <div style="background-color: #1B4F72; padding: 25px; border-radius: 15px; border: 3px solid #F1C40F; text-align: center; color: white;">
-    <h1 style="margin: 0;">🌸 ລະບົບບັນຊີ AI ປ້າພອນສຸກ ₭</h1>
+    <h1 style="margin: 0;">🌸 ລະບົບບັນຊີ AI ປ້າພອນສຸກ </h1>
     <p style="margin: 10px 0;">ເບີໂທ: 020 99858310 | Line: Tarvan</p>
     <p style="margin: 0;">Facebook: ນາງພອນສຸກ ພັນທະຜອງ</p>
     <div style="font-size: 30px; margin-top: 10px;">🌸 🇱🇦 🌸</div>
@@ -90,39 +90,6 @@ if submit:
     pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
     st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
     st.rerun()
-
-# --- ສ່ວນ AI ວິເຄາະ (Code ທີ່ປ້າໃຫ້ເພີ່ມ) ---
-if os.path.exists(FILE_NAME):
-    df = pd.read_csv(FILE_NAME)
-    st.markdown("---")
-    st.subheader("📊 AI ວິເຄາະຕາມໄລຍະເວລາ")
-    option = st.radio("ເບິ່ງລາຍງານ:", ["ມື້ນີ້", "ອາທິດນີ້", "ເດືອນນີ້", "ປີນີ້"], horizontal=True)
-
-    df['Date_Obj'] = pd.to_datetime(df['ວັນທີ'], format="%d/%m/%Y %H:%M")
-    now = datetime.now() + timedelta(hours=7)
-    
-    if option == "ມື້ນີ້":
-        filtered_df = df[df['Date_Obj'].dt.date == now.date()]
-        text_time = "ຂອງມື້ນີ້"
-    elif option == "ອາທິດນີ້":
-        filtered_df = df[df['Date_Obj'].dt.isocalendar().week == now.isocalendar()[1]]
-        text_time = "ຂອງອາທິດນີ້"
-    elif option == "ເດືອນນີ້":
-        filtered_df = df[df['Date_Obj'].dt.month == now.month]
-        text_time = "ຂອງເດືອນນີ້"
-    else:
-        filtered_df = df[df['Date_Obj'].dt.year == now.year]
-        text_time = "ຂອງປີນີ້"
-
-    if not filtered_df.empty:
-        total_in = filtered_df['ລາຍຮັບລວມ'].sum()
-        total_ex = filtered_df['ລາຍຈ່າຍລວມ'].sum()
-        profit = total_in - total_ex
-        
-        c1, c2, c3 = st.columns(3)
-        c1.metric(f"ລາຍຮັບ {text_time}", f"{total_in:,.0f} ກີບ")
-        c2.metric(f"ລາຍຈ່າຍ {text_time}", f"{total_ex:,.0f} ກີບ")
-        c3.metric(f"ກຳໄລ {text_time}", f"{profit:,.0f} ກີບ")
 
 # --- ສ່ວນ AI Advisor (ວິເຄາະ-ວາງແຜນ-ແນະນຳ) ---
 st.divider()
