@@ -146,16 +146,9 @@ if os.path.exists(FILE_NAME):
  
 # --- ຕະລາງ Excel ແລະ ປຸ່ມລົບ (Code ທີ່ປ້າໃຫ້ເພີ່ມ) ---
     st.write("### 📅 ປະຫວັດການເງິນ (Excel)")
-    # --- ປັບປຸງ Code ສ່ວນສະແດງຕາຕະລາງໃຫ້ມີຈຸດຂັ້ນຕົວເລກ ---
-st.write("### 🗓️ ປະຫວັດການເງິນ (Excel)")
-# ສ້າງຕົວຈັດຮູບແບບຕົວເລກ (Format) ໃຫ້ມີຈຸດຂັ້ນ ແລະ ບໍ່ມີທົດສະນິຍົມ
-# ມັນຈະໃສ່ຈຸດໃຫ້ທຸກຊ່ອງທີ່ເປັນຕົວເລກໂດຍອັດຕະໂນມັດ
-df_styled = df.tail(10).style.format(thousands=",", precision=0)
+    st.dataframe(df.tail(10), use_container_width=True)
 
-st.dataframe(df_styled, use_container_width=True)
-
-  
-with st.expander("🛠️ ລ້າງຂໍ້ມູນທັງໝົດ"):
+    with st.expander("🛠️ ລ້າງຂໍ້ມູນທັງໝົດ"):
         pwd = st.text_input("ໃສ່ລະຫັດ 9999 ເພື່ອລົບ:", type="password")
         if st.button("🗑️ ຢືນຢັນລົບ"):
             if pwd == "9999":
