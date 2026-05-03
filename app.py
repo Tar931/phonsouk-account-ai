@@ -3,26 +3,17 @@ import pandas as pd
 import os
 from datetime import datetime, timedelta
 
-# --- ຕັ້ງຄ່າໜ້າຈໍ ---
-st.set_page_config(page_title="App ບັນຊີຂອງປ້າ", layout="wide")
-FILE_NAME = 'phonsouk_final_database_v3.csv'
-
-# CSS ຕົບແຕ່ງ (ລົບ Header ທີ່ປ້າບໍ່ມັກອອກ)
-st.markdown("""
-    <style>
-    .block-container { padding-top: 1rem; }
-    header {visibility: hidden;}
-    footer {visibility: hidden;}
-    .money-box { 
-        background-color: #002B36; color: #00FFAA; padding: 15px; border-radius: 12px; 
-        font-size: 22px; font-weight: bold; text-align: right; border: 2px solid #268BD2; margin-bottom: 10px;
-    }
-    .ai-card { 
-        background-color: #f0f2f6; padding: 20px; border-radius: 15px; border-left: 10px solid #268BD2; 
-        color: #1B4F72; margin-top: 10px; line-height: 1.6;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+# --- ຫົວຂໍ້ແບບປອດໄພ 100% ---
+header_text = """
+<div style="background-color: #1B4F72; padding: 25px; border-radius: 15px; border: 3px solid #F1C40F; text-align: center; color: white;">
+    <h1 style="margin: 0;">🌸 ລະບົບບັນຊີ AI ປ້າພອນສຸກ ₭</h1>
+    <p style="margin: 10px 0;">ເບີໂທ: 020 99858310 | Line: Tarvan</p>
+    <p style="margin: 0;">Facebook: ນາງພອນສຸກ ພັນທະຜອງ</p>
+    <div style="font-size: 30px; margin-top: 10px;">🌸 🇱🇦 🌸</div>
+</div>
+<br>
+"""
+st.write(header_text, unsafe_allow_html=True)
 
 # 1. ຟັງຊັນຈັດຮູບແບບຕົວເລກ (ໃຫ້ມີຈຸດຄືເກົ່າ)
 def format_num(v):
