@@ -48,12 +48,15 @@ c1, c2 = st.columns(2)
 c1, c2 = st.columns(2)
 with c1:
     st.success("### 🟢 ສ່ວນລາຍຮັບ")
-    i1_v = input_box("1. ເງິນເດືອນ", "i1")
-    i2_v = input_box("2. ລາຍຮັບ Creator (FB/YouTube)", "i2")
-    i3_v = input_box("3. ຂາຍຂອງຍ່ອຍ", "i3")
-    i4_v = input_box("4. ຮັບຕັດຫຍິບ", "i4")
-    i5_v = input_box("5. ຕູ້ກົດນ້ຳ", "i5")
-    i6_v = input_box("6. ຕູ້ຊັກຜ້າ", "i6")
+    i1_v = input_box("1. ລາຍຮັບເງິນເດືອນ", "i1")
+    i2_v = input_box("2. ລາຍຮັບເງີນ Creator ແລະ ນ້ອງສາວຢູ່ໄທ (FB/YouTube)", "i2")
+    i3_v = input_box("3. ລາຍຮັບເງີນຈາກການຂາຍຂອງຍ່ອຍ", "i3")
+    i4_v = input_box("4. ລາຍຮັບເງີນຈາກຕັດຫຍິບ", "i4")
+    i5_v = input_box("5. ລາຍຮັບເງີນຈາກຕູ້ກົດນ້ຳ", "i5")
+    i6_v = input_box("6. ລາຍຮັບເງີນຈາກຕູ້ຊັກຜ້າ", "i6")
+    i7_v = input_box("7. ລາຍຮັບເງີນຈາກຍາມບໍລິສັດ", "i7")
+    	i8_v = input_box("8. ລາຍຮັບເງີນເສີມອື່ນໆ", "i8")
+
 
 with c2:
     st.error("### 🔴 ສ່ວນລາຍຈ່າຍ")
