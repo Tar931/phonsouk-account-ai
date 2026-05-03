@@ -42,9 +42,8 @@ def input_box(label, key):
         st.rerun()
     return new_val
 
-# --- ສ່ວນປ້ອນຂໍ້ມູນ ---
-st.markdown("### 💰 ລະບົບບ້ອນເລກແບບມີຈຸດ (Real-time)")
-st.write("ບ້າພິມເລກລົງໄປ ແລ້ວກົດ Enter ຫຼື ກົດບ່ອນຫວ່າງ ມັນຈະໃສ່ຈຸດໃຫ້ທັນທີ!")
+# --- 1. ສ່ວນປ້ອນຂໍ້ມູນ ---
+c1, c2 = st.columns(2)
 
 c1, c2 = st.columns(2)
 with c1:
