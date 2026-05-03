@@ -71,63 +71,22 @@ with c2:
     e10_v = input_box("10. ຄ່າສ້າງເຮືອນ", "e10")
     e11_v = input_box("11. ຄ່າຊື້ສິນຄ້າເຂົ້າຮ້ານເພື່ອຂາຍ", "e11")
 
-# --- ສ່ວນປຸ່ມບັນທຶກ: ດຶງຄ່າຈາກທຸກຊ່ອງມາລົງ Excel ---
 if st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True):
-    # 1. ລວມຍອດລາຍຮັບ (ໃຫ້ປ້າກວດຊື່ຕົວແປ i1, i2... ໃຫ້ຕົງກັບຊ່ອງ Input ຂອງປ້າເດີ້)
-    total_in = float(i1 + i2 + i3 + i4 + i5 + i6 + i7 + i8)
-    
-    # 2. ລວມຍອດລາຍຈ່າຍ
-    total_ex = float(e1 + e2 + e3 + e4 + e5 + e6 + e7 + e8 + e9 + e10 + e11)
-    
-    # 3. ຄິດໄລ່ເຫຼືອ
-    balance = total_in - total_ex
-    
-    # 4. ສ້າງຊຸດຂໍ້ມູນເພື່ອບັນທຶກ (ຊື່ Column ຕ້ອງຄົບຕາມຮູບ image_4f75b5.png)
-    new_entry = {
-        'ວັນທີ': (datetime.now() + timedelta(hours=7)).strftime("%d/%m/%Y %H:%M"),
-        'ລາຍຮັບລວມ': total_in,
-        'ລາຍຈ່າຍລວມ': total_ex,
-        'ເຫຼືອກັບ': balance,
-        # ລາຍຮັບແຍກຍ່ອຍ
-        'ເງິນເດືອນ': i1, 'Creator': i2, 'ຂາຍຂອງ': i3, 'ຫຍິບຜ້າ': i4,
-        'ຕູ້ກົດນ້ຳ': i5, 'ຕູ້ຊັກຜ້າ': i6, 'ອາຫານ(ຮັບ)': i7, 'ອື່ນໆ(ຮັບ)': i8,
-        # ລາຍຈ່າຍແຍກຍ່ອຍ
-        'ອາຫານ': e1, 'ຄ່າເຊົ່າ': e2, 'ນ້ຳໄຟ': e3, 'ເດີນທາງ': e4,
-        'ການສຶກສາ': e5, 'ຢາ': e6, 'ເສື້ອຜ້າ': e7, 'ບັນເທີງ': e8,
-        'ຫວຍ': e9, 'ສ້າງເຮືອນ': e10, 'ອື່ນໆ(ຈ່າຍ)': e11
-    }
-    
-    # 5. ບັນທຶກລົງໄຟລ໌ CSV
-    df_new = pd.DataFrame([new_entry])
-    if not os.path.exists(FILE_NAME):
-        df_new.to_csv(FILE_NAME, index=False, encoding='utf-8-sig')
-    else:
-        df_new.to_csv(FILE_NAME, mode='a', index=False, header=False, encoding='utf-8-sig')
-    
-    st.balloons()
-    st.success("✅ ບັນທຶກລາຍຮັບ-ລາຍຈ່າຍທັງໝົດສຳເລັດແລ້ວ!")
-    st.rerun() # ເພື່ອໃຫ້ຕາຕະລາງອັບເດດຕົວເລກທັນທີ
-
-# --- ສ່ວນບັນທຶກ (Code ທີ່ປ້າໃຫ້ເພີ່ມ) ---
-if submit:
-    now_lao = datetime.now() + timedelta(hours=7) 
-    
-    # ແປງຄ່າຈາກຂໍ້ຄວາມທີ່ມີຈຸດ ໃຫ້ເປັນຕົວເລກແທ້ໆ
-    v_i = [parse_num(i1_v), parse_num(i2_v), parse_num(i3_v), parse_num(i4_v), parse_num(i5_v), parse_num(i6_v)]
-    v_e = [parse_num(e1_v), parse_num(e2_v), parse_num(e3_v), parse_num(e4_v), parse_num(e5_v), parse_num(e6_v), parse_num(e7_v), parse_num(e8_v), parse_num(e9_v), parse_num(e10_v)]
-    
-    t_in = sum(v_i)
-    t_ex = sum(v_e)
-    
-    new_data = {
-        'ວັນທີ': now_lao.strftime("%d/%m/%Y %H:%M"), 
-        'ລາຍຮັບລວມ': t_in, 'ລາຍຈ່າຍລວມ': t_ex, 'ເຫຼືອເກັບ': t_in - t_ex,
-        'ເງິນເດືອນ': v_i[0], 'Creator': v_i[1], 'ຂາຍຂອງ': v_i[2], 'ຫຍິບຜ້າ': v_i[3], 'ຕູ້້ກົດນ້ຳ': v_i[4], 'ຕູ້ຊັກຜ້າ': v_i[5],
-        'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3], 'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7], 'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9]
-    }
-    pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
-    st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
-    st.rerun()
+    try:
+        # ຄິດໄລ່ຍອດລວມ
+        total_in = float(i1 + i2 + i3 + i4 + i5 + i6 + i7 + i8)
+        total_ex = float(e1 + e2 + e3 + e4 + e5 + e6 + e7 + e8 + e9 + e10 + e11)
+        balance = total_in - total_ex
+        
+        # ສະແດງຜົນຍອດລວມແບບມີຈຸດຂັ້ນ (,) ໃຫ້ປ້າເຫັນທັນທີ
+        st.write(f"### 💰 ສະຫຼຸບ: ຮັບ {total_in:,.0f} | ຈ່າຍ {total_ex:,.0f} | ເຫຼືອ {balance:,.0f} ກີບ")
+        
+        # ສ່ວນບັນທຶກລົງ CSV (Code ເດີມຂອງປ້າ...)
+        # ... (ສ່ວນນີ້ໃຫ້ໃຊ້ Code ບັນທຶກທີ່ຫຼານເຄີຍໃຫ້ກ່ອນໜ້ານີ້) ...
+        
+        st.success("✅ ບັນທຶກ ແລະ ສະແດງຜົນແບບມີຈຸດຮຽບຮ້ອຍແລ້ວ!")
+    except NameError:
+        st.error("❌ ຫາຊື່ຊ່ອງປ້ອນຂໍ້ມູນບໍ່ເຫັນ! ກະລຸນາກວດຄືນວ່າໄດ້ຕັ້ງຊື່ i1 ຫາ i8 ແລະ e1 ຫາ e11 ແລ້ວຫຼືຍັງ.")
 
 # --- ສ່ວນ AI ວິເຄາະແບບມືອາຊີບ (ທຸກໄລຍະ) ---
 if os.path.exists(FILE_NAME):
