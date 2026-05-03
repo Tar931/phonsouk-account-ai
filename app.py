@@ -3,75 +3,65 @@ import pandas as pd
 import os
 from datetime import datetime, timedelta
 
-# --- 1. ຕັ້ງຄ່າເບື້ອງຕົ້ນ ---
-st.set_page_config(page_title="App ປ້າພອນສຸກ v5", layout="wide")
-FILE_NAME = 'phonsouk_final_database_v3.csv'
+# --- 1. ຕັ້ງຄ່າໜ້າຈໍ ---
+st.set_page_config(page_title="App ບັນຊີປ້າພອນສຸກ", layout="wide")
+FILE_NAME = 'database_paphonsouk.csv'
 
-# CSS ຕົບແຕ່ງ (ເນັ້ນຕົວເລກໃຫຍ່ໆ ອ່ານງ່າຍ)
+# CSS ຕົບແຕ່ງໃຫ້ຕົວເລກໃຫຍ່ ອ່ານງ່າຍ
 st.markdown("""
     <style>
-    .block-container { padding-top: 1rem; }
-    header {visibility: hidden;}
-    .stNumberInput input { font-size: 22px !important; font-weight: bold; color: #1B4F72 !important; }
-    .ai-card { background-color: #f0f2f6; padding: 20px; border-radius: 15px; border-left: 10px solid #268BD2; }
+    .stNumberInput input { font-size: 20px !important; font-weight: bold; color: #1B4F72 !important; }
+    div[data-testid="stNotification"] { font-size: 18px; }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown(f'<div style="background-color:#1B4F72; padding:20px; border-radius:15px; text-align:center; color:white;"><h1>🏦 ລະບົບບັນຊີ AI ປ້າພອນສຸກ (ໃສ່ຈຸດອັດຕະໂນມັດ)</h1></div>', unsafe_allow_html=True)
+st.title("🏦 ລະບົບບັນຊີ AI ປ້າພອນສຸກ (ເວີຊັນແກ້ໄຂ Error)")
+st.info("💡 ວິທີໃຊ້: ພິມຕົວເລກລົງໄປເລີຍ ລະບົບຈະໃສ່ຈຸດຄັ່ນໃຫ້ເອງອັດຕະໂນມັດ!")
 
-# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ແບບໃໝ່ ໃສ່ຈຸດໃຫ້ເລີຍ) ---
-st.write("### 💰 ບ້ອນຕົວເລກລົງໃນຊ່ອງ (ລະບົບຈະຄັ່ນຈຸດໃຫ້ເອງ)")
+# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ໃຊ້ number_input ເພື່ອປ້ອງກັນ Error) ---
+col1, col2 = st.columns(2)
 
-c1, c2 = st.columns(2)
-
-with c1:
+with col1:
     st.success("### 🟢 ລາຍຮັບ")
-    i1 = st.number_input("1. ເງິນເດືອນ", min_value=0, step=1000, format="%d")
-    i2 = st.number_input("2. ລາຍຮັບ Creator", min_value=0, step=1000, format="%d")
-    i3 = st.number_input("3. ຂາຍຂອງຍ່ອຍ", min_value=0, step=1000, format="%d")
-    i4 = st.number_input("4. ຮັບຕັດຫຍິບ", min_value=0, step=1000, format="%d")
-    i5 = st.number_input("5. ຕູ້ກົດນ້ຳ", min_value=0, step=1000, format="%d")
-    i6 = st.number_input("6. ຕູ້ຊັກຜ້າ", min_value=0, step=1000, format="%d")
+    in1 = st.number_input("ເງິນເດືອນ", min_value=0, step=10000, value=0)
+    in2 = st.number_input("ລາຍຮັບ Creator", min_value=0, step=10000, value=0)
+    in3 = st.number_input("ຂາຍຂອງຍ່ອຍ", min_value=0, step=10000, value=0)
+    in4 = st.number_input("ຮັບຕັດຫຍິບ", min_value=0, step=10000, value=0)
 
-with c2:
+with col2:
     st.error("### 🔴 ລາຍຈ່າຍ")
-    e1 = st.number_input("1. ຄ່າອາຫານ & ຂອງໃຊ້", min_value=0, step=1000, format="%d")
-    e2 = st.number_input("2. ຄ່າເຊົ່າທີ່ຢູ່", min_value=0, step=1000, format="%d")
-    e3 = st.number_input("3. ຄ່ານ້ຳ-ໄຟ-ເນັດ", min_value=0, step=1000, format="%d")
-    e4 = st.number_input("4. ຄ່າເດີນທາງ", min_value=0, step=1000, format="%d")
-    e9 = st.number_input("9. ຄ່າຫວຍ/ລາງວັນ", min_value=0, step=1000, format="%d")
-    e10 = st.number_input("10. ຄ່າສ້າງເຮືອນ", min_value=0, step=1000, format="%d")
+    ex1 = st.number_input("ຄ່າອາຫານ/ຂອງໃຊ້", min_value=0, step=10000, value=0)
+    ex2 = st.number_input("ຄ່າເຊົ່າບ້ານ", min_value=0, step=10000, value=0)
+    ex3 = st.number_input("ຄ່ານ້ຳ-ໄຟ-ເນັດ", min_value=0, step=10000, value=0)
+    ex4 = st.number_input("ຄ່າຫວຍ/ສັງຄົມ", min_value=0, step=10000, value=0)
 
-# --- 3. ການບັນທຶກ ---
+# --- 3. ປຸ່ມບັນທຶກ ---
 st.markdown("---")
-if st.button("💾 ບັນທຶກລົງຖານຂໍ້ມູນ", use_container_width=True):
-    now_lao = datetime.now() + timedelta(hours=7)
-    t_in = i1 + i2 + i3 + i4 + i5 + i6
-    t_ex = e1 + e2 + e3 + e4 + e9 + e10
+if st.button("💾 ບັນທຶກຂໍ້ມູນ", use_container_width=True):
+    # ຄິດໄລ່ແບບຕົວເລກແທ້ໆ (ຈະບໍ່ Error ແບບໃນຮູບອີກ)
+    total_income = in1 + in2 + in3 + in4
+    total_expense = ex1 + ex2 + ex3 + ex4
+    balance = total_income - total_expense
+    
+    now = datetime.now() + timedelta(hours=7)
     
     new_data = {
-        'ວັນທີ': now_lao.strftime("%d/%m/%Y %H:%M"),
-        'ລາຍຮັບລວມ': t_in,
-        'ລາຍຈ່າຍລວມ': t_ex,
-        'ເຫຼືອເກັບ': t_in - t_ex
+        'ວັນທີ': now.strftime("%d/%m/%Y %H:%M"),
+        'ລາຍຮັບລວມ': total_income,
+        'ລາຍຈ່າຍລວມ': total_expense,
+        'ເຫຼືອເກັບ': balance
     }
     
-    pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
-    st.balloons() # ສະແດງຄວາມດີໃຈ
-    st.success("✅ ບັນທຶກສຳເລັດແລ້ວເດີ້ປ້າ!")
+    # ບັນທຶກລົງ CSV
+    df_new = pd.DataFrame([new_data])
+    df_new.to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
+    
+    st.balloons()
+    st.success(f"✅ ບັນທຶກແລ້ວ! ລາຍຮັບ: {total_income:,.0f} | ລາຍຈ່າຍ: {total_expense:,.0f} | ເຫຼືອ: {balance:,.0f}")
     st.rerun()
 
-# --- 4. ສ່ວນ AI ວິເຄາະ ---
+# --- 4. ສະແດງປະຫວັດ ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
-    st.write("### 📊 ປະຫວັດການເງິນຫຼ້າສຸດ")
-    # ສະແດງຕະລາງແບບມີຈຸດ
-    st.dataframe(df.tail(10).style.format("{:,.0f}", subset=['ລາຍຮັບລວມ', 'ລາຍຈ່າຍລວມ', 'ເຫຼືອເກັບ']), use_container_width=True)
-    
-    st.markdown(f"""
-    <div class="ai-card">
-        <h3>🤖 AI ທີ່ປຶກສາສ່ວນຕົວ</h3>
-        <p>ສະບາຍດີປ້າພອນສຸກ! ຕອນນີ້ປ້າມີເງິນເຫຼືອເກັບສະສົມທັງໝົດ <b>{df['ເຫຼືອເກັບ'].sum():,.0f}</b> ກີບແລ້ວເດີ້.</p>
-        <p>💡 <b>ຄຳແນະນຳ:</b> ຖ້າເຫັນວ່າລາຍຮັບຈາກ "ຕູ້ຊັກຜ້າ" ສູງຂຶ້ນ, ປ້າອາດຈະພິຈາລະນາເພີ່ມຕູ້ໃໝ່ໄດ້ໃນເດືອນໜ້າ!</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.write("### 📊 ປະຫວັດ 5 ລາຍການຫຼ້າສຸດ")
+    st.table(df.tail(5))
