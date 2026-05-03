@@ -42,6 +42,19 @@ def input_box(label, key):
         st.rerun()
     return new_val
 
+# ໂຫຼດຂໍ້ມູນມາເພື່ອຄິດໄລ່ຍອດລວມສະສົມ
+if os.path.exists(FILE_NAME):
+    df = pd.read_csv(FILE_NAME)
+    total_in_all = df['ລາຍຮັບທັງໝົດ'].sum() if not df.empty else 0
+    total_ex_all = df['ລາຍຈ່າຍທັງໝົດ'].sum() if not df.empty else 0
+else:
+    total_in_all, total_ex_all = 0, 0
+
+col_m1, col_m2, col_m3 = st.columns(3)
+col_m1.metric("💰 ລາຍຮັບສະສົມ", f"{total_in_all:,.0f} ກີບ")
+col_m2.metric("💸 ລາຍຈ່າຍສະສົມ", f"{total_ex_all:,.0f} ກີບ")
+col_m3.metric("📈 ເຫຼືອເງິນສົດ", f"{(total_in_all - total_ex_all):,.0f} ກີບ")
+
 # --- 2. ສ່ວນຊ່ອງປ້ອນຂໍ້ມູນ (ພາສາລາວຄົບຖ້ວນ) ---
 st.write("---")
 st.subheader("📝 ປ້ອນລາຍລະອຽດມື້ນີ້")
@@ -106,14 +119,6 @@ if os.path.exists(FILE_NAME):
     if not df_display.empty:
         # ໃສ່ຈຸດຂັ້ນໃຫ້ທຸກຖັນທີ່ເປັນຕົວເລກ
         st.dataframe(df_display.style.format(thousands=",", precision=0), use_container_width=True)
-
-# --- 3. ສ່ວນຕາຕະລາງ Excel ໃຫ້ມີຈຸດທັງໝົດ ---
-if os.path.exists(FILE_NAME):
-    df_show = pd.read_csv(FILE_NAME)
-    if not df_show.empty:
-        st.write("### 📊 ປະຫວັດການເງິນ (ແບບມີຈຸດຂັ້ນ)")
-        # ບັງຄັບໃຫ້ທຸກຖັນຕົວເລກມີຈຸດຂັ້ນອັດຕະໂນມັດ
-        st.dataframe(df_show.style.format(thousands=",", precision=0), use_container_width=True)
 
 # --- ສ່ວນ AI ວິເຄາະແບບມືອາຊີບ (ທຸກໄລຍະ) ---
 if os.path.exists(FILE_NAME):
