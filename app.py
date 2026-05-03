@@ -35,6 +35,21 @@ st.markdown("""
     .ai-card h3, .ai-card p, .ai-card b {
         color: #1B4F72 !important;
     }
+
+    /* ເຊື່ອງລູກສອນຂຶ້ນລົງຂອງ number_input */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type=number] { -moz-appearance: textfield; }
+
+    /* ຕົວເລກຢູ່ໃນ input ໃຫ້ໃຫຍ່ຂຶ້ນ */
+    input[type=number] {
+        font-size: 18px !important;
+        font-weight: bold !important;
+        color: #1B4F72 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -48,70 +63,68 @@ st.write("""
 <br>
 """, unsafe_allow_html=True)
 
-# --- ຟັງຊັນຕົວເລກ ---
-def format_num(v):
-    if v == "" or v is None: return ""
-    nums = "".join(filter(str.isdigit, str(v)))
-    return "{:,}".format(int(nums)) if nums else ""
-
-def parse_num(v):
-    if v == "" or v is None: return 0
-    nums = "".join(filter(str.isdigit, str(v)))
-    return int(nums) if nums else 0
-
-# --- ກຽມ session_state ---
+# --- ກຽມ session_state reset ---
 ALL_KEYS = ["i1","i2","i3","i4","i5","i6","i7",
             "e1","e2","e3","e4","e5","e6","e7","e8","e9","e10","e11"]
 
 if 'reset_counter' not in st.session_state:
     st.session_state['reset_counter'] = 0
 
-for k in ALL_KEYS:
-    if k not in st.session_state:
-        st.session_state[k] = ""
+# ✅ ໃຊ້ number_input ແທນ text_input
+# - format="%d" → ສະແດງເປັນເລກເຕັມ, ບໍ່ມີທົດສະນິຍົມ
+# - min_value=0 → ບໍ່ຕິດລົບ
+# - step=1000 → ກົດລູກສອນເພີ່ມ/ຫຼຸດໄດ້ທີລະ 1,000
+# - value=0 → ຄ່າເລີ່ມຕົ້ນ 0
+# Streamlit's number_input ຈະ format ຈຸດ (,) ໃຫ້ອັດຕະໂນມັດ!
 
-# --- ✅ ຟັງຊັນ input_box ໃຊ້ on_change ເພື່ອ format ທັນທີທີ່ພິມ ---
-def input_box(label, key):
+def num_input(label, key):
     rc = st.session_state['reset_counter']
-    widget_key = f"widget_{key}_{rc}"
-
-    def _on_change():
-        raw = st.session_state.get(widget_key, "")
-        st.session_state[key] = format_num(raw)
-
-    st.text_input(
+    widget_key = f"n_{key}_{rc}"
+    val = st.number_input(
         label,
-        value=st.session_state[key],
-        key=widget_key,
-        on_change=_on_change
+        min_value=0,
+        value=0,
+        step=1000,
+        format="%d",
+        key=widget_key
     )
-    return st.session_state[key]
+    return val
 
 # --- 1. ສ່ວນປ້ອນຂໍ້ມູນ ---
 c1, c2 = st.columns(2)
 with c1:
-    st.success("### 🟢 ສ່ວນລາຍຮັບ")
-    i1_v = input_box("1. ຮັບເງິນເດືອນ", "i1")
-    i2_v = input_box("2. ລາຍຮັບ Creator (FB/YouTube)", "i2")
-    i3_v = input_box("3. ລາຍຮັບຂາຍຂອງຍ່ອຍ", "i3")
-    i4_v = input_box("4. ລາຍຮັບຕັດຫຍິບ", "i4")
-    i5_v = input_box("5. ລາຍຮັບຕູ້ກົດນ້ຳ", "i5")
-    i6_v = input_box("6. ລາຍຮັບຕູ້ຊັກຜ້າ", "i6")
-    i7_v = input_box("7. ລາຍຮັບອື່ນໆ", "i7")
+    st.success("### 🟢 ສ່ວນລາຍຮັບ (ກີບ)")
+    i1_v = num_input("1. ຮັບເງິນເດືອນ", "i1")
+    i2_v = num_input("2. ລາຍຮັບ Creator (FB/YouTube)", "i2")
+    i3_v = num_input("3. ລາຍຮັບຂາຍຂອງຍ່ອຍ", "i3")
+    i4_v = num_input("4. ລາຍຮັບຕັດຫຍິບ", "i4")
+    i5_v = num_input("5. ລາຍຮັບຕູ້ກົດນ້ຳ", "i5")
+    i6_v = num_input("6. ລາຍຮັບຕູ້ຊັກຜ້າ", "i6")
+    i7_v = num_input("7. ລາຍຮັບອື່ນໆ", "i7")
 
 with c2:
-    st.error("### 🔴 ສ່ວນລາຍຈ່າຍ")
-    e1_v = input_box("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", "e1")
-    e2_v = input_box("2. ຄ່າເຊົ່າທີ່ຢູ່", "e2")
-    e3_v = input_box("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", "e3")
-    e4_v = input_box("4. ຄ່າເດີນທາງ", "e4")
-    e5_v = input_box("5. ຄ່າການສຶກສາ", "e5")
-    e6_v = input_box("6. ຄ່າປິ່ນປົວ", "e6")
-    e7_v = input_box("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", "e7")
-    e8_v = input_box("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
-    e9_v = input_box("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
-    e10_v = input_box("10. ຄ່າສ້າງເຮືອນ", "e10")
-    e11_v = input_box("11. ຄ່າຊື້ສິນຄ້າເຂົ້າຮ້ານ", "e11")
+    st.error("### 🔴 ສ່ວນລາຍຈ່າຍ (ກີບ)")
+    e1_v = num_input("1. ຄ່າອາຫານ & ເຄື່ອງບໍລິໂພກ", "e1")
+    e2_v = num_input("2. ຄ່າເຊົ່າທີ່ຢູ່", "e2")
+    e3_v = num_input("3. ຄ່ານ້ຳ-ຄ່າໄຟ-ເນັດ", "e3")
+    e4_v = num_input("4. ຄ່າເດີນທາງ", "e4")
+    e5_v = num_input("5. ຄ່າການສຶກສາ", "e5")
+    e6_v = num_input("6. ຄ່າປິ່ນປົວ", "e6")
+    e7_v = num_input("7. ຄ່າເສື້ອຜ້າ & ຂອງໃຊ້", "e7")
+    e8_v = num_input("8. ຄ່າໂທລະສັບ & ບັນເທີງ", "e8")
+    e9_v = num_input("9. ຄ່າຫວຍ/ລາງວັນ", "e9")
+    e10_v = num_input("10. ຄ່າສ້າງເຮືອນ", "e10")
+    e11_v = num_input("11. ຄ່າຊື້ສິນຄ້າເຂົ້າຮ້ານ", "e11")
+
+# ສະແດງຜົນລວມກ່ອນກົດບັນທຶກ
+t_in_preview  = i1_v+i2_v+i3_v+i4_v+i5_v+i6_v+i7_v
+t_ex_preview  = e1_v+e2_v+e3_v+e4_v+e5_v+e6_v+e7_v+e8_v+e9_v+e10_v+e11_v
+profit_preview = t_in_preview - t_ex_preview
+
+pc1, pc2, pc3 = st.columns(3)
+pc1.metric("💰 ລາຍຮັບລວມ (preview)", f"{t_in_preview:,} ກີບ")
+pc2.metric("💸 ລາຍຈ່າຍລວມ (preview)", f"{t_ex_preview:,} ກີບ")
+pc3.metric("📊 ກຳໄລ (preview)", f"{profit_preview:,} ກີບ")
 
 submit = st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True)
 
@@ -119,12 +132,8 @@ submit = st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ"
 if submit:
     now_lao = datetime.now() + timedelta(hours=7)
 
-    v_i = [parse_num(i1_v), parse_num(i2_v), parse_num(i3_v), parse_num(i4_v),
-           parse_num(i5_v), parse_num(i6_v), parse_num(i7_v)]
-    v_e = [parse_num(e1_v), parse_num(e2_v), parse_num(e3_v), parse_num(e4_v),
-           parse_num(e5_v), parse_num(e6_v), parse_num(e7_v), parse_num(e8_v),
-           parse_num(e9_v), parse_num(e10_v), parse_num(e11_v)]
-
+    v_i = [i1_v, i2_v, i3_v, i4_v, i5_v, i6_v, i7_v]
+    v_e = [e1_v, e2_v, e3_v, e4_v, e5_v, e6_v, e7_v, e8_v, e9_v, e10_v, e11_v]
     t_in = sum(v_i)
     t_ex = sum(v_e)
 
@@ -143,11 +152,8 @@ if submit:
         header=not os.path.exists(FILE_NAME), encoding='utf-8-sig'
     )
 
-    # ✅ ລ້າງຄ່າທັງໝົດ + ເພີ່ມ counter → widget ໃໝ່ທັງໝົດ
-    for k in ALL_KEYS:
-        st.session_state[k] = ""
+    # ✅ ລ້າງໂດຍເພີ່ມ reset_counter → widget ທັງໝົດ reset ກັບ 0
     st.session_state['reset_counter'] += 1
-
     st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
     st.rerun()
 
@@ -176,8 +182,8 @@ if os.path.exists(FILE_NAME):
         text_time = "ຂອງປີນີ້"
 
     if not filtered_df.empty:
-        t_in = filtered_df['ລາຍຮັບລວມ'].sum()
-        t_ex = filtered_df['ລາຍຈ່າຍລວມ'].sum()
+        t_in  = filtered_df['ລາຍຮັບລວມ'].sum()
+        t_ex  = filtered_df['ລາຍຈ່າຍລວມ'].sum()
         profit = t_in - t_ex
 
         c1, c2, c3 = st.columns(3)
@@ -190,8 +196,8 @@ if os.path.exists(FILE_NAME):
             <h3>🤖 AI Professional Advisor ({text_time})</h3>
             <p>✅ <b>ສະຫຼຸບການເງິນ:</b> {text_time} ປ້າມີກຳໄລສຸດທິ <b>{profit:,.0f} ກີບ</b>.</p>
             <p>📈 <b>ວິເຄາະຊ່ອງທາງລາຍໄດ້:</b> ລາຍຮັບຈາກການຫຍິບຜ້າ ແລະ ຕູ້ຢອດຫຼຽນເປັນລາຍໄດ້ທີ່ໝັ້ນຄົງທີ່ສຸດ.</p>
-            <p>⚠️ <b>ຂໍ້ຄວນລະວັງ:</b> ຖ້າລາຍຈ່າຍຄ່າຫວຍ ຫຼື ຄ່າບັນເທີງສູງເກີນ 10% ຂອງລາຍຮັບ, AI ແນະນຳໃຫ້ປ້າປັບຫຼຸດລົງເພື່ອເອົາໄປໃສ່ຄ່າສ້າງເຮືອນແທນ.</p>
-            <p>🚀 <b>ຄຳແນະນຳມືອາຊີບ:</b> ໃນໄລຍະ {text_time}, ປ້າຄວນແບ່ງກຳໄລ 5% ໄປບຳລຸງຮັກສາຕູ້ຊັກຜ້າ ແລະ ຕູ້ກົດນ້ຳ ເພື່ອໃຫ້ມັນສ້າງເງິນໃຫ້ປ້າໄດ້ຍາວໆ.</p>
+            <p>⚠️ <b>ຂໍ້ຄວນລະວັງ:</b> ຖ້າລາຍຈ່າຍຄ່າຫວຍ ຫຼື ຄ່າບັນເທີງສູງເກີນ 10% ຂອງລາຍຮັບ, AI ແນະນຳໃຫ້ປ້າປັບຫຼຸດລົງ.</p>
+            <p>🚀 <b>ຄຳແນະນຳ:</b> ແບ່ງກຳໄລ 5% ໄປບຳລຸງຮັກສາຕູ້ຊັກຜ້າ ແລະ ຕູ້ກົດນ້ຳ ເພື່ອໃຫ້ສ້າງລາຍໄດ້ໄດ້ຍາວໆ.</p>
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -214,7 +220,7 @@ if os.path.exists(FILE_NAME):
             if pwd == "9999":
                 if os.path.exists(FILE_NAME):
                     os.remove(FILE_NAME)
-                    st.success("ລົບຂໍ້ມູນຮຽບຮ້ອຍແລ້ວ! ລະບົບຈະເລີ່ມໃໝ່...")
+                    st.success("ລົບຂໍ້ມູນຮຽບຮ້ອຍແລ້ວ!")
                     st.rerun()
             else:
                 st.error("ລະຫັດບໍ່ຖືກ!")
