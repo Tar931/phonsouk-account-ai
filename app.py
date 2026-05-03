@@ -4,64 +4,64 @@ import os
 from datetime import datetime, timedelta
 
 # --- 1. ຕັ້ງຄ່າເບື້ອງຕົ້ນ ---
-st.set_page_config(page_title="App ປ້າພອນສຸກ v6", layout="wide")
-FILE_NAME = 'database_paphonsouk_v6.csv' # ປ່ຽນຊື່ໄຟລ໌ໃໝ່ເພື່ອລ້າງ Error ເກົ່າ
+st.set_page_config(page_title="ບັນຊີປ້າພອນສຸກ v7", layout="wide")
+# ປ່ຽນຊື່ໄຟລ໌ເກັບຂໍ້ມູນໃໝ່ ເພື່ອໃຫ້ລະບົບເລີ່ມຕົ້ນໃໝ່ແບບບໍ່ມີ Error
+FILE_NAME = 'phonsouk_account_v7.csv'
 
 st.markdown("""
     <style>
-    .stNumberInput input { font-size: 20px !important; font-weight: bold; color: #1B4F72 !important; }
+    .stNumberInput input { font-size: 22px !important; font-weight: bold; color: #1B4F72 !important; }
     header {visibility: hidden;}
+    .reportview-container { background-color: #f0f2f6; }
     </style>
     """, unsafe_allow_html=True)
 
-st.title("🏦 ລະບົບບັນຊີ AI ປ້າພອນສຸກ")
-st.write("### ປ້າພິມຕົວເລກລົງໄປເລີຍ ລະບົບຈະໃສ່ຈຸດໃຫ້ເອງ!")
+st.title("🏦 ລະບົບບັນຊີ AI ປ້າພອນສຸກ (ເວີຊັນປັບປຸງ)")
 
-# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ແບບ Number Input 100%) ---
-col1, col2 = st.columns(2)
+# --- 2. ສ່ວນປ້ອນຂໍ້ມູນ (ບັງຄັບໃຫ້ເປັນຕົວເລກ 100%) ---
+st.info("💡 ພິມຕົວເລກລົງໄປເລີຍ ລະບົບຈະໃສ່ຈຸດຄັ່ນໃຫ້ເອງອັດຕະໂນມັດ!")
 
-with col1:
+c1, c2 = st.columns(2)
+
+with c1:
     st.success("### 🟢 ລາຍຮັບ")
-    in1 = st.number_input("1. ເງິນເດືອນ", min_value=0, value=0, step=1000)
-    in2 = st.number_input("2. ລາຍຮັບ Creator", min_value=0, value=0, step=1000)
-    in3 = st.number_input("3. ຂາຍຂອງຍ່ອຍ", min_value=0, value=0, step=1000)
-    in4 = st.number_input("4. ຮັບຕັດຫຍິບ", min_value=0, value=0, step=1000)
+    i1 = st.number_input("1. ເງິນເດືອນ", min_value=0, step=1000)
+    i2 = st.number_input("2. ລາຍຮັບ Creator", min_value=0, step=1000)
+    i3 = st.number_input("3. ຂາຍຂອງຍ່ອຍ", min_value=0, step=1000)
 
-with col2:
+with c2:
     st.error("### 🔴 ລາຍຈ່າຍ")
-    ex1 = st.number_input("1. ຄ່າອາຫານ/ຂອງໃຊ້", min_value=0, value=0, step=1000)
-    ex2 = st.number_input("2. ຄ່າເຊົ່າບ້ານ/ນ້ຳໄຟ", min_value=0, value=0, step=1000)
-    ex3 = st.number_input("3. ຄ່າຫວຍ/ສັງຄົມ", min_value=0, value=0, step=1000)
-    ex4 = st.number_input("4. ຄ່າສ້າງເຮືອນ", min_value=0, value=0, step=1000)
+    e1 = st.number_input("1. ຄ່າອາຫານ/ຂອງໃຊ້", min_value=0, step=1000)
+    e2 = st.number_input("2. ຄ່າເຊົ່າບ້ານ/ນ້ຳໄຟ", min_value=0, step=1000)
+    e3 = st.number_input("3. ຄ່າຫວຍ/ສັງຄົມ", min_value=0, step=1000)
 
-# --- 3. ປຸ່ມບັນທຶກ ແລະ ການຄິດໄລ່ ---
+# --- 3. ການບັນທຶກ ແລະ ຄິດໄລ່ (ໃຊ້ສູດທີ່ບໍ່ມີທາງ Error) ---
 st.markdown("---")
-if st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True):
-    # ຄິດໄລ່ແບບ Number 100% ປ້ອງກັນ Error ໃນຮູບ image_5fcb37.png
-    t_in = float(in1 + in2 + in3 + in4)
-    t_ex = float(ex1 + ex2 + ex3 + ex4)
-    balance = t_in - t_ex
+if st.button("💾 ບັນທຶກຂໍ້ມູນ", use_container_width=True):
+    # ແປງຄ່າໃຫ້ເປັນຕົວເລກແນ່ນອນ (float) ກ່ອນຄິດໄລ່
+    total_in = float(i1 + i2 + i3)
+    total_ex = float(e1 + e2 + e3)
+    net_balance = total_in - total_ex
     
-    now = datetime.now() + timedelta(hours=7)
+    current_time = (datetime.now() + timedelta(hours=7)).strftime("%d/%m/%Y %H:%M")
     
-    new_row = {
-        'ວັນທີ': now.strftime("%d/%m/%Y %H:%M"),
-        'ລາຍຮັບລວມ': t_in,
-        'ລາຍຈ່າຍລວມ': t_ex,
-        'ເຫຼືອເກັບ': balance
+    new_data = {
+        'ວັນທີ': current_time,
+        'ລາຍຮັບລວມ': total_in,
+        'ລາຍຈ່າຍລວມ': total_ex,
+        'ເຫຼືອເກັບ': net_balance
     }
     
     # ບັນທຶກລົງ CSV
-    df_new = pd.DataFrame([new_row])
+    df_new = pd.DataFrame([new_data])
     df_new.to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
     
     st.balloons()
-    st.success(f"✅ ບັນທຶກສຳເລັດ! ເຫຼືອເງິນເກັບ: {balance:,.0f} ກີບ")
+    st.success(f"✅ ບັນທຶກແລ້ວ! ເງິນເຫຼືອເກັບຮອບນີ້: {net_balance:,.0f} ກີບ")
     st.rerun()
 
 # --- 4. ສະແດງປະຫວັດ ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
-    st.write("### 📊 ປະຫວັດການເງິນ")
-    # ຈັດຮູບແບບຕົວເລກໃຫ້ມີຈຸດໃນຕະລາງ
+    st.write("### 📊 ປະຫວັດການເງິນຫຼ້າສຸດ")
     st.dataframe(df.tail(10).style.format("{:,.0f}", subset=['ລາຍຮັບລວມ', 'ລາຍຈ່າຍລວມ', 'ເຫຼືອເກັບ']), use_container_width=True)
