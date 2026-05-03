@@ -3,17 +3,18 @@ import pandas as pd
 import os
 from datetime import datetime, timedelta
 
-# --- 1. ຕັ້ງຄ່າ AI ແບບຍືດຫຍຸ່ນ (Fix Error 404 & api_version) ---
+# --- 1. ຕັ້ງຄ່າ AI ແບບພິເສດ (ບັງຄັບ v1 ເພື່ອຂ້າ Error 404 v1beta) ---
 ai_error_msg = ""
 try:
     import google.generativeai as genai
+    from google.generativeai.types import RequestOptions
+    
     # ດຶງ Key ຈາກ Secrets
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
     
-    # ລະບົບຈະເລືອກ Model ທີ່ເໝາະສົມກັບ Library ທີ່ປ້າໃຊ້ຢູ່ໂດຍອັດຕະໂນມັດ
+    # ບັງຄັບໃຊ້ Model 'gemini-1.5-flash'
     model = genai.GenerativeModel('gemini-1.5-flash')
     
-    # ທົດສອບເບິ່ງວ່າ AI ພ້ອມເຮັດວຽກບໍ່
     ai_ready = True
 except Exception as e:
     ai_ready = False
@@ -23,11 +24,10 @@ except Exception as e:
 st.set_page_config(page_title="App ບັນຊີປ້າພອນສຸກ", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
 
-# ຕົວນັບສຳລັບລ້າງຂໍ້ມູນໃນຊ່ອງ Input
 if 'clear_counter' not in st.session_state:
     st.session_state.clear_counter = 0
 
-# --- 3. CSS ຕົບແຕ່ງ (UI/UX) ---
+# --- 3. CSS ຕົບແຕ່ງ UI ---
 st.markdown("""
 <style>
     [data-testid="stMetricValue"] { color: #1B4F72 !important; font-size: 35px !important; font-weight: bold !important; }
@@ -63,7 +63,7 @@ st.write("""
 <br>
 """, unsafe_allow_html=True)
 
-# --- 5. ຟັງຊັນຊ່ວຍ (Helpers) ---
+# --- 5. ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ ---
 def format_num(v):
     if v == "" or v is None: return ""
     nums = "".join(filter(str.isdigit, str(v)))
@@ -83,7 +83,7 @@ def input_box(label, base_key):
         st.session_state[actual_key] = ""
     return st.text_input(label, key=actual_key, on_change=update_val, args=(actual_key,))
 
-# --- 6. ສ່ວນການປ້ອນຂໍ້ມູນ (Input) ---
+# --- 6. ສ່ວນປ້ອນຂໍ້ມູນ ---
 c1, c2 = st.columns(2)
 with c1:
     st.success("### 🟢 ສ່ວນລາຍຮັບ")
@@ -128,10 +128,10 @@ if submit:
         }
         pd.DataFrame([new_row]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
         st.session_state.clear_counter += 1
-        st.success(f"✅ ບັນທຶກສຳເລັດ! ເວລາ: {now_lao.strftime('%H:%M')}")
+        st.success(f"✅ ບັນທຶກແລ້ວ! {now_lao.strftime('%H:%M')}")
         st.rerun() 
 
-# --- 7. ສ່ວນສະຫຼຸບຕົວເລກ & AI ວິເຄາະ ---
+# --- 7. ສະແດງຜົນ ແລະ AI ວິເຄາະ (ປັບປຸງຈຸດ Error) ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
     st.markdown("---")
@@ -147,8 +147,7 @@ if os.path.exists(FILE_NAME):
     else: filtered_df = df[df['Date_Obj'].dt.year == now.year]
 
     if not filtered_df.empty:
-        t_in = filtered_df['ລາຍຮັບລວມ'].sum()
-        t_ex = filtered_df['ລາຍຈ່າຍລວມ'].sum()
+        t_in, t_ex = filtered_df['ລາຍຮັບລວມ'].sum(), filtered_df['ລາຍຈ່າຍລວມ'].sum()
         profit = t_in - t_ex
         
         c1, c2, c3 = st.columns(3)
@@ -156,46 +155,35 @@ if os.path.exists(FILE_NAME):
         c2.metric(f"ລາຍຈ່າຍ ({option})", f"{t_ex:,.0f} ກີບ")
         c3.metric(f"ກຳໄລ/ເຫຼືອເກັບ", f"{profit:,.0f} ກີບ")
 
-        # --- AI CFO Analysis ---
         if ai_ready:
             if st.button("🤖 ໃຫ້ AI ວິເຄາະບັນຊີ ແລະ ວາງແຜນການເງິນໃຫ້ປ້າ", use_container_width=True):
-                with st.spinner("AI ກຳລັງວິເຄາະຕົວເລກຂອງປ້າ..."):
-                    prompt = f"""
-                    ເຈົ້າຄື CFO ທີ່ປຶກສາການເງິນສ່ວນຕົວຂອງ "ປ້າພອນສຸກ". 
-                    ຂໍ້ມູນປະຈຸບັນ ({option}): ລາຍຮັບ {t_in:,.0f} ກີບ, ລາຍຈ່າຍ {t_ex:,.0f} ກີບ, ກຳໄລ {profit:,.0f} ກີບ.
-                    ຈົ່ງວິເຄາະ ແລະ ແນະນຳເປັນພາສາລາວທີ່ສຸພາບ ອ່ານງ່າຍ 3 ຫົວຂໍ້:
-                    1. ສະຫຼຸບສຸຂະພາບການເງິນ
-                    2. ວິທີເພີ່ມລາຍຮັບຈາກຊ່ອງທາງທີ່ມີ
-                    3. ຈຸດທີ່ຄວນປະຢັດ
-                    """
+                with st.spinner("AI ກຳລັງວິເຄາະ..."):
+                    prompt = f"ວິເຄາະບັນຊີປ້າພອນສຸກ: ຮັບ {t_in:,.0f}, ຈ່າຍ {t_ex:,.0f}, ເຫຼືອ {profit:,.0f}. ແນະນຳເປັນພາສາລາວ 3 ຂໍ້."
                     try:
-                        response = model.generate_content(prompt)
-                        st.markdown(f'<div class="ai-card"><h3>🤖 ຜົນວິເຄາະຈາກ AI CFO</h3>{response.text}</div>', unsafe_allow_html=True)
+                        # ບັງຄັບໃຊ້ api_version='v1' ໃນທຸກການເອີ້ນໃຊ້
+                        response = model.generate_content(
+                            prompt,
+                            request_options=RequestOptions(api_version='v1')
+                        )
+                        st.markdown(f'<div class="ai-card"><h3>🤖 ຜົນວິເຄາະ AI</h3>{response.text}</div>', unsafe_allow_html=True)
                     except Exception as ai_e:
-                        st.error(f"AI ຕິດບັນຫາບຶດໜຶ່ງ: {ai_e}")
+                        st.error(f"ເກີດຂໍ້ຜິດພາດ: {ai_e}")
         else:
             st.warning(f"AI ຍັງບໍ່ພ້ອມ: {ai_error_msg}")
     else:
         st.info(f"ຍັງບໍ່ມີຂໍ້ມູນ {option} ເດີ້ປ້າ!")
 
-    # --- 8. ຕາຕະລາງປະຫວັດການເງິນແບບ Excel (Detailed Table) ---
+    # --- 8. ຕາຕະລາງປະຫວັດ ---
     st.markdown("---")
     st.write("### 📅 ປະຫວັດການບັນທຶກ (10 ລາຍການຫຼ້າສຸດ)")
-    
-    # ກອງເອົາແຕ່ຄໍລຳຕົວເລກມາ Format ໃຫ້ມີຈຸດແຍກຫຼັກພັນ
     view_df = df.drop(columns=['Date_Obj'], errors='ignore')
     num_cols = view_df.select_dtypes(include=['number']).columns.tolist()
-    
-    st.dataframe(
-        view_df.tail(10).style.format(subset=num_cols, formatter="{:,.0f}"), 
-        use_container_width=True
-    )
+    st.dataframe(view_df.tail(10).style.format(subset=num_cols, formatter="{:,.0f}"), use_container_width=True)
 
-    # --- 9. ສ່ວນລ້າງຂໍ້ມູນ ---
+    # --- 9. ລົບຂໍ້ມູນ ---
     with st.expander("🛠️ ຕັ້ງຄ່າ/ລົບຂໍ້ມູນ"):
-        pwd = st.text_input("ໃສ່ລະຫັດ 9999 ເພື່ອລົບຂໍ້ມູນທັງໝົດ:", type="password")
-        if st.button("🗑️ ຢືນຢັນການລົບ"):
+        pwd = st.text_input("ໃສ່ລະຫັດ 9999:", type="password")
+        if st.button("🗑️ ຢືນຢັນລົບ"):
             if pwd == "9999" and os.path.exists(FILE_NAME):
                 os.remove(FILE_NAME)
-                st.success("ລົບຂໍ້ມູນແລ້ວ! ກະລຸນາຣີເຟຣຊໜ້າຈໍ.")
                 st.rerun()
