@@ -91,31 +91,58 @@ if submit:
     st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
     st.rerun()
 
-# --- ສ່ວນປຸ່ມບັນທຶກ (ແບບບັງຄັບຫົວຂໍ້ໃຫ້ AI ອ່ານໄດ້) ---
-if st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True):
-    # ລວມຕົວເລກ (ໃຫ້ແນ່ໃຈວ່າ i1, i2... ແມ່ນຊື່ຕົວປ່ຽນທີ່ປ້າໃຊ້ປ້ອນເງິນ)
-    total_in = float(i1 + i2 + i3) 
-    total_ex = float(e1 + e2 + e3)
-    balance = total_in - total_ex
-    current_time = (datetime.now() + timedelta(hours=7)).strftime("%d/%m/%Y %H:%M")
-    
-    # ສ້າງຂໍ້ມູນໃໝ່ (ຊື່ຖັນຕ້ອງກົງກັບທີ່ AI ຖ້າອ່ານ)
-    new_data = pd.DataFrame([{
-        'ວັນທີ': current_time, 
-        'ລາຍຮັບ': total_in, 
-        'ລາຍຈ່າຍ': total_ex, 
-        'ເຫຼືອ': balance
-    }])
-    
-    # ບັນທຶກລົງໄຟລ໌
-    if not os.path.exists(FILE_NAME):
-        new_data.to_csv(FILE_NAME, index=False, encoding='utf-8-sig')
+# --- ສ່ວນ AI ອັດສະລິຍະ ວິເຄາະຮອບດ້ານ (ວັນ/ທິດ/ເດືອນ/ປີ) ---
+st.divider()
+st.write("### 🧠 AI ສູນວິເຄາະ ແລະ ວາງແຜນທຸລະກິດອັດສະລິຍະ")
+
+if os.path.exists(FILE_NAME):
+    df = pd.read_csv(FILE_NAME)
+    if not df.empty:
+        # ແປງວັນທີໃຫ້ລະບົບເຂົ້າໃຈ
+        df['ວັນທີ'] = pd.to_datetime(df['ວັນທີ'], dayfirst=True)
+        
+        # 1. ວິເຄາະສະຖິຕິພື້ນຖານ
+        total_in = df['ລາຍຮັບ'].sum()
+        total_ex = df['ລາຍຈ່າຍ'].sum()
+        net_profit = df['ເຫຼືອ'].sum()
+        
+        # ສ້າງ Tab ສໍາລັບການວາງແຜນ
+        t1, t2, t3, t4 = st.tabs(["📅 ວິເຄາະໄລຍະເວລາ", "💰 ວາງແຜນການເງິນ", "📢 ການຕະຫຼາດ", "🛠 ການບໍລິຫານ"])
+        
+        with t1:
+            st.info("#### 📊 ສະຫຼຸບຜົນການດຳເນີນງານ")
+            col_a, col_b = st.columns(2)
+            # ວິເຄາະລາຍວັນ (ມື້ລ່າສຸດ)
+            daily = df.iloc[-1]
+            col_a.metric("ມື້ນີ້ (ລາຍຮັບ)", f"{daily['ລາຍຮັບ']:,.0f} ₭")
+            
+            # ວິເຄາະລາຍເດືອນ (ສະເລ່ຍ)
+            monthly_avg = df.resample('M', on='ວັນທີ')['ລາຍຮັບ'].sum().mean()
+            col_b.metric("ສະເລ່ຍລາຍຮັບ/ເດືອນ", f"{monthly_avg:,.0f} ₭")
+            
+            st.write(f"📈 **ພາບລວມລາຍປີ:** ຄາດການລາຍຮັບໝົດປີຈະຢູ່ທີ່: **{monthly_avg * 12:,.0f} ₭**")
+
+        with t2:
+            st.success("#### 💵 ກົນຍຸດການເງິນ (Financial Strategy)")
+            savings_goal = net_profit * 0.3
+            st.write(f"💡 **ແຜນການອອມ:** ປ້າຄວນແບ່ງເງິນເກັບ **30% ({savings_goal:,.0f} ₭)** ໄວ້ເປັນທຶນໝຸນວຽນສຸກເສີນ.")
+            if total_ex > (total_in * 0.7):
+                st.warning("⚠️ **ເຕືອນ:** ລາຍຈ່າຍສູງກວ່າ 70% ຂອງລາຍຮັບ. ແນະນຳໃຫ້ຫຼຸດຄ່າໃຊ້ຈ່າຍທີ່ບໍ່ຄົງທີ່ລົງ.")
+            else:
+                st.write("✅ **ສະພາບຄ່ອງ:** ດີຫຼາຍ! ປ້າມີກຳໄລເຫຼືອພຽງພໍສຳລັບການລົງທຶນເພີ່ມ.")
+
+        with t3:
+            st.warning("#### 📣 ແຜນການຕະຫຼາດ (Marketing Plan)")
+            st.write("📌 **ກົນຍຸດການຂາຍ:** ໃຊ້ຫຼັກການ 'ປາກຕໍ່ປາກ' ບວກກັບການເຮັດ 'Facebook Reels' ສະແດງສິນຄ້າໃໝ່ທຸກໆວັນເສົາ.")
+            st.write("🎁 **ໂປຣໂມຊັນ:** ແນະນຳໃຫ້ຈັດກິດຈະກຳ 'Happy Hour' ຫຼຸດລາຄາ 5-10% ໃນຊ່ວງມື້ທີ່ຍອດຂາຍຕ່ຳທີ່ສຸດ.")
+
+        with t4:
+            st.error("#### ⚙️ ການບໍລິຫານ & ການບໍລິການ (Management)")
+            st.write("👥 **ການບໍລິການ:** ເນັ້ນການບໍລິການແບບ 'ຍິ້ມແຍ້ມແຈ່ມໃສ' ແລະ ມີຂອງຂວັນເລັກໆນ້ອຍໆໃຫ້ລູກຄ້າປະຈຳ.")
+            st.write("🏗️ **ໂຄງສ້າງ:** ປ້າຄວນຈັດລຽງສິນຄ້າທີ່ຂາຍດີໄວ້ທາງໜ້າຮ້ານ ເພື່ອດຶງດູດສາຍຕາລູກຄ້າ.")
+            
     else:
-        new_data.to_csv(FILE_NAME, mode='a', index=False, header=False, encoding='utf-8-sig')
-    
-    st.balloons()
-    st.success("✅ ບັນທຶກສຳເລັດ! ຕອນນີ້ AI ພ້ອມວິເຄາະໃຫ້ປ້າແລ້ວ.")
-    st.rerun() # ໃຫ້ມັນໂຫຼດໜ້າໃໝ່ເພື່ອໃຫ້ AI ເຫັນຂໍ້ມູນທັນທີ
+        st.warning("ກະລຸນາປ້ອນຂໍ້ມູນກ່ອນ ເພື່ອໃຫ້ AI ວິເຄາະ.")
  
 # --- ຕະລາງ Excel ແລະ ປຸ່ມລົບ (Code ທີ່ປ້າໃຫ້ເພີ່ມ) ---
     st.write("### 📅 ປະຫວັດການເງິນ (Excel)")
