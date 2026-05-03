@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 st.set_page_config(page_title="App ບັນຊີຂອງປ້າ", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
 
-# --- CSS ຕົບແຕ່ງ (ຮັກສາໄວ້ຄືເກົ່າຕາມ image_4e7d9c.png) ---
+# --- CSS ຕົບແຕ່ງ ---
 st.markdown("""
 <style>
     [data-testid="stMetricValue"] {
@@ -40,7 +40,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- ຫົວຂໍ້ແບບປອດໄພ (ຮັກສາໄວ້ຄືເກົ່າ) ---
+# --- ຫົວຂໍ້ແບບປອດໄພ ---
 header_text = """
 <div style="background-color: #1B4F72; padding: 25px; border-radius: 15px; border: 3px solid #F1C40F; text-align: center; color: white;">
     <h1 style="margin: 0;">🌸 ລະບົບບັນຊີ AI ປ້າພອນສຸກ </h1>
@@ -52,7 +52,7 @@ header_text = """
 """
 st.write(header_text, unsafe_allow_html=True)
 
-# --- ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ (ປັບປຸງໃໝ່ໃຫ້ລ້າງຄ່າໄດ້ ແລະ ມີຈຸດ) ---
+# --- ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ (ໃສ່ຈຸດ ແລະ ແປງເປັນຕົວເລກ) ---
 def format_num(v):
     if v == "" or v is None: return ""
     nums = "".join(filter(str.isdigit, str(v)))
@@ -63,21 +63,18 @@ def parse_num(v):
     nums = "".join(filter(str.isdigit, str(v)))
     return int(nums) if nums else 0
 
+# ຟັງຊັນອັບເດດຈຸດ (,) ເມື່ອພິມແລ້ວກົດອອກຈາກຫ້ອງ
+def update_val(key):
+    st.session_state[key] = format_num(st.session_state[key])
+
 def input_box(label, key):
-    # ສ້າງຄ່າເລີ່ມຕົ້ນໃນ session_state
+    # ສ້າງຄ່າເລີ່ມຕົ້ນໃນ session_state ເປັນຊ່ອງວ່າງ
     if key not in st.session_state:
         st.session_state[key] = ""
     
-    # ໃຊ້ key ທີ່ປ່ຽນແປງໄດ້ເພື່ອບັງຄັບໃຫ້ Streamlit ລ້າງຄ່າ (Clear)
-    # ໂດຍການຕື່ມ prefix 'w_' ໃສ່ທາງໜ້າ key ຂອງ widget
-    val = st.text_input(label, value=st.session_state[key], key=f"w_{key}")
-    
-    # ຈັດຮູບແບບຕົວເລກໃຫ້ມີຈຸດ (,) ທັນທີທີ່ພິມ
-    new_val = format_num(val)
-    if new_val != st.session_state[key]:
-        st.session_state[key] = new_val
-        st.rerun()
-    return new_val
+    # ໃຊ້ on_change ເພື່ອໃຫ້ມັນອັບເດດຈຸດ (,) ຫຼັງຈາກພິມແລ້ວ
+    st.text_input(label, key=key, on_change=update_val, args=(key,))
+    return st.session_state[key]
 
 # --- 1. ສ່ວນປ້ອນຂໍ້ມູນ ---
 c1, c2 = st.columns(2)
@@ -124,16 +121,17 @@ if submit:
         'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3], 'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7], 'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9], 'ຊື້ຂອງເຂົ້າຮ້ານ': v_e[10]
     }
     
+    # ບັນທຶກລົງ CSV
     pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
     
-    # ລ້າງຂໍ້ມູນໃນ session_state ຫຼັງບັນທຶກ
+    # ແກ້ໄຂບັນຫາທີ 2: ລ້າງຂໍ້ມູນໃນ session_state ອອກທັງໝົດ ຫຼັງບັນທຶກ
     for k in ["i1","i2","i3","i4","i5","i6","i7","e1","e2","e3","e4","e5","e6","e7","e8","e9", "e10", "e11"]:
         st.session_state[k] = ""
         
     st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
-    st.rerun() # Refresh ໃຫ້ຕົວເລກໃນຊ່ອງພິມຫາຍໄປ
+    st.rerun() # Refresh ໜ້າຈໍເພື່ອໃຫ້ຊ່ອງພິມທັງໝົດກາຍເປັນຊ່ອງວ່າງ
 
-# --- 3. ສ່ວນສະແດງຜົນ ແລະ AI ວິເຄາະ (ຮັກສາໄວ້ຄືເກົ່າທຸກຕົວອັກສອນ) ---
+# --- 3. ສ່ວນສະແດງຜົນ ແລະ AI ວິເຄາະ ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
     st.markdown("---")
