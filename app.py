@@ -40,8 +40,8 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- ຫົວຂໍ້ແບບປອດໄພ ---
-header_text = """
+# --- ຫົວຂໍ້ ---
+st.write("""
 <div style="background-color: #1B4F72; padding: 25px; border-radius: 15px; border: 3px solid #F1C40F; text-align: center; color: white;">
     <h1 style="margin: 0;">🌸 ລະບົບບັນຊີ AI ປ້າພອນສຸກ </h1>
     <p style="margin: 10px 0;">ເບີໂທ: 020 99858310 | Line: Tarvan</p>
@@ -49,10 +49,9 @@ header_text = """
     <div style="font-size: 30px; margin-top: 10px;">🌸 🇱🇦 🌸</div>
 </div>
 <br>
-"""
-st.write(header_text, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-# --- ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ (ໃສ່ຈຸດ ແລະ ແປງເປັນຕົວເລກ) ---
+# --- ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ ---
 def format_num(v):
     if v == "" or v is None: return ""
     nums = "".join(filter(str.isdigit, str(v)))
@@ -63,18 +62,24 @@ def parse_num(v):
     nums = "".join(filter(str.isdigit, str(v)))
     return int(nums) if nums else 0
 
-# ຟັງຊັນອັບເດດຈຸດ (,) ເມື່ອພິມແລ້ວກົດອອກຈາກຫ້ອງ
-def update_val(key):
-    st.session_state[key] = format_num(st.session_state[key])
-
+# --- ✅ ແກ້ໄຂ: ໃຊ້ reset_counter ໃນ widget key ---
+# ເມື່ອ reset_counter ເພີ່ມຂຶ້ນ, Streamlit ຈະສ້າງ widget ໃໝ່ທັງໝົດ = ລ້າງຄ່າ
 def input_box(label, key):
-    # ສ້າງຄ່າເລີ່ມຕົ້ນໃນ session_state ເປັນຊ່ອງວ່າງ
+    if 'reset_counter' not in st.session_state:
+        st.session_state['reset_counter'] = 0
     if key not in st.session_state:
         st.session_state[key] = ""
     
-    # ໃຊ້ on_change ເພື່ອໃຫ້ມັນອັບເດດຈຸດ (,) ຫຼັງຈາກພິມແລ້ວ
-    st.text_input(label, key=key, on_change=update_val, args=(key,))
-    return st.session_state[key]
+    # widget_key ລວມ reset_counter ເຂົ້າໄປ → ເມື່ອ counter ປ່ຽນ = widget ໃໝ່ = ຄ່າຫາຍ
+    widget_key = f"w_{key}_{st.session_state['reset_counter']}"
+    val = st.text_input(label, value=st.session_state[key], key=widget_key)
+    
+    # Format ຕົວເລກໃຫ້ມີຈຸດ (,) ທັນທີ
+    new_val = format_num(val)
+    if new_val != st.session_state[key]:
+        st.session_state[key] = new_val
+        st.rerun()
+    return new_val
 
 # --- 1. ສ່ວນປ້ອນຂໍ້ມູນ ---
 c1, c2 = st.columns(2)
@@ -121,15 +126,15 @@ if submit:
         'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3], 'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7], 'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9], 'ຊື້ຂອງເຂົ້າຮ້ານ': v_e[10]
     }
     
-    # ບັນທຶກລົງ CSV
     pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
     
-    # ແກ້ໄຂບັນຫາທີ 2: ລ້າງຂໍ້ມູນໃນ session_state ອອກທັງໝົດ ຫຼັງບັນທຶກ
-    for k in ["i1","i2","i3","i4","i5","i6","i7","e1","e2","e3","e4","e5","e6","e7","e8","e9", "e10", "e11"]:
+    # ✅ ແກ້ໄຂ: ລ້າງ session_state ແລ້ວເພີ່ມ reset_counter → widget ທັງໝົດຈະຖືກສ້າງໃໝ່ = ຄ່າຫາຍໝົດ
+    for k in ["i1","i2","i3","i4","i5","i6","i7","e1","e2","e3","e4","e5","e6","e7","e8","e9","e10","e11"]:
         st.session_state[k] = ""
+    st.session_state['reset_counter'] = st.session_state.get('reset_counter', 0) + 1
         
     st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
-    st.rerun() # Refresh ໜ້າຈໍເພື່ອໃຫ້ຊ່ອງພິມທັງໝົດກາຍເປັນຊ່ອງວ່າງ
+    st.rerun()
 
 # --- 3. ສ່ວນສະແດງຜົນ ແລະ AI ວິເຄາະ ---
 if os.path.exists(FILE_NAME):
@@ -177,7 +182,7 @@ if os.path.exists(FILE_NAME):
     else:
         st.info(f"ຍັງບໍ່ມີຂໍ້ມູນ {text_time} ເດີ້ປ້າ!")
 
-    # --- ຕາຕະລາງ Excel ---
+    # --- ຕາຕະລາງ ---
     st.markdown("---")
     st.write("### 📅 ປະຫວັດການເງິນ (10 ລາຍການຫຼ້າສຸດ)")
     st.dataframe(df.tail(10).style.format(subset=['ລາຍຮັບລວມ', 'ລາຍຈ່າຍລວມ', 'ເຫຼືອເກັບ'], formatter="{:,.0f}"), use_container_width=True)
