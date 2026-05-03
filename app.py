@@ -7,22 +7,38 @@ from datetime import datetime, timedelta
 st.set_page_config(page_title="App ບັນຊີຂອງປ້າ", layout="wide")
 FILE_NAME = 'phonsouk_final_database_v3.csv'
 
-# --- CSS ຕົບແຕ່ງ AI Card ໃຫ້ງາມ ---
+# --- CSS ຕົບແຕ່ງ (ປັບໃໝ່ໃຫ້ອ່ານງ່າຍ 100% ຕາມຮູບ image_4e7d9c.png) ---
 st.markdown("""
 <style>
+    /* ປັບສີໃນ Card ຕົວເລກ (Metric) ໃຫ້ຕົວໜັງສືເຂັ້ມຂຶ້ນ */
+    [data-testid="stMetricValue"] {
+        color: #1B4F72 !important; 
+        font-size: 35px !important;
+        font-weight: bold !important;
+    }
+    [data-testid="stMetricLabel"] {
+        color: #566573 !important;
+        font-size: 18px !important;
+    }
+    div[data-testid="stMetric"] {
+        background-color: #FFFFFF !important; 
+        border: 2px solid #1B4F72 !important;
+        padding: 15px !important;
+        border-radius: 10px !important;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* ປັບສີໃນ AI Professional Advisor Card */
     .ai-card {
-        background-color: #FDFEFE;
+        background-color: #EBF5FB !important; 
         padding: 20px;
         border-left: 10px solid #1B4F72;
         border-radius: 10px;
-        box-shadow: 2px 2px 15px rgba(0,0,0,0.1);
-        color: #1B4F72;
+        color: #1B4F72 !important;
         margin: 20px 0;
     }
-    .stMetric {
-        background-color: #f0f2f6;
-        padding: 15px;
-        border-radius: 10px;
+    .ai-card h3, .ai-card p, .ai-card b {
+        color: #1B4F72 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -39,19 +55,17 @@ header_text = """
 """
 st.write(header_text, unsafe_allow_html=True)
 
-# 1. ຟັງຊັນຈັດຮູບແບບຕົວເລກ (ໃຫ້ມີຈຸດຄືເກົ່າ)
+# --- ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ ---
 def format_num(v):
     if v == "" or v is None: return ""
     nums = "".join(filter(str.isdigit, str(v)))
     return "{:,}".format(int(nums)) if nums else ""
 
-# 2. ຟັງຊັນແປງເປັນຕົວເລກເພື່ອຄິດໄລ່
 def parse_num(v):
     if v == "" or v is None: return 0
     nums = "".join(filter(str.isdigit, str(v)))
     return int(nums) if nums else 0
 
-# 3. ຟັງຊັນສ້າງຊ່ອງປ້ອນຂໍ້ມູນແບບ Real-time
 def input_box(label, key):
     if key not in st.session_state: st.session_state[key] = ""
     val = st.text_input(label, value=st.session_state[key], key=f"k_{key}")
@@ -89,9 +103,8 @@ with c2:
 
 submit = st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True)
 
-# --- ສ່ວນບັນທຶກ ---
+# --- 2. ສ່ວນບັນທຶກຂໍ້ມູນ ---
 if submit:
-    # ປັບເວລາໃຫ້ເປັນ UTC+7 (ເວລາລາວ)
     now_lao = datetime.now() + timedelta(hours=7) 
     
     v_i = [parse_num(i1_v), parse_num(i2_v), parse_num(i3_v), parse_num(i4_v), parse_num(i5_v), parse_num(i6_v), parse_num(i7_v)]
@@ -103,20 +116,19 @@ if submit:
     new_data = {
         'ວັນທີ': now_lao.strftime("%d/%m/%Y %H:%M"), 
         'ລາຍຮັບລວມ': t_in, 'ລາຍຈ່າຍລວມ': t_ex, 'ເຫຼືອເກັບ': t_in - t_ex,
-        'ເງິນເດືອນ': v_i[0], 'Creator': v_i[1], 'ຂາຍຂອງ': v_i[2], 'ຫຍິບຜ້າ': v_i[3], 'ຕູ້ກົດນ້ຳ': v_i[4], 'ຕູ້ຊັກຜ້າ': v_i[5],
-        'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3], 'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7], 'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9] 
+        'ເງິນເດືອນ': v_i[0], 'Creator': v_i[1], 'ຂາຍຂອງ': v_i[2], 'ຫຍິບຜ້າ': v_i[3], 'ຕູ້ກົດນ້ຳ': v_i[4], 'ຕູ້ຊັກຜ້າ': v_i[5], 'ຮັບອື່ນໆ': v_i[6],
+        'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3], 'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7], 'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9], 'ຊື້ຂອງເຂົ້າຮ້ານ': v_e[10]
     }
     
     pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
     
-    # ລ້າງຂໍ້ມູນໃນ session_state ຫຼັງບັນທຶກສຳເລັດ
-    for k in ["i1","i2","i3","i4","i5","i6","e1","e2","e3","e4","e5","e6","e7","e8","e9", "e10", "e11"]:
+    for k in ["i1","i2","i3","i4","i5","i6","i7","e1","e2","e3","e4","e5","e6","e7","e8","e9", "e10", "e11"]:
         st.session_state[k] = ""
         
     st.success(f"✅ ບັນທຶກແລ້ວ! ເວລາລາວ: {now_lao.strftime('%H:%M')}")
     st.rerun()
 
-# --- ສ່ວນ AI ວິເຄາະແບບມືອາຊີບ ---
+# --- 3. ສ່ວນສະແດງຜົນ ແລະ AI ວິເຄາະ ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
     st.markdown("---")
@@ -152,7 +164,7 @@ if os.path.exists(FILE_NAME):
 
         st.markdown(f"""
         <div class="ai-card">
-            <h3 style="color:#1B4F72;">🤖 AI Professional Advisor ({text_time})</h3>
+            <h3>🤖 AI Professional Advisor ({text_time})</h3>
             <p>✅ <b>ສະຫຼຸບການເງິນ:</b> {text_time} ປ້າມີກຳໄລສຸດທິ <b>{profit:,.0f} ກີບ</b>.</p>
             <p>📈 <b>ວິເຄາະຊ່ອງທາງລາຍໄດ້:</b> ລາຍຮັບຈາກການຫຍິບຜ້າ ແລະ ຕູ້ຢອດຫຼຽນເປັນລາຍໄດ້ທີ່ໝັ້ນຄົງທີ່ສຸດ.</p>
             <p>⚠️ <b>ຂໍ້ຄວນລະວັງ:</b> ຖ້າລາຍຈ່າຍຄ່າຫວຍ ຫຼື ຄ່າບັນເທີງສູງເກີນ 10% ຂອງລາຍຮັບ, AI ແນະນຳໃຫ້ປ້າປັບຫຼຸດລົງເພື່ອເອົາໄປໃສ່ຄ່າສ້າງເຮືອນແທນ.</p>
@@ -165,7 +177,6 @@ if os.path.exists(FILE_NAME):
     # --- ຕາຕະລາງ Excel ---
     st.markdown("---")
     st.write("### 📅 ປະຫວັດການເງິນ (10 ລາຍການຫຼ້າສຸດ)")
-    # ຈັດຮູບແບບໃຫ້ຕາຕະລາງມີຈຸດຂັ້ນຕົວເລກອັດຕະໂນມັດ
     st.dataframe(df.tail(10).style.format(subset=['ລາຍຮັບລວມ', 'ລາຍຈ່າຍລວມ', 'ເຫຼືອເກັບ'], formatter="{:,.0f}"), use_container_width=True)
 
     # --- ສ່ວນລົບຂໍ້ມູນ ---
