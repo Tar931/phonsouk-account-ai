@@ -27,16 +27,10 @@ FILE_NAME = 'phonsouk_final_database_v3.csv'
 if 'clear_counter' not in st.session_state:
     st.session_state.clear_counter = 0
 
-# --- 3. CSS ຕົບແຕ່ງສີທີມໃຫມ່ (Dark Mode Blue-Purple Gradient) ---
+# --- 3. CSS ຕົບແຕ່ງສີທີມ (Dark Mode Blue-Purple Gradient) ---
 st.markdown("""
 <style>
-    /* ພື້ນຫຼັງແອັບທັງໝົດ */
-    .stApp {
-        background-color: #050A18 !important;
-        color: #FFFFFF !important;
-    }
-    
-    /* ຕົບແຕ່ງກ່ອງ Metric (ກ່ອງຕົວເລກສະຫຼຸບ) */
+    .stApp { background-color: #050A18 !important; color: #FFFFFF !important; }
     div[data-testid="stMetric"] {
         background: linear-gradient(135deg, #1A1F3C 0%, #0D1126 100%) !important;
         border: 1px solid #2E355E !important;
@@ -44,8 +38,6 @@ st.markdown("""
         padding: 20px !important;
         box-shadow: 0 10px 20px rgba(0,0,0,0.4) !important;
     }
-    
-    /* ສີຕົວເລກ Metric ໃຫ້ເປັນສີ Gradient ຟ້າ-ມ່ວງ */
     div[data-testid="stMetricValue"] > div {
         background: linear-gradient(90deg, #BF5AF2 0%, #00EAFF 100%);
         -webkit-background-clip: text;
@@ -53,13 +45,7 @@ st.markdown("""
         font-size: 38px !important;
         font-weight: 800 !important;
     }
-    
-    div[data-testid="stMetricLabel"] > div {
-        color: #A0AEC0 !important;
-        font-size: 16px !important;
-    }
-
-    /* ຕົບແຕ່ງປຸ່ມ (Buttons) */
+    div[data-testid="stMetricLabel"] > div { color: #A0AEC0 !important; font-size: 16px !important; }
     .stButton > button {
         background: linear-gradient(90deg, #8A2BE2 0%, #BF5AF2 100%) !important;
         color: white !important;
@@ -69,22 +55,13 @@ st.markdown("""
         font-weight: bold !important;
         width: 100% !important;
         box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4) !important;
-        transition: 0.3s !important;
     }
-    .stButton > button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 8px 20px rgba(138, 43, 226, 0.6) !important;
-    }
-
-    /* ຕົບແຕ່ງຊ່ອງ Input */
     .stTextInput > div > div > input {
         background-color: #1A1F3C !important;
         color: white !important;
         border: 1px solid #2E355E !important;
         border-radius: 12px !important;
     }
-
-    /* ຕົບແຕ່ງກ່ອງ AI CFO */
     .ai-card {
         background: linear-gradient(135deg, rgba(138, 43, 226, 0.15) 0%, rgba(0, 234, 255, 0.05) 100%) !important;
         border: 1px solid rgba(138, 43, 226, 0.4) !important;
@@ -92,18 +69,6 @@ st.markdown("""
         padding: 25px !important;
         color: #E0E0E0 !important;
         line-height: 1.8 !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
-    }
-
-    /* ຕົບແຕ່ງຕາຕະລາງ */
-    .stDataFrame {
-        background-color: #1A1F3C !important;
-        border-radius: 15px !important;
-    }
-
-    /* ຫົວຂໍ້ Subheader */
-    h3 {
-        color: #00EAFF !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -112,11 +77,11 @@ st.markdown("""
 st.write("""
 <div style="background: linear-gradient(135deg, #1A1F3C 0%, #050A18 100%); padding: 30px; border-radius: 25px; border: 1px solid #2E355E; text-align: center; margin-bottom: 25px;">
     <h1 style="margin: 0; background: linear-gradient(90deg, #BF5AF2 0%, #00EAFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 40px;">🌸 ລະບົບບັນຊີ Super AI ປ້າພອນສຸກ</h1>
-    <p style="color: #A0AEC0; font-size: 16px; margin-top: 10px;">ຈັດການການເງິນດ້ວຍລະບົບ DeepSeek AI ທັນສະໄໝ</p>
+    <p style="color: #A0AEC0; font-size: 16px; margin-top: 10px;">ລະບົບຈັດການການເງິນອັດສະລິຍະ ດ້ວຍ DeepSeek AI</p>
 </div>
 """, unsafe_allow_html=True)
 
-# --- ຟັງຊັນຊ່ວຍ (Helpers) ---
+# --- ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ ---
 def format_num(v):
     if not v: return ""
     nums = "".join(filter(str.isdigit, str(v)))
@@ -156,30 +121,38 @@ with c2:
     e5_v = input_box("5. ຊື້ຂອງເຂົ້າຮ້ານ/ອື່ນໆ", "e5")
 
 st.write("<br>", unsafe_allow_html=True)
-if st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ"):
-    now_lao = datetime.now() + timedelta(hours=7) 
-    v_i = [parse_num(i1_v), parse_num(i2_v), parse_num(i3_v), parse_num(i4_v), parse_num(i5_v), parse_num(i6_v)]
-    v_e = [parse_num(e1_v), parse_num(e2_v), parse_num(e3_v), parse_num(e4_v), parse_num(e5_v)]
-    t_in, t_ex = sum(v_i), sum(v_e)
-    
-    if t_in > 0 or t_ex > 0:
-        new_data = {
-            'ວັນທີ': now_lao.strftime("%d/%m/%Y %H:%M"), 
-            'ລາຍຮັບລວມ': t_in, 'ລາຍຈ່າຍລວມ': t_ex, 'ເຫຼືອເກັບ': t_in - t_ex,
-            'ເງິນເດືອນ': v_i[0], 'Creator': v_i[1], 'ຂາຍຂອງ': v_i[2], 'ຫຍິບຜ້າ': v_i[3], 'ຕູ້ກົດນ້ຳ': v_i[4],
-            'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ_ນ້ຳໄຟ': v_e[1], 'ການສຶກສາ': v_e[2], 'ສ້າງເຮືອນ': v_e[3], 'ຊື້ຂອງເຂົ້າຮ້ານ': v_e[4]
-        }
-        pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
-        st.session_state.clear_counter += 1
-        st.success("✅ ບັນທຶກສຳເລັດແລ້ວ!")
-        st.rerun()
 
-# --- 6. ສະແດງຜົນ Dashboard & AI ວິເຄາະ ---
+# --- 6. ປຸ່ມບັນທຶກ ພ້ອມລະບົບຢືນຢັນ "ຕົກລົງ" ---
+if st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ"):
+    # ບວກລວມຕົວເລກເພື່ອໂຊໃຫ້ປ້າເບິ່ງກ່ອນ
+    t_in_check = sum([parse_num(i1_v), parse_num(i2_v), parse_num(i3_v), parse_num(i4_v), parse_num(i5_v), parse_num(i6_v)])
+    t_ex_check = sum([parse_num(e1_v), parse_num(e2_v), parse_num(e3_v), parse_num(e4_v), parse_num(e5_v)])
+    
+    if t_in_check == 0 and t_ex_check == 0:
+        st.warning("⚠️ ປ້ອນຂໍ້ມູນກ່ອນເດີ້ປ້າ!")
+    else:
+        # ສະແດງປຸ່ມຢືນຢັນຂັ້ນສອງ
+        st.warning(f"📋 **ກວດສອບຄວາມຖືກຕ້ອງ:** ລາຍຮັບ: {t_in_check:,.0f} | ລາຍຈ່າຍ: {t_ex_check:,.0f}")
+        if st.button("✅ ຕົກລົງ, ບັນທຶກເລີຍ!"):
+            now_lao = datetime.now() + timedelta(hours=7) 
+            new_data = {
+                'ວັນທີ': now_lao.strftime("%d/%m/%Y %H:%M"), 
+                'ລາຍຮັບລວມ': t_in_check, 'ລາຍຈ່າຍລວມ': t_ex_check, 'ເຫຼືອເກັບ': t_in_check - t_ex_check,
+                'ເງິນເດືອນ': parse_num(i1_v), 'Creator': parse_num(i2_v), 'ຂາຍຂອງ': parse_num(i3_v),
+                'ຫຍິບຜ້າ': parse_num(i4_v), 'ຕູ້ກົດນ້ຳ': parse_num(i5_v), 'ອາຫານ': parse_num(e1_v),
+                'ຄ່າເຊົ່າ_ນ້ຳໄຟ': parse_num(e2_v), 'ການສຶກສາ': parse_num(e3_v), 'ສ້າງເຮືອນ': parse_num(e4_v), 'ຊື້ຂອງເຂົ້າຮ້ານ': parse_num(e5_v)
+            }
+            pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
+            st.session_state.clear_counter += 1
+            st.success("✅ ບັນທຶກລົງຖານຂໍ້ມູນສຳເລັດແລ້ວ!")
+            st.rerun()
+
+# --- 7. Dashboard & AI ວິເຄາະ ---
 if os.path.exists(FILE_NAME):
     df = pd.read_csv(FILE_NAME)
     st.markdown("---")
     
-    option = st.radio("ໄລຍະເວລາ:", ["ມື້ນີ້", "ອາທິດນີ້", "ເດືອນນີ້", "ທັງໝົດ"], horizontal=True)
+    option = st.radio("ເລືອກໄລຍະເວລາ:", ["ມື້ນີ້", "ອາທິດນີ້", "ເດືອນນີ້", "ທັງໝົດ"], horizontal=True)
     df['Date_Obj'] = pd.to_datetime(df['ວັນທີ'], format="%d/%m/%Y %H:%M")
     now = datetime.now()
     if option == "ມື້ນີ້": filtered_df = df[df['Date_Obj'].dt.date == now.date()]
@@ -212,7 +185,7 @@ if os.path.exists(FILE_NAME):
                     except Exception as e:
                         st.error(f"Error AI: {e}")
 
-    # --- 7. ຕາຕະລາງປະຫວັດ ---
+    # --- 8. ຕາຕະລາງປະຫວັດ ---
     st.markdown("---")
     st.write("### 📅 ປະຫວັດການເງິນແບບລະອຽດ")
     view_df = df.drop(columns=['Date_Obj'], errors='ignore')
