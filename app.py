@@ -150,7 +150,7 @@ if submit:
         
         # ອັບເດດລົງ Google Sheets
         with st.spinner("⏳ ກຳລັງສົ່ງຂໍ້ມູນລົງ Google Sheets..."):
-            conn.update(spreadsheet=SHEET_URL, worksheet="Sheet1", data=updated_df)
+            conn.update(spreadsheet=SHEET_URL, worksheet="Google sheet", data=updated_df)
             st.cache_data.clear() # ລ້າງ Cache ໃຫ້ເຫັນຂໍ້ມູນໃໝ່ທັນທີ
             
         st.session_state.clear_counter += 1
