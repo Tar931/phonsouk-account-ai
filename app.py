@@ -26,7 +26,7 @@ except Exception as e:
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 # 🔴🔴 ປ່ຽນ Link ລຸ່ມນີ້ເປັນ Link ຂອງ Google Sheets ຂອງເຈົ້າເອງ (ເອົາມາຈາກ Browser) 🔴🔴
-"SHEET_URL = "https://docs.google.com/spreadsheets/d/1XyZabcd1234/edit" 
+ "SHEET_URL = "https://docs.google.com/spreadsheets/d/1XyZabcd1234/edit"
 
 if 'clear_counter' not in st.session_state:
     st.session_state.clear_counter = 0
