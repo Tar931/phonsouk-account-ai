@@ -25,13 +25,13 @@ except Exception as e:
 # --- 2. ຕັ້ງຄ່າເຊື່ອມຕໍ່ Google Sheets ---
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-# 🔴🔴 ປ່ຽນ Link ລຸ່ມນີ້ເປັນ Link ຂອງ Google Sheets ຂອງເຈົ້າເອງ (ເອົາມາຈາກ Browser) 🔴🔴
-SHEET_URL = "https://docs.google.com/spreadsheets/d/1XyZabcd1234/edit"
+# 🔴🔴 ເອົາ LINK ຂອງ GOOGLE SHEETS ຂອງເຈົ້າມາວາງໃສ່ບ່ອນນີ້ (ຢ່າລືມວົງຢືມ "") 🔴🔴
+SHEET_URL = "https://docs.google.com/spreadsheets/d/ປ່ຽນເປັນ_LINK_GOOGLE_SHEETS_ຂອງເຈົ້າ" 
 
 if 'clear_counter' not in st.session_state:
     st.session_state.clear_counter = 0
 
-# ກຳນົດຫົວຂໍ້ຖັນຂອງຕະລາງ
+# ກຳນົດຫົວຂໍ້ຖັນຂອງຕະລາງໃຫ້ຄົບຖ້ວນ
 COLUMNS = ['ວັນທີ', 'ລາຍຮັບລວມ', 'ລາຍຈ່າຍລວມ', 'ເຫຼືອເກັບ', 'ເງິນເດືອນ', 'Creator', 'ຂາຍຂອງ', 'ຫຍິບຜ້າ', 'ຕູ້ກົດນ້ຳ', 'ຕູ້ຊັກຜ້າ', 'ຮັບອື່ນໆ', 'ອາຫານ', 'ຄ່າເຊົ່າ', 'ນ້ຳໄຟ', 'ເດີນທາງ', 'ການສຶກສາ', 'ຢາ', 'ເສື້ອຜ້າ', 'ບັນເທີງ', 'ຫວຍ', 'ສ້າງເຮືອນ', 'ຊື້ຂອງເຂົ້າຮ້ານ']
 
 # --- 3. CSS ຕົບແຕ່ງ UI ---
@@ -58,7 +58,7 @@ header_text = """
 """
 st.write(header_text, unsafe_allow_html=True)
 
-# --- ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ ---
+# --- ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ (ໃສ່ຈຸດອັດຕະໂນມັດ) ---
 def format_num(v):
     if v == "" or v is None: return ""
     nums = "".join(filter(str.isdigit, str(v)))
@@ -112,16 +112,19 @@ submit = st.button("💾 ບັນທຶກຂໍ້ມູນລົງ Google Sh
 df = pd.DataFrame(columns=COLUMNS) # ສ້າງຕະລາງເປົ່າໄວ້ກ່ອນກັນ Error
 try:
     if "ປ່ຽນເປັນ" not in SHEET_URL:
+        # ດຶງຂໍ້ມູນມາຈາກ Sheet ທີ່ຊື່ວ່າ Sheet1
         df = conn.read(spreadsheet=SHEET_URL, worksheet="Sheet1", ttl=0)
-        # ຖ້າ Sheet ວ່າງເປົ່າ ໃຫ້ສ້າງຕະລາງທີ່ມີຫົວຂໍ້
+        # ຖ້າຕະລາງວ່າງເປົ່າ ໃຫ້ໃຊ້ໂຄງສ້າງ COLUMNS
         if df.empty or len(df.columns) < 5:
             df = pd.DataFrame(columns=COLUMNS)
     else:
-        st.error("⚠️ ກະລຸນາເອົາ Link ຂອງ Google Sheets ໄປໃສ່ໃນແຖວທີ 28 ກ່ອນ!")
+        st.error("⚠️ ກະລຸນາເອົາ Link ຂອງ Google Sheets ໄປໃສ່ໃນແຖວທີ 27 ກ່ອນ!")
 except Exception as e:
-    st.error(f"❌ ບໍ່ສາມາດເຊື່ອມຕໍ່ Google Sheets ໄດ້. Error: {e}")
+    st.error(f"❌ ບໍ່ສາມາດເຊື່ອມຕໍ່ Google Sheets ໄດ້. ໃຫ້ກວດເບິ່ງວ່າ Share ໃຫ້ Bot ແລ້ວບໍ? ຫຼື ຊື່ແຖບລຸ່ມສຸດແມ່ນ 'Sheet1' ແລ້ວບໍ? Error: {e}")
 
+# ----------------------------------------------------
 # ເມື່ອກົດປຸ່ມບັນທຶກ
+# ----------------------------------------------------
 if submit:
     now_lao = datetime.now() + timedelta(hours=7) 
     v_i = [parse_num(i1_v), parse_num(i2_v), parse_num(i3_v), parse_num(i4_v), parse_num(i5_v), parse_num(i6_v), parse_num(i7_v)]
@@ -131,32 +134,38 @@ if submit:
     if t_in == 0 and t_ex == 0:
         st.warning("⚠️ ກະລຸນາປ້ອນຂໍ້ມູນກ່ອນບັນທຶກ!")
     elif "ປ່ຽນເປັນ" in SHEET_URL:
-        st.error("⚠️ ຍັງບໍ່ໄດ້ປ່ຽນ Link Google Sheets ໃນແຖວທີ 28 ຂອງໂຄ້ດ!")
+        st.error("⚠️ ຍັງບໍ່ໄດ້ປ່ຽນ Link Google Sheets ໃນແຖວທີ 27 ຂອງໂຄ້ດ!")
     else:
+        # ຂໍ້ມູນໃໝ່ທີ່ຈະບັນທຶກ
         new_data = {
             'ວັນທີ': now_lao.strftime("%d/%m/%Y %H:%M"), 
             'ລາຍຮັບລວມ': t_in, 'ລາຍຈ່າຍລວມ': t_ex, 'ເຫຼືອເກັບ': t_in - t_ex,
             'ເງິນເດືອນ': v_i[0], 'Creator': v_i[1], 'ຂາຍຂອງ': v_i[2], 'ຫຍິບຜ້າ': v_i[3], 'ຕູ້ກົດນ້ຳ': v_i[4], 'ຕູ້ຊັກຜ້າ': v_i[5], 'ຮັບອື່ນໆ': v_i[6],
-            'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3], 'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7], 'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9], 'ຊື້ຂອງເຂົ້າຮ້ານ': v_e[10]
+            'อาหาร': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3], 'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7], 'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9], 'ຊື້ຂອງເຂົ້າຮ້ານ': v_e[10]
         }
         
+        # ເອົາຂໍ້ມູນໃໝ່ໄປຕໍ່ທ້າຍຂໍ້ມູນເກົ່າ
         new_df = pd.DataFrame([new_data])
         updated_df = pd.concat([df, new_df], ignore_index=True)
         
+        # ອັບເດດລົງ Google Sheets
         with st.spinner("⏳ ກຳລັງສົ່ງຂໍ້ມູນລົງ Google Sheets..."):
             conn.update(spreadsheet=SHEET_URL, worksheet="Sheet1", data=updated_df)
-            st.cache_data.clear()
+            st.cache_data.clear() # ລ້າງ Cache ໃຫ້ເຫັນຂໍ້ມູນໃໝ່ທັນທີ
             
         st.session_state.clear_counter += 1
         st.success(f"✅ ບັນທຶກສຳເລັດ! ຂໍ້ມູນຖືກສົ່ງໄປ Google Sheets ແລ້ວ.")
         st.rerun() 
 
-# --- 5. ສະແດງຜົນ ແລະ AI ວິເຄາະ ---
+# ----------------------------------------------------
+# 5. ສະແດງຜົນ ແລະ AI ວິເຄາະ 
+# ----------------------------------------------------
 if not df.empty:
     st.markdown("---")
     st.subheader("📈 Dashboard ສະຫຼຸບຕົວເລກ")
     option = st.radio("ເລືອກໄລຍະເວລາລາຍງານ:", ["ມື້ນີ້", "ອາທິດນີ້", "ເດືອນນີ້", "ປີນີ້"], horizontal=True)
 
+    # ປ່ຽນຖັນວັນທີໃຫ້ເປັນຮູບແບບທີ່ຄອມພິວເຕີຄຳນວນໄດ້
     df['Date_Obj'] = pd.to_datetime(df['ວັນທີ'], format='mixed', dayfirst=True, errors='coerce')
     df_clean = df.dropna(subset=['Date_Obj']) 
 
@@ -168,6 +177,7 @@ if not df.empty:
     else: filtered_df, text_time = df_clean[df_clean['Date_Obj'].dt.year == now.year], "ຂອງປີນີ້"
 
     if not filtered_df.empty:
+        # ຄຳນວນຜົນລວມ
         t_in = pd.to_numeric(filtered_df['ລາຍຮັບລວມ'], errors='coerce').sum()
         t_ex = pd.to_numeric(filtered_df['ລາຍຈ່າຍລວມ'], errors='coerce').sum()
         profit = t_in - t_ex
@@ -177,6 +187,7 @@ if not df.empty:
         c2.metric(f"ລາຍຈ່າຍ {text_time}", f"{t_ex:,.0f} ກີບ")
         c3.metric(f"ເຫຼືອເກັບ/ກຳໄລ", f"{profit:,.0f} ກີບ")
 
+        # ສ່ວນຂອງ AI DeepSeek
         if not ai_ready:
             st.error(f"🔍 ລະບົບ AI ຍັງບໍ່ພ້ອມ: {ai_error_msg}")
         else:
@@ -195,17 +206,22 @@ if not df.empty:
                     except Exception as e:
                         st.error(f"Error AI: {e}")
 
-    # --- 6. ຕາຕະລາງປະຫວັດແບບລະອຽດ ---
+    # ----------------------------------------------------
+    # 6. ຕາຕະລາງປະຫວັດແບບລະອຽດ
+    # ----------------------------------------------------
     st.markdown("---")
     st.write("### 📅 ປະຫວັດການເງິນ (10 ລາຍການຫຼ້າສຸດຈາກ Google Sheets)")
     display_df = df.drop(columns=['Date_Obj'], errors='ignore')
     
+    # ແປງຄ່າຕົວເລກໃຫ້ມີຈຸດຈຸນລະພາກ (,) ເພື່ອຄວາມງາມ
     for col in COLUMNS[1:]: 
         display_df[col] = pd.to_numeric(display_df[col], errors='coerce')
         
     st.dataframe(display_df.tail(10).style.format(subset=COLUMNS[1:], formatter="{:,.0f}"), use_container_width=True)
 
-    # --- ສ່ວນລົບຂໍ້ມູນ ---
+    # ----------------------------------------------------
+    # ສ່ວນລົບຂໍ້ມູນທັງໝົດ
+    # ----------------------------------------------------
     with st.expander("🛠️ ຈັດການຖານຂໍ້ມູນ (ລ້າງຂໍ້ມູນໃນ Sheet)"):
         if st.text_input("ໃສ່ລະຫັດ 9999 ເພື່ອຢືນຢັນ", type="password") == "9999":
             if st.button("🗑️ ຢືນຢັນລ້າງຂໍ້ມູນທັງໝົດໃນ Google Sheets"):
@@ -216,4 +232,4 @@ if not df.empty:
                     st.success("ລ້າງຂໍ້ມູນສຳເລັດແລ້ວ!")
                     st.rerun()
                 except Exception as e:
-                    st.error(f"ເກີດຂໍ້ຜິດພາດ: {e}")
+                    st.error(f"ເກີດຂໍ້ຜິດພາດໃນການລຶບຂໍ້ມູນ: {e}")
