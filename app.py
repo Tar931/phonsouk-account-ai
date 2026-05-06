@@ -1,10 +1,12 @@
 import streamlit as st
 import pandas as pd
-import os
 from datetime import datetime, timedelta
 from openai import OpenAI  
+from streamlit_gsheets import GSheetsConnection 
 
-# --- 1. ຕັ້ງຄ່າ DeepSeek AI ---
+# --- 1. ຕັ້ງຄ່າ AI ---
+st.set_page_config(page_title="App ບັນຊີຂອງປ້າພອນສຸກ", layout="wide")
+
 ai_error_msg = ""
 try:
     if "DEEPSEEK_API_KEY" in st.secrets:
@@ -20,12 +22,17 @@ except Exception as e:
     ai_ready = False
     ai_error_msg = str(e)
 
-# --- 2. ຕັ້ງຄ່າໜ້າຈໍ ---
-st.set_page_config(page_title="App ບັນຊີຂອງປ້າພອນສຸກ", layout="wide")
-FILE_NAME = 'phonsouk_final_database_v3.csv'
+# --- 2. ຕັ້ງຄ່າເຊື່ອມຕໍ່ Google Sheets ---
+conn = st.connection("gsheets", type=GSheetsConnection)
+
+# 🔴 ປ່ຽນ Link ລຸ່ມນີ້ເປັນ Link ຂອງ Google Sheets ຂອງເຈົ້າເອງ 🔴
+SHEET_URL = "https://docs.google.com/spreadsheets/d/ປ່ຽນເປັນ_LINK_GOOGLE_SHEETS_ຂອງເຈົ້າ" 
 
 if 'clear_counter' not in st.session_state:
     st.session_state.clear_counter = 0
+
+# ກຳນົດຫົວຂໍ້ຖັນຂອງຕະລາງ
+COLUMNS = ['ວັນທີ', 'ລາຍຮັບລວມ', 'ລາຍຈ່າຍລວມ', 'ເຫຼືອເກັບ', 'ເງິນເດືອນ', 'Creator', 'ຂາຍຂອງ', 'ຫຍິບຜ້າ', 'ຕູ້ກົດນ້ຳ', 'ຕູ້ຊັກຜ້າ', 'ຮັບອື່ນໆ', 'ອາຫານ', 'ຄ່າເຊົ່າ', 'ນ້ຳໄຟ', 'ເດີນທາງ', 'ການສຶກສາ', 'ຢາ', 'ເສື້ອຜ້າ', 'ບັນເທີງ', 'ຫວຍ', 'ສ້າງເຮືອນ', 'ຊື້ຂອງເຂົ້າຮ້ານ']
 
 # --- 3. CSS ຕົບແຕ່ງ UI ---
 st.markdown("""
@@ -45,15 +52,11 @@ st.markdown("""
 header_text = """
 <div style="background: linear-gradient(135deg, #1A1F3C 0%, #050A18 100%); padding: 30px; border-radius: 25px; border: 1px solid #2E355E; text-align: center; margin-bottom: 25px;">
     <h1 style="margin: 0; background: linear-gradient(90deg, #BF5AF2 0%, #00EAFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 40px;">🌸 ລະບົບບັນຊີ Super AI ປ້າພອນສຸກ </h1>
-    <p style="color: #A0AEC0; font-size: 16px; margin-top: 10px;">ຈັດການການເງິນດ້ວຍລະບົບ DeepSeek AI ທັນສະໄໝ</p>
+    <p style="color: #A0AEC0; font-size: 16px; margin-top: 10px;">🟢 ເຊື່ອມຕໍ່ຖານຂໍ້ມູນ Google Sheets ສຳເລັດແລ້ວ 🟢</p>
     <p style="color: #636E72; font-size: 14px; margin-bottom: 0;">ເບີໂທ: 020 99858310 | Line: Tarvan</p>
 </div>
 """
 st.write(header_text, unsafe_allow_html=True)
-
-# ແຈ້ງເຕືອນຖ້າລັນເທິງ Cloud ແລ້ວໃຊ້ CSV
-if "STREAMLIT_SHARING_MODE" in os.environ:
-    st.warning("⚠️ ລະບົບກວດພົບວ່າທ່ານກຳລັງອອນລາຍເທິງ Streamlit Cloud! ຂໍ້ມູນໃນໄຟລ໌ CSV ຈະຖືກລຶບເອງເມື່ອເຊີບເວີປິດ. ແນະນຳໃຫ້ປ່ຽນໄປໃຊ້ Google Sheets ສຳລັບເກັບຂໍ້ມູນ.")
 
 # --- ຟັງຊັນຊ່ວຍຈັດການຕົວເລກ ---
 def format_num(v):
@@ -101,8 +104,21 @@ with c2:
     e10_v = input_box("10. ຄ່າສ້າງເຮືອນ", "e10")
     e11_v = input_box("11. ຄ່າຊື້ສິນຄ້າເຂົ້າຮ້ານ", "e11")
 
-submit = st.button("💾 ບັນທຶກຂໍ້ມູນທັງໝົດ", use_container_width=True)
+submit = st.button("💾 ບັນທຶກຂໍ້ມູນລົງ Google Sheets", use_container_width=True)
 
+# ----------------------------------------------------
+# ດຶງຂໍ້ມູນຈາກ Google Sheets ເພື່ອກຽມອັບເດດ ແລະ ສະແດງຜົນ
+# ----------------------------------------------------
+try:
+    df = conn.read(spreadsheet=SHEET_URL, worksheet="Sheet1", ttl=0)
+    # ຖ້າ Sheet ວ່າງເປົ່າ ໃຫ້ສ້າງຕະລາງທີ່ມີຫົວຂໍ້
+    if df.empty or len(df.columns) < 5:
+        df = pd.DataFrame(columns=COLUMNS)
+except Exception as e:
+    st.error(f"❌ ບໍ່ສາມາດເຊື່ອມຕໍ່ Google Sheets ໄດ້. Error: {e}")
+    df = pd.DataFrame(columns=COLUMNS)
+
+# ເມື່ອກົດປຸ່ມບັນທຶກ
 if submit:
     now_lao = datetime.now() + timedelta(hours=7) 
     v_i = [parse_num(i1_v), parse_num(i2_v), parse_num(i3_v), parse_num(i4_v), parse_num(i5_v), parse_num(i6_v), parse_num(i7_v)]
@@ -118,72 +134,78 @@ if submit:
             'ເງິນເດືອນ': v_i[0], 'Creator': v_i[1], 'ຂາຍຂອງ': v_i[2], 'ຫຍິບຜ້າ': v_i[3], 'ຕູ້ກົດນ້ຳ': v_i[4], 'ຕູ້ຊັກຜ້າ': v_i[5], 'ຮັບອື່ນໆ': v_i[6],
             'ອາຫານ': v_e[0], 'ຄ່າເຊົ່າ': v_e[1], 'ນ້ຳໄຟ': v_e[2], 'ເດີນທາງ': v_e[3], 'ການສຶກສາ': v_e[4], 'ຢາ': v_e[5], 'ເສື້ອຜ້າ': v_e[6], 'ບັນເທີງ': v_e[7], 'ຫວຍ': v_e[8], 'ສ້າງເຮືອນ': v_e[9], 'ຊື້ຂອງເຂົ້າຮ້ານ': v_e[10]
         }
-        pd.DataFrame([new_data]).to_csv(FILE_NAME, mode='a', index=False, header=not os.path.exists(FILE_NAME), encoding='utf-8-sig')
+        
+        new_df = pd.DataFrame([new_data])
+        updated_df = pd.concat([df, new_df], ignore_index=True)
+        
+        with st.spinner("⏳ ກຳລັງສົ່ງຂໍ້ມູນລົງ Google Sheets..."):
+            conn.update(spreadsheet=SHEET_URL, worksheet="Sheet1", data=updated_df)
+            st.cache_data.clear()
+            
         st.session_state.clear_counter += 1
-        st.success(f"✅ ບັນທຶກແລ້ວ!")
+        st.success(f"✅ ບັນທຶກສຳເລັດ! ຂໍ້ມູນຖືກສົ່ງໄປ Google Sheets ແລ້ວ.")
         st.rerun() 
 
 # --- 5. ສະແດງຜົນ ແລະ AI ວິເຄາະ ---
-if os.path.exists(FILE_NAME):
-    try:
-        df = pd.read_csv(FILE_NAME)
-        st.markdown("---")
-        st.subheader("📈 Dashboard ສະຫຼຸບຕົວເລກ")
-        option = st.radio("ເລືອກໄລຍະເວລາລາຍງານ:", ["ມື້ນີ້", "ອາທິດນີ້", "ເດືອນນີ້", "ປີນີ້"], horizontal=True)
+if not df.empty:
+    st.markdown("---")
+    st.subheader("📈 Dashboard ສະຫຼຸບຕົວເລກ")
+    option = st.radio("ເລືອກໄລຍະເວລາລາຍງານ:", ["ມື້ນີ້", "ອາທິດນີ້", "ເດືອນນີ້", "ປີນີ້"], horizontal=True)
 
-        # ປັບປຸງຈຸດນີ້: ໃຫ້ມັນອ່ານວັນທີແບບຍືດຍຸ່ນຂຶ້ນ ປ້ອງກັນ Error
-        df['Date_Obj'] = pd.to_datetime(df['ວັນທີ'], format='mixed', dayfirst=True, errors='coerce')
-        # ຕັດແຖວທີ່ວັນທີ Error (NaT) ອອກໄປກ່ອນ
-        df = df.dropna(subset=['Date_Obj']) 
+    df['Date_Obj'] = pd.to_datetime(df['ວັນທີ'], format='mixed', dayfirst=True, errors='coerce')
+    df_clean = df.dropna(subset=['Date_Obj']) 
 
-        now = datetime.now() + timedelta(hours=7) # ປັບເວລາໃຫ້ເປັນເວລາລາວ
+    now = datetime.now() + timedelta(hours=7)
+    
+    if option == "ມື້ນີ້": filtered_df, text_time = df_clean[df_clean['Date_Obj'].dt.date == now.date()], "ຂອງມື້ນີ້"
+    elif option == "ອາທິດນີ້": filtered_df, text_time = df_clean[df_clean['Date_Obj'].dt.isocalendar().week == now.isocalendar()[1]], "ຂອງອາທິດນີ້"
+    elif option == "ເດືອນນີ້": filtered_df, text_time = df_clean[df_clean['Date_Obj'].dt.month == now.month], "ຂອງເດືອນນີ້"
+    else: filtered_df, text_time = df_clean[df_clean['Date_Obj'].dt.year == now.year], "ຂອງປີນີ້"
+
+    if not filtered_df.empty:
+        t_in = pd.to_numeric(filtered_df['ລາຍຮັບລວມ'], errors='coerce').sum()
+        t_ex = pd.to_numeric(filtered_df['ລາຍຈ່າຍລວມ'], errors='coerce').sum()
+        profit = t_in - t_ex
         
-        if option == "ມື້ນີ້": filtered_df, text_time = df[df['Date_Obj'].dt.date == now.date()], "ຂອງມື້ນີ້"
-        elif option == "ອາທິດນີ້": filtered_df, text_time = df[df['Date_Obj'].dt.isocalendar().week == now.isocalendar()[1]], "ຂອງອາທິດນີ້"
-        elif option == "ເດືອນນີ້": filtered_df, text_time = df[df['Date_Obj'].dt.month == now.month], "ຂອງເດືອນນີ້"
-        else: filtered_df, text_time = df[df['Date_Obj'].dt.year == now.year], "ຂອງປີນີ້"
+        c1, c2, c3 = st.columns(3)
+        c1.metric(f"ລາຍຮັບ {text_time}", f"{t_in:,.0f} ກີບ")
+        c2.metric(f"ລາຍຈ່າຍ {text_time}", f"{t_ex:,.0f} ກີບ")
+        c3.metric(f"ເຫຼືອເກັບ/ກຳໄລ", f"{profit:,.0f} ກີບ")
 
-        if not filtered_df.empty:
-            t_in, t_ex = filtered_df['ລາຍຮັບລວມ'].sum(), filtered_df['ລາຍຈ່າຍລວມ'].sum()
-            profit = t_in - t_ex
-            
-            c1, c2, c3 = st.columns(3)
-            c1.metric(f"ລາຍຮັບ {text_time}", f"{t_in:,.0f} ກີບ")
-            c2.metric(f"ລາຍຈ່າຍ {text_time}", f"{t_ex:,.0f} ກີບ")
-            c3.metric(f"ເຫຼືອເກັບ/ກຳໄລ", f"{profit:,.0f} ກີບ")
+        if not ai_ready:
+            st.error(f"🔍 ລະບົບ AI ຍັງບໍ່ພ້ອມ: {ai_error_msg}")
+        else:
+            st.write("<br>", unsafe_allow_html=True)
+            if st.button("✨ ເປີດໃຊ້ທີ່ປຶກສາ DeepSeek AI", use_container_width=True):
+                with st.spinner("🤖 DeepSeek ກຳລັງວິເຄາະຕົວເລກໃຫ້ປ້າ..."):
+                    try:
+                        response = client.chat.completions.create(
+                            model="deepseek-chat",
+                            messages=[
+                                {"role": "system", "content": "ເຈົ້າຄື CFO ທີ່ປຶກສາການເງິນຂອງປ້າພອນສຸກ. ຕອບເປັນພາສາລາວສັ້ນໆ ອ່ານງ່າຍ."},
+                                {"role": "user", "content": f"ວິເຄາະບັນຊີ: ຮັບ {t_in}, ຈ່າຍ {t_ex}, ເຫຼືອ {profit}. ແນະນຳ 3 ຫົວຂໍ້: ສະຫຼຸບ, ວິທີເພີ່ມລາຍຮັບ, ວິທີປະຢັດ."},
+                            ]
+                        )
+                        st.markdown(f'<div class="ai-card"><h3>🤖 ບົດວິເຄາະຈາກ DeepSeek AI</h3>{response.choices[0].message.content}</div>', unsafe_allow_html=True)
+                    except Exception as e:
+                        st.error(f"Error AI: {e}")
 
-            if not ai_ready:
-                st.error(f"🔍 ລະບົບ AI ຍັງບໍ່ພ້ອມ: {ai_error_msg}")
-            else:
-                st.write("<br>", unsafe_allow_html=True)
-                if st.button("✨ ເປີດໃຊ້ທີ່ປຶກສາ DeepSeek AI", use_container_width=True):
-                    with st.spinner("🤖 DeepSeek ກຳລັງວິເຄາະຕົວເລກໃຫ້ປ້າ..."):
-                        try:
-                            response = client.chat.completions.create(
-                                model="deepseek-chat",
-                                messages=[
-                                    {"role": "system", "content": "ເຈົ້າຄື CFO ທີ່ປຶກສາການເງິນຂອງປ້າພອນສຸກ. ຕອບເປັນພາສາລາວສັ້ນໆ ອ່ານງ່າຍ."},
-                                    {"role": "user", "content": f"ວິເຄາະບັນຊີ: ຮັບ {t_in}, ຈ່າຍ {t_ex}, ເຫຼືອ {profit}. ແນະນຳ 3 ຫົວຂໍ້: ສະຫຼຸບ, ວິທີເພີ່ມລາຍຮັບ, ວິທີປະຢັດ."},
-                                ]
-                            )
-                            st.markdown(f'<div class="ai-card"><h3>🤖 ບົດວິເຄາະຈາກ DeepSeek AI</h3>{response.choices[0].message.content}</div>', unsafe_allow_html=True)
-                        except Exception as e:
-                            st.error(f"Error AI: {e}")
-
-        # --- 6. ຕາຕະລາງປະຫວັດແບບລະອຽດ ---
-        st.markdown("---")
-        st.write("### 📅 ປະຫວັດການເງິນ (10 ລາຍການຫຼ້າສຸດ)")
-        display_df = df.drop(columns=['Date_Obj'], errors='ignore')
-        num_cols = display_df.select_dtypes(include=['number']).columns.tolist()
-        st.dataframe(display_df.tail(10).style.format(subset=num_cols, formatter="{:,.0f}"), use_container_width=True)
-
-    except Exception as e:
-        st.error(f"⚠️ ເກີດຂໍ້ຜິດພາດໃນການອ່ານໄຟລ໌ຂໍ້ມູນ: {e} (ແນະນຳໃຫ້ລົບຂໍ້ມູນເກົ່າແລ້ວລອງໃໝ່)")
+    # --- 6. ຕາຕະລາງປະຫວັດແບບລະອຽດ ---
+    st.markdown("---")
+    st.write("### 📅 ປະຫວັດການເງິນ (10 ລາຍການຫຼ້າສຸດຈາກ Google Sheets)")
+    display_df = df.drop(columns=['Date_Obj'], errors='ignore')
+    
+    for col in COLUMNS[1:]: 
+        display_df[col] = pd.to_numeric(display_df[col], errors='coerce')
+        
+    st.dataframe(display_df.tail(10).style.format(subset=COLUMNS[1:], formatter="{:,.0f}"), use_container_width=True)
 
     # --- ສ່ວນລົບຂໍ້ມູນ ---
-    with st.expander("🛠️ ຈັດການຖານຂໍ້ມູນ (ລ້າງຂໍ້ມູນ)"):
+    with st.expander("🛠️ ຈັດການຖານຂໍ້ມູນ (ລ້າງຂໍ້ມູນໃນ Sheet)"):
         if st.text_input("ໃສ່ລະຫັດ 9999 ເພື່ອຢືນຢັນ", type="password") == "9999":
-            if st.button("🗑️ ຢືນຢັນລົບຂໍ້ມູນທັງໝົດ"):
-                if os.path.exists(FILE_NAME):
-                    os.remove(FILE_NAME)
-                    st.rerun()
+            if st.button("🗑️ ຢືນຢັນລ້າງຂໍ້ມູນທັງໝົດໃນ Google Sheets"):
+                empty_df = pd.DataFrame(columns=COLUMNS)
+                conn.update(spreadsheet=SHEET_URL, worksheet="Sheet1", data=empty_df)
+                st.cache_data.clear()
+                st.success("ລ້າງຂໍ້ມູນສຳເລັດແລ້ວ!")
+                st.rerun()
