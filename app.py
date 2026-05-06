@@ -25,7 +25,7 @@ except Exception as e:
 # --- 2. ຕັ້ງຄ່າເຊື່ອມຕໍ່ Google Sheets ---
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-# 🔴 ປ່ຽນ Link ລຸ່ມນີ້ເປັນ Link ຂອງ Google Sheets ຂອງເຈົ້າເອງ 🔴
+# 🔴🔴 ປ່ຽນ Link ລຸ່ມນີ້ເປັນ Link ຂອງ Google Sheets ຂອງເຈົ້າເອງ (ເອົາມາຈາກ Browser) 🔴🔴
 SHEET_URL = "https://docs.google.com/spreadsheets/d/ປ່ຽນເປັນ_LINK_GOOGLE_SHEETS_ຂອງເຈົ້າ" 
 
 if 'clear_counter' not in st.session_state:
@@ -109,14 +109,17 @@ submit = st.button("💾 ບັນທຶກຂໍ້ມູນລົງ Google Sh
 # ----------------------------------------------------
 # ດຶງຂໍ້ມູນຈາກ Google Sheets ເພື່ອກຽມອັບເດດ ແລະ ສະແດງຜົນ
 # ----------------------------------------------------
+df = pd.DataFrame(columns=COLUMNS) # ສ້າງຕະລາງເປົ່າໄວ້ກ່ອນກັນ Error
 try:
-    df = conn.read(spreadsheet=SHEET_URL, worksheet="Sheet1", ttl=0)
-    # ຖ້າ Sheet ວ່າງເປົ່າ ໃຫ້ສ້າງຕະລາງທີ່ມີຫົວຂໍ້
-    if df.empty or len(df.columns) < 5:
-        df = pd.DataFrame(columns=COLUMNS)
+    if "ປ່ຽນເປັນ" not in SHEET_URL:
+        df = conn.read(spreadsheet=SHEET_URL, worksheet="Sheet1", ttl=0)
+        # ຖ້າ Sheet ວ່າງເປົ່າ ໃຫ້ສ້າງຕະລາງທີ່ມີຫົວຂໍ້
+        if df.empty or len(df.columns) < 5:
+            df = pd.DataFrame(columns=COLUMNS)
+    else:
+        st.error("⚠️ ກະລຸນາເອົາ Link ຂອງ Google Sheets ໄປໃສ່ໃນແຖວທີ 28 ກ່ອນ!")
 except Exception as e:
     st.error(f"❌ ບໍ່ສາມາດເຊື່ອມຕໍ່ Google Sheets ໄດ້. Error: {e}")
-    df = pd.DataFrame(columns=COLUMNS)
 
 # ເມື່ອກົດປຸ່ມບັນທຶກ
 if submit:
@@ -127,6 +130,8 @@ if submit:
     
     if t_in == 0 and t_ex == 0:
         st.warning("⚠️ ກະລຸນາປ້ອນຂໍ້ມູນກ່ອນບັນທຶກ!")
+    elif "ປ່ຽນເປັນ" in SHEET_URL:
+        st.error("⚠️ ຍັງບໍ່ໄດ້ປ່ຽນ Link Google Sheets ໃນແຖວທີ 28 ຂອງໂຄ້ດ!")
     else:
         new_data = {
             'ວັນທີ': now_lao.strftime("%d/%m/%Y %H:%M"), 
@@ -205,7 +210,10 @@ if not df.empty:
         if st.text_input("ໃສ່ລະຫັດ 9999 ເພື່ອຢືນຢັນ", type="password") == "9999":
             if st.button("🗑️ ຢືນຢັນລ້າງຂໍ້ມູນທັງໝົດໃນ Google Sheets"):
                 empty_df = pd.DataFrame(columns=COLUMNS)
-                conn.update(spreadsheet=SHEET_URL, worksheet="Sheet1", data=empty_df)
-                st.cache_data.clear()
-                st.success("ລ້າງຂໍ້ມູນສຳເລັດແລ້ວ!")
-                st.rerun()
+                try:
+                    conn.update(spreadsheet=SHEET_URL, worksheet="Sheet1", data=empty_df)
+                    st.cache_data.clear()
+                    st.success("ລ້າງຂໍ້ມູນສຳເລັດແລ້ວ!")
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"ເກີດຂໍ້ຜິດພາດ: {e}")
